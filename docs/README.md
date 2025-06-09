@@ -4,6 +4,12 @@
 
 ## 📚 文档结构
 
+### [需求文档](./requirements/)
+项目需求和规划
+- [原始需求](./requirements/original-requirements.md) - 项目原始需求记录
+- [功能规格](./requirements/functional-spec.md) - 详细功能规格说明
+- [技术规格](./requirements/technical-spec.md) - 技术实现规格
+
 ### [架构设计](./architecture/)
 技术架构和设计决策
 - [系统概览](./architecture/overview.md) - 高层系统架构
