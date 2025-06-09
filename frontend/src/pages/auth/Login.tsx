@@ -111,12 +111,15 @@ const Login: React.FC = () => {
           </Form.Item>
 
           <div className="forgot-password">
-            <a href="#" onClick={(e) => {
-              e.preventDefault();
-              message.info('请联系系统管理员重置密码');
-            }}>
+            <Button 
+              type="link" 
+              style={{ padding: 0, height: 'auto', color: '#00d9ff' }}
+              onClick={() => {
+                message.info('请联系系统管理员重置密码');
+              }}
+            >
               忘记密码？
-            </a>
+            </Button>
           </div>
         </Form>
       </Card>
@@ -166,7 +169,7 @@ const Login: React.FC = () => {
         lineHeight: 1.4,
         maxWidth: '200px'
       }}>
-        <div style={{ color: '#00d9ff', marginBottom: '4px' }}>// System Initialize</div>
+        <div style={{ color: '#00d9ff', marginBottom: '4px' }}>{`// System Initialize`}</div>
         <div>auth.status = <span style={{ color: '#00ff88' }}>READY</span></div>
         <div>db.connection = <span style={{ color: '#00ff88' }}>ACTIVE</span></div>
         <div>api.server = <span style={{ color: '#00ff88' }}>RUNNING</span></div>

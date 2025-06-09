@@ -155,6 +155,7 @@ const UserManagement: React.FC = () => {
     fetchUsers();
     fetchRoles();
     fetchOrganizations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.page, pagination.page_size]);
 
   const handleAdd = () => {

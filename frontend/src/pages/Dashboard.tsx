@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Card, Statistic, Progress, Badge, Typography, Space, Tooltip } from 'antd';
+import { Row, Col, Card, Statistic, Typography, Space, Badge } from 'antd';
 import {
   BuildOutlined,
   HomeOutlined,
-  TeamOutlined,
+  UsergroupAddOutlined,
+  DollarOutlined,
   RiseOutlined,
-  DashboardOutlined,
-  FireOutlined,
-  SafetyOutlined,
-  EnvironmentOutlined,
-  ThunderboltOutlined,
   EyeOutlined,
-  AlertOutlined,
+  EnvironmentOutlined,
+  FireOutlined,
+  WarningOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined,
   CloseCircleOutlined,
+  DashboardOutlined,
   SyncOutlined
 } from '@ant-design/icons';
 import { Line, Column, Pie, Gauge } from '@ant-design/charts';
@@ -210,7 +209,7 @@ const Dashboard: React.FC = () => {
   const getEventIcon = (type: string) => {
     switch (type) {
       case 'success': return <CheckCircleOutlined style={{ color: '#00ff88' }} />;
-      case 'warning': return <AlertOutlined style={{ color: '#ffb800' }} />;
+      case 'warning': return <WarningOutlined style={{ color: '#ffb800' }} />;
       case 'error': return <CloseCircleOutlined style={{ color: '#ff4757' }} />;
       default: return <ClockCircleOutlined style={{ color: '#00d9ff' }} />;
     }
@@ -321,7 +320,7 @@ const Dashboard: React.FC = () => {
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <StatCard
-            icon={<TeamOutlined />}
+            icon={<UsergroupAddOutlined />}
             title="总面积"
             value={data.overview.totalArea.toLocaleString()}
             suffix=" m²"
@@ -360,7 +359,7 @@ const Dashboard: React.FC = () => {
             <Statistic
               title="安全事件"
               value={data.overview.securityEvents}
-              prefix={<SafetyOutlined style={{ color: '#ff4757' }} />}
+              prefix={<WarningOutlined style={{ color: '#ff4757' }} />}
               valueStyle={{ color: data.overview.securityEvents > 0 ? '#ff4757' : '#00ff88' }}
             />
           </Card>
@@ -371,7 +370,7 @@ const Dashboard: React.FC = () => {
               title="能效指数"
               value={data.overview.energyEfficiency.toFixed(1)}
               suffix="%"
-              prefix={<ThunderboltOutlined style={{ color: '#00ff88' }} />}
+              prefix={<DollarOutlined style={{ color: '#00ff88' }} />}
               valueStyle={{ color: '#00ff88' }}
             />
           </Card>
@@ -417,7 +416,7 @@ const Dashboard: React.FC = () => {
         <Col xs={24} lg={14}>
           <Card title={
             <span>
-              <ThunderboltOutlined style={{ marginRight: '8px', color: '#00d9ff' }} />
+              <RiseOutlined style={{ marginRight: '8px', color: '#00d9ff' }} />
               能耗分析（近7天）
             </span>
           }>

@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Card, Row, Col, Statistic, Table, Progress, Spin } from 'antd';
 import { BankOutlined, BuildOutlined, HomeOutlined, AreaChartOutlined } from '@ant-design/icons';
 import { Pie, Line } from '@ant-design/charts';
-import { assetService } from '../services/asset';
-import { AssetStatistics } from '../types/asset';
+// import { assetService } from '../services/asset';
+// import { AssetStatistics } from '../types/asset';
+// Icons removed as not used in current implementation
 
 // 临时接口，用于兼容当前页面显示
 interface StatisticsDisplayData {
