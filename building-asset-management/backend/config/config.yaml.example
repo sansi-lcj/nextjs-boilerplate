@@ -1,0 +1,48 @@
+# 应用配置
+app:
+  name: building-asset-management
+  port: 8080
+  mode: development # development, test, production
+  log_level: debug
+
+# 数据库配置
+database:
+  mysql:
+    host: localhost
+    port: 3306
+    username: root
+    password: your_password_here
+    database: building_asset
+    charset: utf8mb4
+    max_idle_conns: 10
+    max_open_conns: 100
+    conn_max_lifetime: 3600
+
+# Redis配置
+redis:
+  host: localhost
+  port: 6379
+  password: ""
+  db: 0
+  pool_size: 10
+
+# JWT配置
+jwt:
+  secret: "your-secret-key-here"
+  expire: 7200 # 2小时
+  refresh_expire: 604800 # 7天
+
+# 文件上传配置
+upload:
+  max_size: 10485760 # 10MB
+  allowed_types: ["image/jpeg", "image/png", "image/gif", "application/pdf"]
+  path: "./uploads"
+
+# 跨域配置
+cors:
+  allowed_origins: ["http://localhost:3000", "http://localhost:5173"]
+  allowed_methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+  allowed_headers: ["Content-Type", "Authorization"]
+  exposed_headers: ["Content-Length"]
+  allow_credentials: true
+  max_age: 86400
