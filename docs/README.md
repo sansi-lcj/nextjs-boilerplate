@@ -1,75 +1,73 @@
-# 楼宇资产管理平台文档
+# Building Asset Management Platform Documentation
 
-## 文档目录
+Welcome to the Building Asset Management Platform documentation. This documentation is organized to help different audiences find the information they need quickly.
 
-### 需求文档
-- [项目概述](./requirements-overview.md)
-- [功能需求](./functional-requirements.md)
-- [技术需求](./technical-requirements.md)
+## 📚 Documentation Structure
 
-### 设计文档
-- [数据模型设计](./data-model-design.md)
-- [技术架构设计](./technical-architecture.md)
-- [API接口设计](./api-design.md)
+### [Architecture](./architecture/)
+Technical architecture and design decisions
+- [System Overview](./architecture/overview.md) - High-level system architecture
+- [Data Model](./architecture/data-model.md) - Database schema and relationships
+- [Security Architecture](./architecture/security.md) - Authentication and authorization design
+- [Technology Stack](./architecture/tech-stack.md) - Technology choices and rationale
 
-### 项目管理
-- [项目实施计划](./project-management.md)
+### [API Reference](./api/)
+Complete API documentation
+- [REST API Reference](./api/reference.md) - All API endpoints with examples
+- [Authentication](./api/authentication.md) - JWT token usage
+- [Error Handling](./api/errors.md) - API error codes and responses
+- [Pagination](./api/pagination.md) - How to work with paginated responses
 
-## 快速导航
+### [Guides](./guides/)
+Step-by-step guides for different audiences
 
-### 核心功能模块
-1. **资产管理** - 四级资产管理体系（资产-楼宇-楼层-房间）
-2. **地图展示** - 基于天地图的资产可视化展示
-3. **数据统计** - 多维度数据分析与报表
-4. **系统管理** - 用户、角色、权限、日志管理
+#### [Developer Guide](./guides/developer/)
+- [Getting Started](./guides/developer/getting-started.md) - Set up development environment
+- [Backend Development](./guides/developer/backend.md) - Go backend development guide
+- [Frontend Development](./guides/developer/frontend.md) - React frontend development guide
+- [Testing](./guides/developer/testing.md) - How to write and run tests
+- [Code Style](./guides/developer/code-style.md) - Coding standards and conventions
 
-### 技术栈
-- 前端：React + Ant Design + TypeScript
-- 后端：Golang + Gin + GORM
-- 数据库：MySQL + Redis
-- 地图：天地图政务版
+#### [User Guide](./guides/user/)
+- [Quick Start](./guides/user/quick-start.md) - Get started using the platform
+- [Asset Management](./guides/user/asset-management.md) - Managing buildings and assets
+- [Map Features](./guides/user/map-features.md) - Using the map visualization
+- [Reports](./guides/user/reports.md) - Generating and understanding reports
 
-## 文档更新说明
+#### [Deployment Guide](./guides/deployment/)
+- [Docker Deployment](./guides/deployment/docker.md) - Deploy with Docker
+- [Manual Deployment](./guides/deployment/manual.md) - Deploy without Docker
+- [Configuration](./guides/deployment/configuration.md) - Environment variables and settings
+- [Monitoring](./guides/deployment/monitoring.md) - Health checks and logging
 
-最后更新：2024年1月
-- 聚焦楼宇资产管理核心功能
-- 移除企业管理、租赁管理等扩展模块
-- 明确技术栈选型
-- 简化项目周期为13周
+### [References](./references/)
+Additional reference materials
+- [Glossary](./references/glossary.md) - Terms and definitions
+- [FAQ](./references/faq.md) - Frequently asked questions
+- [Troubleshooting](./references/troubleshooting.md) - Common issues and solutions
+- [Changelog](./references/changelog.md) - Version history and changes
 
-## 文档概述
+## 🔍 Quick Links
 
-本文档集包含楼宇资产管理平台项目的需求分析和设计文档。该项目旨在建设一个楼宇资产管理系统，实现对全区楼宇资产的数字化管理。
+- **New to the project?** Start with [Getting Started](./guides/developer/getting-started.md)
+- **Looking for API docs?** Check the [API Reference](./api/reference.md)
+- **Need to deploy?** See the [Deployment Guide](./guides/deployment/)
+- **Want to contribute?** Read our [Contributing Guide](../CONTRIBUTING.md)
 
-## 文档结构
+## 📖 Documentation Standards
 
-### 1. [需求概述](requirements-overview.md)
-项目背景、建设目标、建设范围等总体概述。
+This documentation follows these principles:
+- **Clear and Concise**: Use simple language and avoid jargon
+- **Example-Driven**: Include code examples and screenshots
+- **Up-to-Date**: Keep documentation synchronized with code
+- **Searchable**: Use descriptive headings and keywords
 
-### 2. [功能需求](functional-requirements.md)
-详细的功能需求说明，包括各个模块的具体功能要求。
+## 🤝 Contributing to Documentation
 
-### 3. [技术要求](technical-requirements.md)
-系统技术架构、性能、安全等非功能性需求。
+Documentation improvements are always welcome! Please:
+1. Follow the existing structure and style
+2. Include examples where appropriate
+3. Update the table of contents if adding new pages
+4. Submit a pull request with your changes
 
-### 4. [数据模型设计](data-model-design.md)
-数据库设计方案，包括实体关系图和表结构设计。
-
-### 5. [项目实施计划](project-implementation.md)
-项目实施计划、开发计划、测试计划等。
-
-## 项目关键信息
-
-- **项目范围**：楼宇资产管理平台（PC端）
-- **开发周期**：13周
-- **主要用户**：区/街道资产管理人员
-- **数据规模**：支持全区楼宇资产管理（预计万级数据量）
-
-## 更新记录
-
-- 2024-12-XX：根据需求调整，聚焦资产管理功能
-- 文档版本：v2.0
-
----
-
-*本文档集为楼宇资产管理平台项目的核心需求文档。*
+For more details, see our [Contributing Guide](../CONTRIBUTING.md).
