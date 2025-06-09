@@ -4,27 +4,28 @@ import (
 	"fmt"
 	"log"
 
-	"building-asset-management/config"
-	"building-asset-management/internal/model"
-	"building-asset-management/internal/service"
-	"building-asset-management/pkg/database"
-	"building-asset-management/pkg/logger"
-	"building-asset-management/router"
+	"building-asset-backend/internal/config"
+	"building-asset-backend/internal/model"
+	"building-asset-backend/internal/service"
+	"building-asset-backend/pkg/database"
+	"building-asset-backend/pkg/logger"
+	"building-asset-backend/router"
 )
 
 func main() {
 	// Initialize configuration
-	if err := config.Init(); err != nil {
+	if err := config.Load("config/config.yaml"); err != nil {
 		log.Fatalf("Failed to initialize configuration: %v", err)
 	}
 
 	// Initialize logger
-	if err := logger.Init(); err != nil {
+	cfg := config.Get()
+	if err := logger.Init(cfg.App.LogLevel, true); err != nil {
 		log.Fatalf("Failed to initialize logger: %v", err)
 	}
 
 	// Initialize database
-	if err := database.Init(); err != nil {
+	if err := database.Init(&cfg.Database.MySQL); err != nil {
 		log.Fatalf("Failed to initialize database: %v", err)
 	}
 
@@ -42,8 +43,8 @@ func main() {
 	r := router.InitRouter()
 
 	// Start server
-	port := config.GetString("server.port")
-	if port == "" {
+	port := fmt.Sprintf("%d", cfg.App.Port)
+	if port == "0" {
 		port = "8080"
 	}
 

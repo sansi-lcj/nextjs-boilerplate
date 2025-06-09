@@ -1,0 +1,130 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 楼宇资产管理平台 - Cursor AI 开发规则
+
+## 规则说明
+这些规则将帮助 Cursor AI 更好地理解项目结构、技术栈和开发规范，提供精准的代码协助。所有规则均基于项目实际文档和代码结构生成。
+
+## 核心规则文件
+
+### [01 - 项目概览规则](mdc:.cursor/rules/01-project-overview.mdc)
+- 项目基本信息和整体架构
+- 核心业务模块和功能概述
+- 项目目录结构和关键文件位置
+- 开发环境配置和访问方式
+
+### [02 - 技术栈规则](mdc:.cursor/rules/02-tech-stack.mdc)
+- 后端技术栈：Go + Gin + GORM + MySQL/Redis
+- 前端技术栈：React 18 + TypeScript + Ant Design
+- 容器化部署：Docker + Docker Compose
+- 开发工具和版本要求
+
+### [03 - 代码规范规则](mdc:.cursor/rules/03-coding-standards.mdc)
+- Go 后端代码规范和项目结构
+- React 前端组件和 TypeScript 规范
+- 数据库设计和命名规范
+- Git 提交和代码审查规范
+
+### [04 - API 设计规则](mdc:.cursor/rules/04-api-design.mdc)
+- RESTful API 设计原则和统一响应格式
+- 核心业务 API 端点定义
+- 认证授权和错误处理机制
+- 前后端 API 调用规范
+
+### [05 - 开发流程规则](mdc:.cursor/rules/05-development-workflow.mdc)
+- 开发环境搭建和调试方法
+- Git 工作流和功能开发流程
+- 常见开发任务和故障排除
+- 部署流程和质量保证
+
+## 项目当前状态
+
+### 功能完整性
+- ✅ **认证系统** - JWT + RBAC 权限体系完整
+- ✅ **资产管理** - 四级层次结构（资产→楼宇→楼层→房间）
+- ✅ **系统管理** - 用户、角色、权限、组织管理
+- ✅ **数据统计** - 多维度统计分析（部分图表组件需优化）
+- ✅ **地图展示** - 天地图集成正常
+- ✅ **CRUD 操作** - 全功能增删改查
+
+### 开发环境状态
+- **前端**: http://localhost:3000 (React 热重载)
+- **后端**: http://localhost:8080 (Go 自动重启)
+- **数据库**: MySQL 8.0 + Redis 5 (持久化存储)
+- **默认账户**: admin/admin123
+
+### 技术债务
+- 部分图表组件有轻微 JavaScript 错误（不影响核心功能）
+- 单元测试覆盖率需要提升
+- API 文档需要与实际实现保持同步
+
+## 开发建议
+
+### 新功能开发
+1. 遵循现有的项目结构和代码规范
+2. 优先使用项目已有的技术栈和组件库
+3. 确保前后端 API 接口设计一致性
+4. 添加适当的错误处理和用户友好提示
+
+### 代码优化
+1. 保持代码简洁，避免过度抽象
+2. 为公共组件和工具函数添加 TypeScript 类型
+3. 使用 Ant Design 组件库保持 UI 一致性
+4. 及时更新文档以反映代码变更
+
+### 性能考虑
+1. 前端：合理使用 React.memo 和 useMemo
+2. 后端：适当使用 Redis 缓存，优化数据库查询
+3. 网络：实现合理的分页和搜索过滤
+4. 用户体验：添加 loading 状态和错误边界
+
+## 关键文件索引
+
+### 配置文件
+- [Docker 开发环境](mdc:docker-compose.dev.yml)
+- [后端依赖管理](mdc:backend/go.mod)
+- [前端依赖管理](mdc:frontend/package.json)
+- [构建自动化](mdc:Makefile)
+
+### 核心代码
+- [后端入口](mdc:backend/main.go)
+- [路由定义](mdc:backend/router/router.go)
+- [前端入口](mdc:frontend/src/App.tsx)
+- [主布局组件](mdc:frontend/src/components/layout/MainLayout.tsx)
+
+### 文档参考
+- [项目说明](mdc:README.md)
+- [贡献指南](mdc:CONTRIBUTING.md)
+- [API 参考](mdc:docs/api/reference.md)
+- [技术架构](mdc:docs/architecture/overview.md)
+- [数据模型](mdc:docs/architecture/data-model.md)
+
+## 使用指南
+
+### 快速启动开发
+```bash
+# 启动完整开发环境
+docker-compose -f docker-compose.dev.yml up -d
+
+# 访问应用
+# 前端: http://localhost:3000
+# 后端: http://localhost:8080
+# 登录: admin/admin123
+```
+
+### 常用调试命令
+```bash
+# 查看服务状态
+docker-compose -f docker-compose.dev.yml ps
+
+# 查看实时日志
+docker-compose -f docker-compose.dev.yml logs -f
+
+# API 健康检查
+curl http://localhost:8080/health
+```
+
+这些规则基于项目的完整文档结构和实际代码实现，旨在为 AI 助手提供准确的项目上下文，提升开发效率和代码质量。

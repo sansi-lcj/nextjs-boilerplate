@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"building-asset-management/internal/model"
-	"building-asset-management/pkg/database"
+	"building-asset-backend/internal/model"
+	"building-asset-backend/pkg/database"
 
 	"gorm.io/gorm"
 )
@@ -29,7 +29,7 @@ func (s *AssetService) GetAssets(page, pageSize int, name, assetType, status str
 	query := s.db.Model(&model.Asset{})
 
 	if name != "" {
-		query = query.Where("name LIKE ?", "%"+name+"%")
+		query = query.Where("asset_name LIKE ?", "%"+name+"%")
 	}
 	if assetType != "" {
 		query = query.Where("type = ?", assetType)
@@ -64,7 +64,7 @@ func (s *AssetService) GetAssetByID(id uint) (*model.Asset, error) {
 func (s *AssetService) CreateAsset(asset *model.Asset) (*model.Asset, error) {
 	// 检查名称是否重复
 	var count int64
-	s.db.Model(&model.Asset{}).Where("name = ?", asset.Name).Count(&count)
+	s.db.Model(&model.Asset{}).Where("asset_name = ?", asset.AssetName).Count(&count)
 	if count > 0 {
 		return nil, errors.New("资产名称已存在")
 	}
@@ -82,9 +82,9 @@ func (s *AssetService) UpdateAsset(id uint, updates *model.Asset) (*model.Asset,
 	}
 
 	// 检查名称是否重复
-	if updates.Name != "" && updates.Name != asset.Name {
+	if updates.AssetName != "" && updates.AssetName != asset.AssetName {
 		var count int64
-		s.db.Model(&model.Asset{}).Where("name = ? AND id != ?", updates.Name, id).Count(&count)
+		s.db.Model(&model.Asset{}).Where("asset_name = ? AND id != ?", updates.AssetName, id).Count(&count)
 		if count > 0 {
 			return nil, errors.New("资产名称已存在")
 		}
@@ -120,7 +120,7 @@ func (s *AssetService) GetBuildings(page, pageSize int, assetID uint, name strin
 		query = query.Where("asset_id = ?", assetID)
 	}
 	if name != "" {
-		query = query.Where("name LIKE ?", "%"+name+"%")
+		query = query.Where("building_name LIKE ?", "%"+name+"%")
 	}
 
 	err := query.Count(&total).Error
@@ -155,7 +155,7 @@ func (s *AssetService) CreateBuilding(building *model.Building) (*model.Building
 
 	// 检查名称是否重复
 	var count int64
-	s.db.Model(&model.Building{}).Where("asset_id = ? AND name = ?", building.AssetID, building.Name).Count(&count)
+	s.db.Model(&model.Building{}).Where("asset_id = ? AND building_name = ?", building.AssetID, building.BuildingName).Count(&count)
 	if count > 0 {
 		return nil, errors.New("该资产下建筑名称已存在")
 	}
@@ -173,9 +173,9 @@ func (s *AssetService) UpdateBuilding(id uint, updates *model.Building) (*model.
 	}
 
 	// 检查名称是否重复
-	if updates.Name != "" && updates.Name != building.Name {
+	if updates.BuildingName != "" && updates.BuildingName != building.BuildingName {
 		var count int64
-		s.db.Model(&model.Building{}).Where("asset_id = ? AND name = ? AND id != ?", building.AssetID, updates.Name, id).Count(&count)
+		s.db.Model(&model.Building{}).Where("asset_id = ? AND building_name = ? AND id != ?", building.AssetID, updates.BuildingName, id).Count(&count)
 		if count > 0 {
 			return nil, errors.New("该资产下建筑名称已存在")
 		}

@@ -3,8 +3,8 @@ package service
 import (
 	"time"
 
-	"building-asset-management/internal/model"
-	"building-asset-management/pkg/database"
+	"building-asset-backend/internal/model"
+	"building-asset-backend/pkg/database"
 
 	"gorm.io/gorm"
 )
@@ -95,17 +95,18 @@ func (s *LogService) CreateLoginLog(log *model.LoginLog) error {
 }
 
 // LogOperation 记录操作日志
-func (s *LogService) LogOperation(userID uint, username, module, operation, method, path string, status int, errorMsg string, duration int64) {
+func (s *LogService) LogOperation(userID uint, username, module, action, method, url string, status int, errorMsg string, duration int64) {
 	log := &model.OperationLog{
-		UserID:    userID,
-		Username:  username,
-		Module:    module,
-		Operation: operation,
-		Method:    method,
-		Path:      path,
-		Status:    status,
-		ErrorMsg:  errorMsg,
-		Duration:  duration,
+		UserID:         userID,
+		Username:       username,
+		Module:         module,
+		Action:         action,
+		RequestMethod:  method,
+		RequestURL:     url,
+		ResponseStatus: status,
+		Description:    errorMsg,
+		ResponseTime:   duration,
+		OperationTime:  time.Now(),
 	}
 	s.CreateOperationLog(log)
 }
@@ -114,10 +115,11 @@ func (s *LogService) LogOperation(userID uint, username, module, operation, meth
 func (s *LogService) LogLogin(username, ip, userAgent, status, message string) {
 	log := &model.LoginLog{
 		Username:  username,
-		IP:        ip,
+		ClientIP:  ip,
 		UserAgent: userAgent,
 		Status:    status,
 		Message:   message,
+		LoginTime: time.Now(),
 	}
 	s.CreateLoginLog(log)
 }

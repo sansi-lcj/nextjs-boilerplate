@@ -7,7 +7,7 @@ export const assetService = {
   getAssets: (params?: {
     page?: number;
     page_size?: number;
-    name?: string;
+    asset_name?: string;
     type?: string;
     status?: string;
   }) => {

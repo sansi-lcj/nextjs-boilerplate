@@ -1,5 +1,5 @@
 # 构建阶段
-FROM golang:1.19-alpine AS builder
+FROM golang:1.23-alpine AS builder
 
 # 安装必要的构建工具
 RUN apk add --no-cache git
@@ -17,7 +17,7 @@ RUN go mod download
 COPY . .
 
 # 构建应用
-RUN go build -o server cmd/server/main.go
+RUN go build -o server main.go
 
 # 运行阶段
 FROM alpine:latest

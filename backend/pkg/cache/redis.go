@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/building-asset/backend/internal/config"
-	"github.com/building-asset/backend/pkg/logger"
+	"building-asset-backend/internal/config"
+	"building-asset-backend/pkg/logger"
 	"github.com/redis/go-redis/v9"
 )
 

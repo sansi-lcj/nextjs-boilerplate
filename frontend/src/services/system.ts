@@ -1,170 +1,158 @@
-import request from '../utils/request';
-import { User, Role, Organization } from '../types/user';
+import { get, post, put, del } from '../utils/request';
 
-// User APIs
-export const userService = {
-  // 获取用户列表
-  getUsers: (params?: {
-    page?: number;
-    page_size?: number;
-    username?: string;
-    real_name?: string;
-    status?: string;
-    org_id?: number;
-  }) => {
-    return request.get('/users', { params });
+export interface User {
+  id: number;
+  username: string;
+  name: string;
+  phone: string;
+  email: string;
+  org_id: number;
+  status: string;
+  roles: Array<{
+    id: number;
+    name: string;
+    code: string;
+  }>;
+  organization: {
+    id: number;
+    name: string;
+  };
+}
+
+export interface Role {
+  id: number;
+  name: string;
+  code: string;
+  description: string;
+  status: string;
+}
+
+export interface Organization {
+  id: number;
+  name: string;
+  code: string;
+  type: string;
+  parent_id: number | null;
+  status: string;
+}
+
+export interface CreateUserRequest {
+  username: string;
+  password: string;
+  name: string;
+  phone: string;
+  email: string;
+  org_id: number;
+  role_ids: number[];
+  status: string;
+}
+
+export interface UpdateUserRequest {
+  name: string;
+  phone: string;
+  email: string;
+  org_id: number;
+  role_ids: number[];
+  status: string;
+}
+
+export const systemService = {
+  // 用户管理
+  async getUsers(params?: { page?: number; page_size?: number; keyword?: string }) {
+    const response = await get('/users', params);
+    return response.data;
   },
 
-  // 获取用户详情
-  getUser: (id: number) => {
-    return request.get(`/users/${id}`);
+  async getUser(id: number) {
+    const response = await get(`/users/${id}`);
+    return response.data;
   },
 
-  // 创建用户
-  createUser: (data: Partial<User>) => {
-    return request.post('/users', data);
+  async createUser(data: CreateUserRequest) {
+    const response = await post('/users', data);
+    return response.data;
   },
 
-  // 更新用户
-  updateUser: (id: number, data: Partial<User>) => {
-    return request.put(`/users/${id}`, data);
+  async updateUser(id: number, data: UpdateUserRequest) {
+    const response = await put(`/users/${id}`, data);
+    return response.data;
   },
 
-  // 删除用户
-  deleteUser: (id: number) => {
-    return request.delete(`/users/${id}`);
+  async deleteUser(id: number) {
+    const response = await del(`/users/${id}`);
+    return response.data;
   },
 
-  // 重置密码
-  resetPassword: (id: number, password: string) => {
-    return request.put(`/users/${id}/password`, { password });
-  },
-};
-
-// Role APIs
-export const roleService = {
-  // 获取角色列表
-  getRoles: (params?: {
-    page?: number;
-    page_size?: number;
-    name?: string;
-    code?: string;
-  }) => {
-    return request.get('/roles', { params });
+  async resetPassword(id: number, password: string) {
+    const response = await put(`/users/${id}/password`, { password });
+    return response.data;
   },
 
-  // 获取角色详情
-  getRole: (id: number) => {
-    return request.get(`/roles/${id}`);
+  // 角色管理
+  async getRoles(params?: { page?: number; page_size?: number }) {
+    const response = await get('/roles', params);
+    return response.data;
   },
 
-  // 创建角色
-  createRole: (data: Partial<Role>) => {
-    return request.post('/roles', data);
+  async getRole(id: number) {
+    const response = await get(`/roles/${id}`);
+    return response.data;
   },
 
-  // 更新角色
-  updateRole: (id: number, data: Partial<Role>) => {
-    return request.put(`/roles/${id}`, data);
+  async createRole(data: any) {
+    const response = await post('/roles', data);
+    return response.data;
   },
 
-  // 删除角色
-  deleteRole: (id: number) => {
-    return request.delete(`/roles/${id}`);
+  async updateRole(id: number, data: any) {
+    const response = await put(`/roles/${id}`, data);
+    return response.data;
   },
 
-  // 更新角色权限
-  updateRolePermissions: (id: number, permissionIds: number[]) => {
-    return request.put(`/roles/${id}/permissions`, { permission_ids: permissionIds });
-  },
-};
-
-// Permission APIs
-export const permissionService = {
-  // 获取权限列表
-  getPermissions: () => {
-    return request.get('/permissions');
+  async deleteRole(id: number) {
+    const response = await del(`/roles/${id}`);
+    return response.data;
   },
 
-  // 获取权限树
-  getPermissionTree: () => {
-    return request.get('/permissions/tree');
-  },
-};
-
-// Menu APIs
-export const menuService = {
-  // 获取菜单列表
-  getMenus: () => {
-    return request.get('/menus');
+  // 组织管理
+  async getOrganizations(params?: { page?: number; page_size?: number }) {
+    const response = await get('/organizations', params);
+    return response.data;
   },
 
-  // 获取菜单树
-  getMenuTree: () => {
-    return request.get('/menus/tree');
+  async getOrganizationTree() {
+    const response = await get('/organizations/tree');
+    return response.data;
   },
 
-  // 获取用户菜单
-  getUserMenus: () => {
-    return request.get('/menus/user');
-  },
-};
-
-// Organization APIs
-export const organizationService = {
-  // 获取组织列表
-  getOrganizations: () => {
-    return request.get('/organizations');
+  async getOrganization(id: number) {
+    const response = await get(`/organizations/${id}`);
+    return response.data;
   },
 
-  // 获取组织树
-  getOrganizationTree: () => {
-    return request.get('/organizations/tree');
+  async createOrganization(data: any) {
+    const response = await post('/organizations', data);
+    return response.data;
   },
 
-  // 获取组织详情
-  getOrganization: (id: number) => {
-    return request.get(`/organizations/${id}`);
+  async updateOrganization(id: number, data: any) {
+    const response = await put(`/organizations/${id}`, data);
+    return response.data;
   },
 
-  // 创建组织
-  createOrganization: (data: Partial<Organization>) => {
-    return request.post('/organizations', data);
+  async deleteOrganization(id: number) {
+    const response = await del(`/organizations/${id}`);
+    return response.data;
   },
 
-  // 更新组织
-  updateOrganization: (id: number, data: Partial<Organization>) => {
-    return request.put(`/organizations/${id}`, data);
+  // 权限管理
+  async getPermissions() {
+    const response = await get('/permissions');
+    return response.data;
   },
 
-  // 删除组织
-  deleteOrganization: (id: number) => {
-    return request.delete(`/organizations/${id}`);
-  },
-};
-
-// Log APIs
-export const logService = {
-  // 获取操作日志
-  getOperationLogs: (params?: {
-    page?: number;
-    page_size?: number;
-    username?: string;
-    module?: string;
-    start_time?: string;
-    end_time?: string;
-  }) => {
-    return request.get('/logs/operations', { params });
-  },
-
-  // 获取登录日志
-  getLoginLogs: (params?: {
-    page?: number;
-    page_size?: number;
-    username?: string;
-    start_time?: string;
-    end_time?: string;
-  }) => {
-    return request.get('/logs/logins', { params });
+  async getPermissionTree() {
+    const response = await get('/permissions/tree');
+    return response.data;
   },
 };

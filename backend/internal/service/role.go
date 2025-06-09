@@ -3,8 +3,8 @@ package service
 import (
 	"errors"
 
-	"building-asset-management/internal/model"
-	"building-asset-management/pkg/database"
+	"building-asset-backend/internal/model"
+	"building-asset-backend/pkg/database"
 
 	"gorm.io/gorm"
 )
@@ -135,35 +135,13 @@ func (s *RoleService) UpdateRolePermissions(roleID uint, permissionIDs []uint) e
 
 func (s *RoleService) GetAllPermissions() ([]*model.Permission, error) {
 	var permissions []*model.Permission
-	err := s.db.Order("sort_order, id").Find(&permissions).Error
+	err := s.db.Order("module, code").Find(&permissions).Error
 	return permissions, err
 }
 
 func (s *RoleService) GetPermissionTree() ([]*model.Permission, error) {
-	var permissions []*model.Permission
-	err := s.db.Where("parent_id = 0 OR parent_id IS NULL").Order("sort_order, id").Find(&permissions).Error
-	if err != nil {
-		return nil, err
-	}
-
-	// 递归构建子权限
-	for _, perm := range permissions {
-		s.buildPermChildren(perm)
-	}
-
-	return permissions, nil
-}
-
-func (s *RoleService) buildPermChildren(perm *model.Permission) {
-	var children []*model.Permission
-	s.db.Where("parent_id = ?", perm.ID).Order("sort_order, id").Find(&children)
-
-	if len(children) > 0 {
-		perm.Children = children
-		for _, child := range children {
-			s.buildPermChildren(child)
-		}
-	}
+	// 简化为返回所有权限的平面列表，按模块分组
+	return s.GetAllPermissions()
 }
 
 // Initialize default roles and permissions
@@ -175,43 +153,40 @@ func (s *RoleService) InitializeDefaultData() error {
 	if permCount == 0 {
 		permissions := []model.Permission{
 			// 资产管理权限
-			{Name: "资产管理", Code: "asset", Type: "menu", ParentID: 0, SortOrder: 1},
-			{Name: "资产列表", Code: "asset:list", Type: "menu", ParentID: 1, Path: "/assets", SortOrder: 1},
-			{Name: "查看资产", Code: "asset:view", Type: "button", ParentID: 2, SortOrder: 1},
-			{Name: "创建资产", Code: "asset:create", Type: "button", ParentID: 2, SortOrder: 2},
-			{Name: "编辑资产", Code: "asset:update", Type: "button", ParentID: 2, SortOrder: 3},
-			{Name: "删除资产", Code: "asset:delete", Type: "button", ParentID: 2, SortOrder: 4},
+			{Name: "资产管理", Code: "asset", Module: "asset", Description: "资产管理模块权限"},
+			{Name: "资产列表", Code: "asset:list", Module: "asset", Description: "查看资产列表"},
+			{Name: "查看资产", Code: "asset:view", Module: "asset", Description: "查看资产详情"},
+			{Name: "创建资产", Code: "asset:create", Module: "asset", Description: "创建新资产"},
+			{Name: "编辑资产", Code: "asset:update", Module: "asset", Description: "编辑资产信息"},
+			{Name: "删除资产", Code: "asset:delete", Module: "asset", Description: "删除资产"},
 
-			{Name: "建筑列表", Code: "building:list", Type: "menu", ParentID: 1, Path: "/buildings", SortOrder: 2},
-			{Name: "查看建筑", Code: "building:view", Type: "button", ParentID: 7, SortOrder: 1},
-			{Name: "创建建筑", Code: "building:create", Type: "button", ParentID: 7, SortOrder: 2},
-			{Name: "编辑建筑", Code: "building:update", Type: "button", ParentID: 7, SortOrder: 3},
-			{Name: "删除建筑", Code: "building:delete", Type: "button", ParentID: 7, SortOrder: 4},
+			{Name: "建筑列表", Code: "building:list", Module: "asset", Description: "查看建筑列表"},
+			{Name: "查看建筑", Code: "building:view", Module: "asset", Description: "查看建筑详情"},
+			{Name: "创建建筑", Code: "building:create", Module: "asset", Description: "创建新建筑"},
+			{Name: "编辑建筑", Code: "building:update", Module: "asset", Description: "编辑建筑信息"},
+			{Name: "删除建筑", Code: "building:delete", Module: "asset", Description: "删除建筑"},
 
 			// 系统管理权限
-			{Name: "系统管理", Code: "system", Type: "menu", ParentID: 0, SortOrder: 2},
-			{Name: "用户管理", Code: "user:list", Type: "menu", ParentID: 12, Path: "/users", SortOrder: 1},
-			{Name: "查看用户", Code: "user:view", Type: "button", ParentID: 13, SortOrder: 1},
-			{Name: "创建用户", Code: "user:create", Type: "button", ParentID: 13, SortOrder: 2},
-			{Name: "编辑用户", Code: "user:update", Type: "button", ParentID: 13, SortOrder: 3},
-			{Name: "删除用户", Code: "user:delete", Type: "button", ParentID: 13, SortOrder: 4},
+			{Name: "系统管理", Code: "system", Module: "system", Description: "系统管理模块权限"},
+			{Name: "用户管理", Code: "user:list", Module: "system", Description: "用户管理权限"},
+			{Name: "查看用户", Code: "user:view", Module: "system", Description: "查看用户详情"},
+			{Name: "创建用户", Code: "user:create", Module: "system", Description: "创建新用户"},
+			{Name: "编辑用户", Code: "user:update", Module: "system", Description: "编辑用户信息"},
+			{Name: "删除用户", Code: "user:delete", Module: "system", Description: "删除用户"},
 
-			{Name: "角色管理", Code: "role:list", Type: "menu", ParentID: 12, Path: "/roles", SortOrder: 2},
-			{Name: "查看角色", Code: "role:view", Type: "button", ParentID: 18, SortOrder: 1},
-			{Name: "创建角色", Code: "role:create", Type: "button", ParentID: 18, SortOrder: 2},
-			{Name: "编辑角色", Code: "role:update", Type: "button", ParentID: 18, SortOrder: 3},
-			{Name: "删除角色", Code: "role:delete", Type: "button", ParentID: 18, SortOrder: 4},
+			{Name: "角色管理", Code: "role:list", Module: "system", Description: "角色管理权限"},
+			{Name: "查看角色", Code: "role:view", Module: "system", Description: "查看角色详情"},
+			{Name: "创建角色", Code: "role:create", Module: "system", Description: "创建新角色"},
+			{Name: "编辑角色", Code: "role:update", Module: "system", Description: "编辑角色信息"},
+			{Name: "删除角色", Code: "role:delete", Module: "system", Description: "删除角色"},
 
-			{Name: "组织管理", Code: "org:list", Type: "menu", ParentID: 12, Path: "/organizations", SortOrder: 3},
-			{Name: "操作日志", Code: "log:list", Type: "menu", ParentID: 12, Path: "/logs", SortOrder: 4},
+			{Name: "组织管理", Code: "org:list", Module: "system", Description: "组织管理权限"},
+			{Name: "操作日志", Code: "log:list", Module: "system", Description: "查看操作日志"},
 		}
 
 		for _, perm := range permissions {
 			s.db.Create(&perm)
 		}
-
-		// 更新父权限ID（因为ID是自动生成的）
-		s.updatePermissionParentIDs()
 	}
 
 	// 创建默认角色
@@ -254,24 +229,4 @@ func (s *RoleService) InitializeDefaultData() error {
 	}
 
 	return nil
-}
-
-func (s *RoleService) updatePermissionParentIDs() {
-	// 获取父权限的实际ID
-	var assetPerm, systemPerm model.Permission
-	s.db.Where("code = ?", "asset").First(&assetPerm)
-	s.db.Where("code = ?", "system").First(&systemPerm)
-
-	// 更新子权限的父ID
-	s.db.Model(&model.Permission{}).Where("code IN ?", []string{"asset:list", "building:list"}).Update("parent_id", assetPerm.ID)
-	s.db.Model(&model.Permission{}).Where("code IN ?", []string{"user:list", "role:list", "org:list", "log:list"}).Update("parent_id", systemPerm.ID)
-
-	// 更新按钮权限的父ID
-	var menus []model.Permission
-	s.db.Where("type = ?", "menu").Where("parent_id != 0").Find(&menus)
-
-	for _, menu := range menus {
-		prefix := menu.Code[:len(menu.Code)-5] // 去掉 ":list"
-		s.db.Model(&model.Permission{}).Where("code LIKE ? AND type = ?", prefix+":%", "button").Update("parent_id", menu.ID)
-	}
 }

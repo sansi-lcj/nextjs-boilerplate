@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"github.com/building-asset/backend/pkg/auth"
-	"github.com/building-asset/backend/pkg/response"
+	"building-asset-backend/pkg/auth"
+	"building-asset-backend/pkg/response"
 	"github.com/gin-gonic/gin"
 )
 

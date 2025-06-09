@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Layout, Menu, Avatar, Dropdown, Space, message } from 'antd';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -9,6 +9,10 @@ import {
   UserOutlined,
   LogoutOutlined,
   BuildOutlined,
+  SettingOutlined,
+  TeamOutlined,
+  SafetyCertificateOutlined,
+  ApartmentOutlined,
 } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { logout } from '../../store/slices/authSlice';
@@ -73,6 +77,28 @@ const MainLayout: React.FC = () => {
       icon: <BarChartOutlined />,
       label: '数据统计',
     },
+    {
+      key: '/system',
+      icon: <SettingOutlined />,
+      label: '系统管理',
+      children: [
+        {
+          key: '/system/users',
+          icon: <TeamOutlined />,
+          label: '用户管理',
+        },
+        {
+          key: '/system/roles',
+          icon: <SafetyCertificateOutlined />,
+          label: '角色管理',
+        },
+        {
+          key: '/system/organizations',
+          icon: <ApartmentOutlined />,
+          label: '组织管理',
+        },
+      ],
+    },
   ];
 
   return (
@@ -93,7 +119,7 @@ const MainLayout: React.FC = () => {
           <Dropdown overlay={userMenu} placement="bottomRight">
             <Space style={{ cursor: 'pointer' }}>
               <Avatar size="small" icon={<UserOutlined />} />
-              <span>{user?.real_name || user?.username || '用户'}</span>
+              <span>{user?.name || user?.username || '用户'}</span>
             </Space>
           </Dropdown>
         </Header>

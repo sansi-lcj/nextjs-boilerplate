@@ -7,6 +7,8 @@ import AssetList from './pages/asset/AssetList';
 import BuildingList from './pages/asset/BuildingList';
 import Map from './pages/Map';
 import Statistics from './pages/Statistics';
+import UserManagement from './pages/system/UserManagement';
+import RoleManagement from './pages/system/RoleManagement';
 import PrivateRoute from './components/common/PrivateRoute';
 import './App.css';
 
@@ -29,6 +31,8 @@ function App() {
           <Route path="buildings" element={<BuildingList />} />
           <Route path="map" element={<Map />} />
           <Route path="statistics" element={<Statistics />} />
+          <Route path="system/users" element={<UserManagement />} />
+          <Route path="system/roles" element={<RoleManagement />} />
         </Route>
       </Routes>
     </Router>

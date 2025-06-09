@@ -1,6 +1,5 @@
 import { post } from '../utils/request';
 import { LoginRequest, LoginResponse, User } from '../types/user';
-import { ApiResponse } from '../types';
 
 // 用户登录
 export async function login(data: LoginRequest): Promise<LoginResponse> {

@@ -97,11 +97,11 @@ const Map: React.FC = () => {
       // 创建信息窗口
       const info = `
         <div style="padding: 10px;">
-          <h4>${asset.name}</h4>
-          <p>类型：${asset.type}</p>
-          <p>地址：${asset.address}</p>
-          <p>占地面积：${asset.land_area}m²</p>
-          <p>建筑面积：${asset.building_area}m²</p>
+          <h4>${asset.asset_name}</h4>
+          <p>地址：${asset.address || '未设置'}</p>
+          <p>土地性质：${asset.land_nature || '未知'}</p>
+          <p>总面积：${asset.total_area || 0}m²</p>
+          <p>可租面积：${asset.rentable_area || 0}m²</p>
         </div>
       `;
       
@@ -138,6 +138,7 @@ const Map: React.FC = () => {
         mapInstance.current = null;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -151,12 +152,12 @@ const Map: React.FC = () => {
           onChange={handleAssetSelect}
           showSearch
           filterOption={(input, option) =>
-            (option?.children as string).toLowerCase().indexOf(input.toLowerCase()) >= 0
+            (option?.label as string)?.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
         >
           {assets.map(asset => (
             <Option key={asset.id} value={asset.id}>
-              {asset.name}
+              {asset.asset_name}
             </Option>
           ))}
         </Select>

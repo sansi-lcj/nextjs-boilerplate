@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Row, Col, Statistic, Table, Progress, Spin } from 'antd';
 import { BankOutlined, BuildOutlined, HomeOutlined, AreaChartOutlined } from '@ant-design/icons';
-import { Pie, Bar, Line } from '@ant-design/charts';
+import { Pie, Line } from '@ant-design/charts';
 import { assetService } from '../services/asset';
 
 interface StatisticsData {
@@ -34,7 +34,12 @@ const Statistics: React.FC = () => {
   const fetchStatistics = async () => {
     try {
       const response = await assetService.getAssetStatistics();
-      setStatistics(response.data);
+      console.log('Statistics API response:', response);
+      console.log('Statistics data:', response.data);
+      
+      // 修复数据访问路径，类似资产列表的修复
+      const apiData = response.data?.data || response.data;
+      setStatistics(apiData);
     } catch (error) {
       console.error('Failed to fetch statistics:', error);
     } finally {
@@ -55,7 +60,7 @@ const Statistics: React.FC = () => {
   }
 
   // 准备资产类型分布数据
-  const assetTypeData = statistics.assets.reduce((acc: any[], item) => {
+  const assetTypeData = (statistics.assets || []).reduce((acc: any[], item) => {
     const existing = acc.find(a => a.type === item.type);
     if (existing) {
       existing.value += item.count;
@@ -69,7 +74,7 @@ const Statistics: React.FC = () => {
   }, []);
 
   // 准备房间类型分布数据
-  const roomTypeData = statistics.room_stats.map(item => ({
+  const roomTypeData = (statistics.room_stats || []).map(item => ({
     type: item.type,
     value: item.count,
   }));

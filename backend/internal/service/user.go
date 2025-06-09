@@ -3,8 +3,8 @@ package service
 import (
 	"errors"
 
-	"building-asset-management/internal/model"
-	"building-asset-management/pkg/database"
+	"building-asset-backend/internal/model"
+	"building-asset-backend/pkg/database"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -32,13 +32,13 @@ func (s *UserService) GetUsers(page, pageSize int, username, realName, status st
 		query = query.Where("username LIKE ?", "%"+username+"%")
 	}
 	if realName != "" {
-		query = query.Where("real_name LIKE ?", "%"+realName+"%")
+		query = query.Where("name LIKE ?", "%"+realName+"%")
 	}
 	if status != "" {
 		query = query.Where("status = ?", status)
 	}
 	if orgID > 0 {
-		query = query.Where("organization_id = ?", orgID)
+		query = query.Where("org_id = ?", orgID)
 	}
 
 	err := query.Count(&total).Error
@@ -205,13 +205,13 @@ func (s *UserService) ValidateCredentials(username, password string) (*model.Use
 
 func (s *UserService) GetAllOrganizations() ([]*model.Organization, error) {
 	var orgs []*model.Organization
-	err := s.db.Order("sort_order, id").Find(&orgs).Error
+	err := s.db.Order("sort, id").Find(&orgs).Error
 	return orgs, err
 }
 
 func (s *UserService) GetOrganizationTree() ([]*model.Organization, error) {
 	var orgs []*model.Organization
-	err := s.db.Where("parent_id = 0 OR parent_id IS NULL").Order("sort_order, id").Find(&orgs).Error
+	err := s.db.Where("parent_id = 0 OR parent_id IS NULL").Order("sort, id").Find(&orgs).Error
 	if err != nil {
 		return nil, err
 	}
@@ -225,13 +225,13 @@ func (s *UserService) GetOrganizationTree() ([]*model.Organization, error) {
 }
 
 func (s *UserService) buildOrgChildren(org *model.Organization) {
-	var children []*model.Organization
-	s.db.Where("parent_id = ?", org.ID).Order("sort_order, id").Find(&children)
+	var children []model.Organization
+	s.db.Where("parent_id = ?", org.ID).Order("sort, id").Find(&children)
 
 	if len(children) > 0 {
 		org.Children = children
-		for _, child := range children {
-			s.buildOrgChildren(child)
+		for i := range children {
+			s.buildOrgChildren(&children[i])
 		}
 	}
 }
@@ -246,8 +246,8 @@ func (s *UserService) CreateOrganization(org *model.Organization) (*model.Organi
 	// 检查名称是否重复
 	var count int64
 	query := s.db.Model(&model.Organization{}).Where("name = ?", org.Name)
-	if org.ParentID > 0 {
-		query = query.Where("parent_id = ?", org.ParentID)
+	if org.ParentID != nil && *org.ParentID > 0 {
+		query = query.Where("parent_id = ?", *org.ParentID)
 	}
 	query.Count(&count)
 
@@ -277,8 +277,8 @@ func (s *UserService) UpdateOrganization(id uint, updates *model.Organization) (
 	if updates.Name != "" && updates.Name != org.Name {
 		var count int64
 		query := s.db.Model(&model.Organization{}).Where("name = ? AND id != ?", updates.Name, id)
-		if org.ParentID > 0 {
-			query = query.Where("parent_id = ?", org.ParentID)
+		if org.ParentID != nil && *org.ParentID > 0 {
+			query = query.Where("parent_id = ?", *org.ParentID)
 		}
 		query.Count(&count)
 
@@ -288,7 +288,7 @@ func (s *UserService) UpdateOrganization(id uint, updates *model.Organization) (
 	}
 
 	// 防止组织成为自己的子组织
-	if updates.ParentID == id {
+	if updates.ParentID != nil && *updates.ParentID == id {
 		return nil, errors.New("组织不能成为自己的子组织")
 	}
 
@@ -308,7 +308,7 @@ func (s *UserService) DeleteOrganization(id uint) error {
 	}
 
 	// 检查是否有用户
-	s.db.Model(&model.User{}).Where("organization_id = ?", id).Count(&count)
+	s.db.Model(&model.User{}).Where("org_id = ?", id).Count(&count)
 	if count > 0 {
 		return errors.New("该组织下存在用户，无法删除")
 	}
@@ -324,12 +324,11 @@ func (s *UserService) InitializeDefaultData() error {
 	s.db.Model(&model.Organization{}).Count(&orgCount)
 	if orgCount == 0 {
 		defaultOrg := &model.Organization{
-			Name:        "总公司",
-			Code:        "HQ",
-			Type:        "company",
-			Status:      "active",
-			SortOrder:   1,
-			Description: "默认组织",
+			Name:   "总公司",
+			Code:   "HQ",
+			Type:   "company",
+			Status: "active",
+			Sort:   1,
 		}
 		if err := s.db.Create(defaultOrg).Error; err != nil {
 			return err
@@ -341,13 +340,13 @@ func (s *UserService) InitializeDefaultData() error {
 		if userCount == 0 {
 			hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
 			admin := &model.User{
-				Username:       "admin",
-				Password:       string(hashedPassword),
-				RealName:       "系统管理员",
-				Email:          "admin@example.com",
-				Phone:          "13800138000",
-				Status:         "active",
-				OrganizationID: defaultOrg.ID,
+				Username: "admin",
+				Password: string(hashedPassword),
+				Name:     "系统管理员",
+				Email:    "admin@example.com",
+				Phone:    "13800138000",
+				Status:   "active",
+				OrgID:    defaultOrg.ID,
 			}
 			if err := s.db.Create(admin).Error; err != nil {
 				return err
@@ -356,4 +355,27 @@ func (s *UserService) InitializeDefaultData() error {
 	}
 
 	return nil
+}
+
+func (s *UserService) buildOrgTree(orgs []*model.Organization) []*model.Organization {
+	orgMap := make(map[uint]*model.Organization)
+	roots := make([]*model.Organization, 0)
+
+	// 创建组织映射
+	for _, org := range orgs {
+		orgCopy := *org
+		orgCopy.Children = make([]model.Organization, 0)
+		orgMap[org.ID] = &orgCopy
+	}
+
+	// 构建树形结构
+	for _, org := range orgMap {
+		if org.ParentID == nil || *org.ParentID == 0 {
+			roots = append(roots, org)
+		} else if parent, exists := orgMap[*org.ParentID]; exists {
+			parent.Children = append(parent.Children, *org)
+		}
+	}
+
+	return roots
 }

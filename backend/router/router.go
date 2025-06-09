@@ -1,8 +1,8 @@
 package router
 
 import (
-	v1 "building-asset-management/api/v1"
-	"building-asset-management/middleware"
+	v1 "building-asset-backend/api/v1"
+	"building-asset-backend/internal/middleware"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"

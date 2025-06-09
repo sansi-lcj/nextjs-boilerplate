@@ -86,6 +86,17 @@ func Load(configPath string) error {
 	// 设置默认值
 	setDefaults()
 
+	// 启用环境变量
+	viper.AutomaticEnv()
+
+	// 绑定环境变量
+	viper.BindEnv("database.mysql.host", "DB_HOST")
+	viper.BindEnv("database.mysql.port", "DB_PORT")
+	viper.BindEnv("database.mysql.username", "DB_USER")
+	viper.BindEnv("database.mysql.password", "DB_PASSWORD")
+	viper.BindEnv("redis.host", "REDIS_HOST")
+	viper.BindEnv("redis.port", "REDIS_PORT")
+
 	// 读取配置文件
 	if err := viper.ReadInConfig(); err != nil {
 		return fmt.Errorf("failed to read config file: %w", err)

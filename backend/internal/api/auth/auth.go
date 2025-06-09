@@ -3,9 +3,9 @@ package auth
 import (
 	"time"
 
-	"github.com/building-asset/backend/internal/model"
-	"github.com/building-asset/backend/pkg/auth"
-	"github.com/building-asset/backend/pkg/response"
+	"building-asset-backend/internal/model"
+	"building-asset-backend/pkg/auth"
+	"building-asset-backend/pkg/response"
 	"github.com/gin-gonic/gin"
 )
 

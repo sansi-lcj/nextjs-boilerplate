@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"github.com/building-asset/backend/internal/config"
+	"building-asset-backend/internal/config"
 	"github.com/gin-gonic/gin"
 )
 

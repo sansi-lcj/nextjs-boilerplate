@@ -1,0 +1,201 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 代码规范规则
+
+## Go 后端代码规范
+
+### 项目结构规范
+```
+backend/
+├── api/v1/          # API 处理器层，按业务模块组织
+├── internal/        # 内部业务逻辑，不对外暴露
+│   ├── model/       # 数据模型定义
+│   ├── service/     # 业务逻辑层
+│   ├── middleware/  # 中间件
+│   └── config/      # 内部配置
+├── pkg/            # 可复用的公共包
+│   ├── auth/       # 认证相关
+│   ├── database/   # 数据库连接
+│   ├── logger/     # 日志工具
+│   ├── response/   # 统一响应格式
+│   └── cache/      # 缓存工具
+├── router/         # 路由定义
+├── config/         # 配置文件
+└── main.go         # 程序入口点
+```
+
+### 命名规范
+- **包名**: 小写，简短，避免下划线和驼峰
+- **文件名**: 小写，使用下划线分隔 (如 `user_service.go`)
+- **类型名**: 导出类型使用 PascalCase (如 `UserService`)
+- **函数名**: 导出函数用 PascalCase，私有函数用 camelCase
+- **常量**: 全大写，使用下划线分隔 (如 `MAX_RETRY_COUNT`)
+
+### 代码风格
+- 使用 `gofmt` 和 `goimports` 格式化代码
+- 为所有导出的类型、函数添加注释
+- 错误处理不能被忽略，使用 `if err != nil` 模式
+- 使用 `context.Context` 传递请求上下文
+
+### 示例结构
+参考 [backend/api/v1/](mdc:backend/api/v1) 目录下的 API 处理器实现。
+
+## React 前端代码规范
+
+### 项目结构规范
+```
+frontend/src/
+├── components/      # 可复用组件
+│   ├── common/      # 通用组件
+│   └── layout/      # 布局组件
+├── pages/          # 页面组件
+│   ├── auth/       # 认证相关页面
+│   ├── asset/      # 资产管理页面
+│   └── system/     # 系统管理页面
+├── services/       # API 服务层
+├── store/          # Redux 状态管理
+│   └── slices/     # Redux Toolkit slices
+├── types/          # TypeScript 类型定义
+├── utils/          # 工具函数
+└── hooks/          # 自定义 Hooks
+```
+
+### 组件规范
+- **全部使用 TypeScript** 编写新代码
+- **函数组件优于类组件**，使用 React Hooks
+- **组件文件命名**: PascalCase (如 `UserManagement.tsx`)
+- **组件导出**: 默认导出组件，命名导出类型
+
+### 类型定义规范
+- 接口命名使用 PascalCase，以 `I` 开头或不加前缀
+- 类型定义统一放在 [src/types/](mdc:frontend/src/types) 目录
+- 为 API 响应数据定义完整的类型
+
+### 示例组件结构
+```typescript
+// 参考 frontend/src/pages/system/UserManagement.tsx
+interface User {
+  id: number;
+  username: string;
+  name: string;
+  // ... 其他字段
+}
+
+const UserManagement: React.FC = () => {
+  // 状态定义
+  // 事件处理
+  // 渲染逻辑
+  return <div>...</div>;
+};
+
+export default UserManagement;
+```
+
+## API 设计规范
+
+### RESTful API 规范
+- **基础路径**: `/api/v1`
+- **HTTP 方法**: GET(查询), POST(创建), PUT(更新), DELETE(删除)
+- **状态码**: 200(成功), 400(参数错误), 401(未认证), 403(无权限), 404(不存在), 500(服务器错误)
+
+### 统一响应格式
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {},
+  "timestamp": 1704096000000
+}
+```
+
+参考 [docs/api/reference.md](mdc:docs/api/reference.md) 获取完整 API 设计文档。
+
+### URL 命名规范
+- 使用复数名词: `/assets`, `/users`, `/buildings`
+- 资源层级: `/assets/{id}/buildings`
+- 查询参数: `?page=1&size=20&name=test`
+
+## 数据库规范
+
+### 表命名规范
+- 使用小写字母和下划线
+- 表名使用复数: `assets`, `users`, `buildings`
+- 关联表命名: `user_roles`, `role_permissions`
+
+### 字段命名规范
+- 主键: `id`
+- 外键: `{table}_id` (如 `user_id`, `asset_id`)
+- 创建时间: `created_at`
+- 更新时间: `updated_at`
+- 状态字段: `status`
+
+参考 [docs/architecture/data-model.md](mdc:docs/architecture/data-model.md) 获取完整数据模型设计。
+
+## Git 提交规范
+
+### 提交消息格式
+遵循 [约定式提交](mdc:https:/www.conventionalcommits.org) 规范：
+
+```
+<类型>[可选 范围]: <描述>
+
+[可选 正文]
+
+[可选 脚注]
+```
+
+### 提交类型
+- `feat`: 新功能
+- `fix`: 错误修复
+- `docs`: 文档更新
+- `style`: 代码格式（不影响功能）
+- `refactor`: 重构（不修复错误或添加功能）
+- `test`: 测试相关
+- `chore`: 构建或辅助工具更改
+
+### 示例
+```
+feat(auth): 添加 JWT 刷新令牌支持
+
+实现刷新令牌功能以提高安全性和用户体验。
+- 添加刷新令牌端点
+- 更新前端 Token 管理逻辑
+- 添加相关测试用例
+
+Closes #123
+```
+
+## 错误处理规范
+
+### 后端错误处理
+- 使用统一的错误响应格式，参考 [pkg/response/](mdc:backend/pkg/response)
+- 记录详细错误日志，但向客户端返回安全的错误信息
+- 使用适当的 HTTP 状态码
+
+### 前端错误处理
+- 使用 try-catch 包装异步操作
+- 向用户显示友好的错误提示
+- 记录前端错误日志用于调试
+
+## 测试规范
+
+### 单元测试
+- **后端**: 使用 Go 标准测试包，文件命名 `*_test.go`
+- **前端**: 使用 Jest + React Testing Library
+
+### 接口测试
+- 为所有 API 端点编写测试
+- 覆盖正常流程和异常情况
+
+## 代码审查规范
+
+1. **功能完整性**: 确保代码实现预期功能
+2. **代码质量**: 遵循项目代码规范
+3. **安全性**: 检查潜在安全漏洞
+4. **性能**: 避免明显的性能问题
+5. **测试覆盖**: 关键功能需要有测试
+
+详细信息参考 [CONTRIBUTING.md](mdc:CONTRIBUTING.md)。

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Space, Card, Input, Select, message, Modal, Form, InputNumber, Popconfirm } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { Asset } from '../../types/asset';
 import { assetService } from '../../services/asset';
 
 const { Search } = Input;
-const { Option } = Select;
 
 const AssetList: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -15,9 +14,7 @@ const AssetList: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchParams, setSearchParams] = useState({
-    name: '',
-    type: '',
-    status: '',
+    asset_name: '',
   });
   const [modalVisible, setModalVisible] = useState(false);
   const [editingAsset, setEditingAsset] = useState<Asset | null>(null);
@@ -32,9 +29,18 @@ const AssetList: React.FC = () => {
         page_size: pageSize,
         ...searchParams,
       });
-      setAssets(response.data.list || []);
-      setTotal(response.data.total || 0);
+      console.log('API Response:', response);
+      console.log('Response structure:', JSON.stringify(response, null, 2));
+      console.log('Assets data:', response.data);
+      console.log('Assets list:', response.data?.data?.list);
+      console.log('Assets list length:', response.data?.data?.list?.length);
+      
+      // 修复数据访问路径：response.data.data.list
+      const apiData = response.data?.data || response.data;
+      setAssets(apiData.list || []);
+      setTotal(apiData.total || 0);
     } catch (error) {
+      console.error('Error fetching assets:', error);
       message.error('获取资产列表失败');
     } finally {
       setLoading(false);
@@ -43,11 +49,12 @@ const AssetList: React.FC = () => {
 
   useEffect(() => {
     fetchAssets();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize, searchParams]);
 
   // 处理搜索
   const handleSearch = (value: string) => {
-    setSearchParams({ ...searchParams, name: value });
+    setSearchParams({ ...searchParams, asset_name: value });
     setPage(1);
   };
 
@@ -97,28 +104,18 @@ const AssetList: React.FC = () => {
   const columns: ColumnsType<Asset> = [
     {
       title: '资产名称',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'asset_name',
+      key: 'asset_name',
     },
     {
       title: '资产编码',
-      dataIndex: 'code',
-      key: 'code',
+      dataIndex: 'asset_code',
+      key: 'asset_code',
     },
     {
-      title: '资产类型',
-      dataIndex: 'type',
-      key: 'type',
-      render: (type: string) => {
-        const typeMap: Record<string, string> = {
-          'industrial': '工业园区',
-          'commercial': '商业综合体',
-          'office': '办公楼',
-          'residential': '住宅小区',
-          'other': '其他',
-        };
-        return typeMap[type] || type;
-      },
+      title: '土地性质',
+      dataIndex: 'land_nature',
+      key: 'land_nature',
     },
     {
       title: '所在地址',
@@ -126,14 +123,14 @@ const AssetList: React.FC = () => {
       key: 'address',
     },
     {
-      title: '占地面积(m²)',
-      dataIndex: 'land_area',
-      key: 'land_area',
+      title: '总面积(m²)',
+      dataIndex: 'total_area',
+      key: 'total_area',
     },
     {
-      title: '建筑面积(m²)',
-      dataIndex: 'building_area',
-      key: 'building_area',
+      title: '可租面积(m²)',
+      dataIndex: 'rentable_area',
+      key: 'rentable_area',
     },
     {
       title: '状态',
@@ -185,28 +182,6 @@ const AssetList: React.FC = () => {
             onSearch={handleSearch}
             style={{ width: 200 }}
           />
-          <Select
-            placeholder="资产类型"
-            style={{ width: 150 }}
-            allowClear
-            onChange={(value) => setSearchParams({ ...searchParams, type: value || '' })}
-          >
-            <Option value="industrial">工业园区</Option>
-            <Option value="commercial">商业综合体</Option>
-            <Option value="office">办公楼</Option>
-            <Option value="residential">住宅小区</Option>
-            <Option value="other">其他</Option>
-          </Select>
-          <Select
-            placeholder="状态"
-            style={{ width: 120 }}
-            allowClear
-            onChange={(value) => setSearchParams({ ...searchParams, status: value || '' })}
-          >
-            <Option value="active">正常</Option>
-            <Option value="inactive">停用</Option>
-            <Option value="maintenance">维护中</Option>
-          </Select>
           <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
             新建资产
           </Button>
@@ -246,63 +221,49 @@ const AssetList: React.FC = () => {
           onFinish={handleSubmit}
         >
           <Form.Item
-            name="name"
+            name="asset_name"
             label="资产名称"
             rules={[{ required: true, message: '请输入资产名称' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name="code"
+            name="asset_code"
             label="资产编码"
             rules={[{ required: true, message: '请输入资产编码' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name="type"
-            label="资产类型"
-            rules={[{ required: true, message: '请选择资产类型' }]}
+            name="street_id"
+            label="街道ID"
+            rules={[{ required: true, message: '请输入街道ID' }]}
           >
-            <Select>
-              <Option value="industrial">工业园区</Option>
-              <Option value="commercial">商业综合体</Option>
-              <Option value="office">办公楼</Option>
-              <Option value="residential">住宅小区</Option>
-              <Option value="other">其他</Option>
-            </Select>
+            <InputNumber min={1} style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item
             name="address"
             label="所在地址"
-            rules={[{ required: true, message: '请输入所在地址' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name="land_area"
-            label="占地面积(m²)"
-            rules={[{ required: true, message: '请输入占地面积' }]}
+            name="land_nature"
+            label="土地性质"
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="total_area"
+            label="总面积(m²)"
           >
             <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item
-            name="building_area"
-            label="建筑面积(m²)"
-            rules={[{ required: true, message: '请输入建筑面积' }]}
+            name="rentable_area"
+            label="可租面积(m²)"
           >
             <InputNumber min={0} style={{ width: '100%' }} />
-          </Form.Item>
-          <Form.Item
-            name="status"
-            label="状态"
-            rules={[{ required: true, message: '请选择状态' }]}
-          >
-            <Select>
-              <Option value="active">正常</Option>
-              <Option value="inactive">停用</Option>
-              <Option value="maintenance">维护中</Option>
-            </Select>
           </Form.Item>
           <Form.Item>
             <Space>

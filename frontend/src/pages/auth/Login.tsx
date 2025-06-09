@@ -14,7 +14,7 @@ const Login: React.FC = () => {
   
   const onFinish = async (values: LoginRequest) => {
     try {
-      const result = await dispatch(login(values)).unwrap();
+      await dispatch(login(values)).unwrap();
       message.success('登录成功');
       navigate('/');
     } catch (error: any) {

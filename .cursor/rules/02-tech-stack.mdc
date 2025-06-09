@@ -1,0 +1,99 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 技术栈规则
+
+## 后端技术栈
+
+### 核心框架
+- **Go 1.23** - 主要编程语言，参考 [go.mod](mdc:backend/go.mod)
+- **Gin v1.9.1** - Web 框架，路由定义在 [router/](mdc:backend/router)
+- **GORM v1.25.5** - ORM 框架，模型定义在 [internal/model/](mdc:backend/internal/model)
+
+### 数据存储
+- **MySQL 8.0** - 主数据库，配置在 [docker-compose.dev.yml](mdc:docker-compose.dev.yml)
+- **Redis 5** - 缓存存储，用于会话和缓存管理
+- **SQLite** - 开发测试备选方案
+
+### 认证安全
+- **JWT** - 无状态认证，实现在 [pkg/auth/](mdc:backend/pkg/auth)
+- **Bcrypt** - 密码哈希，成本因子 10
+- **RBAC** - 基于角色的访问控制
+
+### 工具库
+- **Viper** - 配置管理，配置文件在 [config/](mdc:backend/config)
+- **Zap** - 结构化日志，日志配置在 [pkg/logger/](mdc:backend/pkg/logger)
+
+## 前端技术栈
+
+### 核心框架
+- **React 18** - 主要框架，使用函数组件和 Hooks
+- **TypeScript 4.9+** - 类型安全，类型定义在 [src/types/](mdc:frontend/src/types)
+- **Create React App** - 项目脚手架
+
+### UI 组件库
+- **Ant Design 5** - 企业级 UI 组件库
+- **Ant Design Charts** - 数据可视化组件
+- **Icons** - @ant-design/icons 图标库
+
+### 状态管理
+- **Redux Toolkit** - 状态管理，store 配置在 [src/store/](mdc:frontend/src/store)
+- **React-Redux** - React 绑定
+- **RTK Query** - 数据获取和缓存
+
+### 路由和网络
+- **React Router v6** - 客户端路由，路由配置在 [src/App.tsx](mdc:frontend/src/App.tsx)
+- **Axios** - HTTP 客户端，API 服务在 [src/services/](mdc:frontend/src/services)
+
+### 开发工具
+- **ESLint + Prettier** - 代码质量保证
+- **TypeScript** - 编译时类型检查
+
+## 地图服务
+- **天地图 API** - 国产地图服务，免费配额充足
+
+## 容器化部署
+
+### Docker 配置
+- **Backend Dockerfile** - [backend/Dockerfile](mdc:backend/Dockerfile)
+- **Frontend Dockerfile** - [frontend/Dockerfile](mdc:frontend/Dockerfile)
+- **开发环境编排** - [docker-compose.dev.yml](mdc:docker-compose.dev.yml)
+- **生产环境编排** - [docker-compose.yml](mdc:docker-compose.yml)
+
+### 服务架构
+```
+Frontend (React)  →  Backend (Go)  →  Database (MySQL)
+                  ↗                 ↘
+            天地图 API                Redis Cache
+```
+
+## 开发环境特色功能
+
+### 热重载开发
+- **前端**: Webpack Dev Server 自动刷新
+- **后端**: Docker volume 挂载 + `go run` 自动重启
+- **数据库**: 持久化 volume 保证数据不丢失
+
+### 调试支持
+- **前端**: React DevTools + Redux DevTools
+- **后端**: Go 调试支持，日志输出到 stdout
+- **网络**: 所有服务端口映射到 host
+
+## 版本要求
+- Node.js 16+ (前端开发)
+- Go 1.23+ (后端开发)
+- Docker 20.10+ & Docker Compose 2.x (容器化)
+- MySQL 8.0+ (生产数据库)
+- Redis 5+ (缓存服务)
+
+## 构建工具
+- **Make** - 任务自动化，参考 [Makefile](mdc:Makefile)
+- **Docker** - 容器化构建
+- **Webpack** - 前端构建 (CRA 内置)
+- **Go Build** - 后端编译
+
+## 包管理
+- **Go Modules** - Go 依赖管理，[go.mod](mdc:backend/go.mod)
+- **npm** - Node.js 依赖管理，[package.json](mdc:frontend/package.json)

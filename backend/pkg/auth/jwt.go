@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/building-asset/backend/internal/config"
+	"building-asset-backend/internal/config"
 	"github.com/golang-jwt/jwt/v5"
 )
 

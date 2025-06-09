@@ -5,9 +5,9 @@ import (
 	"strconv"
 	"time"
 
-	"building-asset-management/internal/model"
-	"building-asset-management/internal/service"
-	"building-asset-management/pkg/response"
+	"building-asset-backend/internal/model"
+	"building-asset-backend/internal/service"
+	"building-asset-backend/pkg/response"
 
 	"github.com/gin-gonic/gin"
 )
@@ -40,7 +40,7 @@ func (s *SystemAPI) GetUsers(c *gin.Context) {
 
 	users, total, err := s.userService.GetUsers(page, pageSize, username, realName, status, uint(orgID))
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "获取用户列表失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "获取用户列表失败")
 		return
 	}
 
@@ -55,13 +55,13 @@ func (s *SystemAPI) GetUsers(c *gin.Context) {
 func (s *SystemAPI) GetUser(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的用户ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的用户ID")
 		return
 	}
 
 	user, err := s.userService.GetUserByID(uint(id))
 	if err != nil {
-		response.Error(c, http.StatusNotFound, "用户不存在", err.Error())
+		response.Error(c, http.StatusNotFound, "用户不存在")
 		return
 	}
 
@@ -71,16 +71,13 @@ func (s *SystemAPI) GetUser(c *gin.Context) {
 func (s *SystemAPI) CreateUser(c *gin.Context) {
 	var req model.User
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Error(c, http.StatusBadRequest, "请求参数错误", err.Error())
+		response.Error(c, http.StatusBadRequest, "请求参数错误")
 		return
 	}
 
-	userID := c.GetUint("userID")
-	req.CreatedBy = userID
-
 	user, err := s.userService.CreateUser(&req)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "创建用户失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "创建用户失败")
 		return
 	}
 
@@ -90,22 +87,19 @@ func (s *SystemAPI) CreateUser(c *gin.Context) {
 func (s *SystemAPI) UpdateUser(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的用户ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的用户ID")
 		return
 	}
 
 	var req model.User
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Error(c, http.StatusBadRequest, "请求参数错误", err.Error())
+		response.Error(c, http.StatusBadRequest, "请求参数错误")
 		return
 	}
 
-	userID := c.GetUint("userID")
-	req.UpdatedBy = userID
-
 	user, err := s.userService.UpdateUser(uint(id), &req)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "更新用户失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "更新用户失败")
 		return
 	}
 
@@ -115,12 +109,12 @@ func (s *SystemAPI) UpdateUser(c *gin.Context) {
 func (s *SystemAPI) DeleteUser(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的用户ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的用户ID")
 		return
 	}
 
 	if err := s.userService.DeleteUser(uint(id)); err != nil {
-		response.Error(c, http.StatusInternalServerError, "删除用户失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "删除用户失败")
 		return
 	}
 
@@ -130,7 +124,7 @@ func (s *SystemAPI) DeleteUser(c *gin.Context) {
 func (s *SystemAPI) ResetPassword(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的用户ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的用户ID")
 		return
 	}
 
@@ -138,12 +132,12 @@ func (s *SystemAPI) ResetPassword(c *gin.Context) {
 		Password string `json:"password" binding:"required"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Error(c, http.StatusBadRequest, "请求参数错误", err.Error())
+		response.Error(c, http.StatusBadRequest, "请求参数错误")
 		return
 	}
 
 	if err := s.userService.ResetPassword(uint(id), req.Password); err != nil {
-		response.Error(c, http.StatusInternalServerError, "重置密码失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "重置密码失败")
 		return
 	}
 
@@ -160,7 +154,7 @@ func (s *SystemAPI) GetRoles(c *gin.Context) {
 
 	roles, total, err := s.roleService.GetRoles(page, pageSize, name, code)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "获取角色列表失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "获取角色列表失败")
 		return
 	}
 
@@ -175,13 +169,13 @@ func (s *SystemAPI) GetRoles(c *gin.Context) {
 func (s *SystemAPI) GetRole(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的角色ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的角色ID")
 		return
 	}
 
 	role, err := s.roleService.GetRoleByID(uint(id))
 	if err != nil {
-		response.Error(c, http.StatusNotFound, "角色不存在", err.Error())
+		response.Error(c, http.StatusNotFound, "角色不存在")
 		return
 	}
 
@@ -191,16 +185,13 @@ func (s *SystemAPI) GetRole(c *gin.Context) {
 func (s *SystemAPI) CreateRole(c *gin.Context) {
 	var req model.Role
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Error(c, http.StatusBadRequest, "请求参数错误", err.Error())
+		response.Error(c, http.StatusBadRequest, "请求参数错误")
 		return
 	}
 
-	userID := c.GetUint("userID")
-	req.CreatedBy = userID
-
 	role, err := s.roleService.CreateRole(&req)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "创建角色失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "创建角色失败")
 		return
 	}
 
@@ -210,22 +201,19 @@ func (s *SystemAPI) CreateRole(c *gin.Context) {
 func (s *SystemAPI) UpdateRole(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的角色ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的角色ID")
 		return
 	}
 
 	var req model.Role
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Error(c, http.StatusBadRequest, "请求参数错误", err.Error())
+		response.Error(c, http.StatusBadRequest, "请求参数错误")
 		return
 	}
 
-	userID := c.GetUint("userID")
-	req.UpdatedBy = userID
-
 	role, err := s.roleService.UpdateRole(uint(id), &req)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "更新角色失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "更新角色失败")
 		return
 	}
 
@@ -235,12 +223,12 @@ func (s *SystemAPI) UpdateRole(c *gin.Context) {
 func (s *SystemAPI) DeleteRole(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的角色ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的角色ID")
 		return
 	}
 
 	if err := s.roleService.DeleteRole(uint(id)); err != nil {
-		response.Error(c, http.StatusInternalServerError, "删除角色失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "删除角色失败")
 		return
 	}
 
@@ -250,7 +238,7 @@ func (s *SystemAPI) DeleteRole(c *gin.Context) {
 func (s *SystemAPI) UpdateRolePermissions(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的角色ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的角色ID")
 		return
 	}
 
@@ -258,12 +246,12 @@ func (s *SystemAPI) UpdateRolePermissions(c *gin.Context) {
 		PermissionIDs []uint `json:"permission_ids"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Error(c, http.StatusBadRequest, "请求参数错误", err.Error())
+		response.Error(c, http.StatusBadRequest, "请求参数错误")
 		return
 	}
 
 	if err := s.roleService.UpdateRolePermissions(uint(id), req.PermissionIDs); err != nil {
-		response.Error(c, http.StatusInternalServerError, "更新角色权限失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "更新角色权限失败")
 		return
 	}
 
@@ -275,7 +263,7 @@ func (s *SystemAPI) UpdateRolePermissions(c *gin.Context) {
 func (s *SystemAPI) GetPermissions(c *gin.Context) {
 	permissions, err := s.roleService.GetAllPermissions()
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "获取权限列表失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "获取权限列表失败")
 		return
 	}
 
@@ -285,7 +273,7 @@ func (s *SystemAPI) GetPermissions(c *gin.Context) {
 func (s *SystemAPI) GetPermissionTree(c *gin.Context) {
 	tree, err := s.roleService.GetPermissionTree()
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "获取权限树失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "获取权限树失败")
 		return
 	}
 
@@ -297,7 +285,7 @@ func (s *SystemAPI) GetPermissionTree(c *gin.Context) {
 func (s *SystemAPI) GetMenus(c *gin.Context) {
 	menus, err := s.menuService.GetAllMenus()
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "获取菜单列表失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "获取菜单列表失败")
 		return
 	}
 
@@ -307,7 +295,7 @@ func (s *SystemAPI) GetMenus(c *gin.Context) {
 func (s *SystemAPI) GetMenuTree(c *gin.Context) {
 	tree, err := s.menuService.GetMenuTree()
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "获取菜单树失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "获取菜单树失败")
 		return
 	}
 
@@ -319,7 +307,7 @@ func (s *SystemAPI) GetUserMenus(c *gin.Context) {
 
 	menus, err := s.menuService.GetUserMenus(userID)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "获取用户菜单失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "获取用户菜单失败")
 		return
 	}
 
@@ -331,7 +319,7 @@ func (s *SystemAPI) GetUserMenus(c *gin.Context) {
 func (s *SystemAPI) GetOrganizations(c *gin.Context) {
 	orgs, err := s.userService.GetAllOrganizations()
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "获取组织列表失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "获取组织列表失败")
 		return
 	}
 
@@ -341,7 +329,7 @@ func (s *SystemAPI) GetOrganizations(c *gin.Context) {
 func (s *SystemAPI) GetOrganizationTree(c *gin.Context) {
 	tree, err := s.userService.GetOrganizationTree()
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "获取组织树失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "获取组织树失败")
 		return
 	}
 
@@ -351,13 +339,13 @@ func (s *SystemAPI) GetOrganizationTree(c *gin.Context) {
 func (s *SystemAPI) GetOrganization(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的组织ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的组织ID")
 		return
 	}
 
 	org, err := s.userService.GetOrganizationByID(uint(id))
 	if err != nil {
-		response.Error(c, http.StatusNotFound, "组织不存在", err.Error())
+		response.Error(c, http.StatusNotFound, "组织不存在")
 		return
 	}
 
@@ -367,16 +355,13 @@ func (s *SystemAPI) GetOrganization(c *gin.Context) {
 func (s *SystemAPI) CreateOrganization(c *gin.Context) {
 	var req model.Organization
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Error(c, http.StatusBadRequest, "请求参数错误", err.Error())
+		response.Error(c, http.StatusBadRequest, "请求参数错误")
 		return
 	}
 
-	userID := c.GetUint("userID")
-	req.CreatedBy = userID
-
 	org, err := s.userService.CreateOrganization(&req)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "创建组织失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "创建组织失败")
 		return
 	}
 
@@ -386,22 +371,19 @@ func (s *SystemAPI) CreateOrganization(c *gin.Context) {
 func (s *SystemAPI) UpdateOrganization(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的组织ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的组织ID")
 		return
 	}
 
 	var req model.Organization
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Error(c, http.StatusBadRequest, "请求参数错误", err.Error())
+		response.Error(c, http.StatusBadRequest, "请求参数错误")
 		return
 	}
 
-	userID := c.GetUint("userID")
-	req.UpdatedBy = userID
-
 	org, err := s.userService.UpdateOrganization(uint(id), &req)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "更新组织失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "更新组织失败")
 		return
 	}
 
@@ -411,12 +393,12 @@ func (s *SystemAPI) UpdateOrganization(c *gin.Context) {
 func (s *SystemAPI) DeleteOrganization(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的组织ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的组织ID")
 		return
 	}
 
 	if err := s.userService.DeleteOrganization(uint(id)); err != nil {
-		response.Error(c, http.StatusInternalServerError, "删除组织失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "删除组织失败")
 		return
 	}
 
@@ -445,7 +427,7 @@ func (s *SystemAPI) GetOperationLogs(c *gin.Context) {
 
 	logs, total, err := s.logService.GetOperationLogs(page, pageSize, username, module, start, end)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "获取操作日志失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "获取操作日志失败")
 		return
 	}
 
@@ -476,7 +458,7 @@ func (s *SystemAPI) GetLoginLogs(c *gin.Context) {
 
 	logs, total, err := s.logService.GetLoginLogs(page, pageSize, username, start, end)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "获取登录日志失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "获取登录日志失败")
 		return
 	}
 

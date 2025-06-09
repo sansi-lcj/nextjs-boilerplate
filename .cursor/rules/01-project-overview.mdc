@@ -1,0 +1,76 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 项目概览规则
+
+## 项目简介
+这是一个全栈楼宇资产管理平台，采用 Go + React 技术栈，具有四级资产层次结构（资产 → 楼宇 → 楼层 → 房间）、地图可视化、数据分析和完整的系统管理功能。
+
+## 核心架构
+- **后端**: Go 1.18+ + Gin + GORM + MySQL/Redis
+- **前端**: React 18 + TypeScript + Ant Design 5 + Redux Toolkit
+- **部署**: Docker + Docker Compose
+
+## 项目结构
+```
+项目根目录/
+├── [backend/](mdc:backend) - Go 后端服务
+│   ├── [api/](mdc:backend/api) - API 处理器层
+│   ├── [internal/](mdc:backend/internal) - 内部业务逻辑
+│   ├── [pkg/](mdc:backend/pkg) - 共享包
+│   ├── [config/](mdc:backend/config) - 配置管理
+│   ├── [router/](mdc:backend/router) - 路由定义
+│   └── [main.go](mdc:backend/main.go) - 程序入口
+├── [frontend/](mdc:frontend) - React 前端应用
+│   ├── [src/](mdc:frontend/src) - 源代码
+│   │   ├── [components/](mdc:frontend/src/components) - 通用组件
+│   │   ├── [pages/](mdc:frontend/src/pages) - 页面组件
+│   │   ├── [services/](mdc:frontend/src/services) - API 服务
+│   │   ├── [store/](mdc:frontend/src/store) - Redux 状态管理
+│   │   └── [types/](mdc:frontend/src/types) - TypeScript 类型定义
+│   └── [package.json](mdc:frontend/package.json) - 依赖配置
+├── [docs/](mdc:docs) - 项目文档
+│   ├── [api/](mdc:docs/api) - API 文档
+│   ├── [architecture/](mdc:docs/architecture) - 架构设计文档
+│   ├── [requirements/](mdc:docs/requirements) - 需求文档
+│   └── [guides/](mdc:docs/guides) - 开发指南
+├── [docker-compose.yml](mdc:docker-compose.yml) - 生产环境部署
+├── [docker-compose.dev.yml](mdc:docker-compose.dev.yml) - 开发环境部署
+├── [Makefile](mdc:Makefile) - 构建自动化
+├── [README.md](mdc:README.md) - 项目说明
+└── [CONTRIBUTING.md](mdc:CONTRIBUTING.md) - 贡献指南
+
+## 核心业务模块
+1. **认证授权** - JWT + RBAC 权限体系
+2. **资产管理** - 四级资产层次结构管理
+3. **地图展示** - 基于天地图的资产可视化
+4. **数据统计** - 多维度数据分析和图表
+5. **系统管理** - 用户、角色、权限、组织管理
+
+## 关键配置文件
+- [backend/go.mod](mdc:backend/go.mod) - Go 模块依赖
+- [frontend/package.json](mdc:frontend/package.json) - Node.js 依赖
+- [docker-compose.dev.yml](mdc:docker-compose.dev.yml) - 开发环境配置
+
+## 开发环境启动
+```bash
+# 启动开发环境（热重载）
+docker-compose -f docker-compose.dev.yml up -d
+
+# 查看服务状态
+docker-compose -f docker-compose.dev.yml ps
+```
+
+## 默认登录凭据
+- 用户名: admin
+- 密码: admin123
+- 前端地址: http://localhost:3000
+- 后端地址: http://localhost:8080
+
+## 文档参考
+- [技术栈详情](mdc:docs/architecture/tech-stack.md)
+- [数据模型设计](mdc:docs/architecture/data-model.md)
+- [API 参考文档](mdc:docs/api/reference.md)
+- [系统架构概览](mdc:docs/architecture/overview.md)

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/building-asset/backend/internal/config"
-	"github.com/building-asset/backend/pkg/logger"
+	"building-asset-backend/internal/config"
+	"building-asset-backend/pkg/logger"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	gormlogger "gorm.io/gorm/logger"

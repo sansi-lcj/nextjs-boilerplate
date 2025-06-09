@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Asset, Building, AssetQueryParams, BuildingQueryParams } from '../../types/asset';
-import { PageData } from '../../types';
-import { assetApi, buildingApi } from '../../services/asset';
+import { assetService, buildingService } from '../../services/asset';
 
 interface AssetState {
   assets: Asset[];
@@ -29,39 +28,39 @@ const initialState: AssetState = {
 export const fetchAssets = createAsyncThunk(
   'asset/fetchAssets',
   async (params?: AssetQueryParams) => {
-    const response = await assetApi.getAssets(params);
-    return response;
+    const response = await assetService.getAssets(params);
+    return response.data;
   }
 );
 
 export const fetchAssetById = createAsyncThunk(
   'asset/fetchAssetById',
   async (id: number) => {
-    const response = await assetApi.getAssetById(id);
-    return response;
+    const response = await assetService.getAsset(id);
+    return response.data;
   }
 );
 
 export const createAsset = createAsyncThunk(
   'asset/createAsset',
   async (data: any) => {
-    const response = await assetApi.createAsset(data);
-    return response;
+    const response = await assetService.createAsset(data);
+    return response.data;
   }
 );
 
 export const updateAsset = createAsyncThunk(
   'asset/updateAsset',
   async ({ id, data }: { id: number; data: any }) => {
-    const response = await assetApi.updateAsset(id, data);
-    return response;
+    const response = await assetService.updateAsset(id, data);
+    return response.data;
   }
 );
 
 export const deleteAsset = createAsyncThunk(
   'asset/deleteAsset',
   async (id: number) => {
-    await assetApi.deleteAsset(id);
+    await assetService.deleteAsset(id);
     return id;
   }
 );
@@ -69,16 +68,16 @@ export const deleteAsset = createAsyncThunk(
 export const fetchBuildings = createAsyncThunk(
   'asset/fetchBuildings',
   async (params?: BuildingQueryParams) => {
-    const response = await buildingApi.getBuildings(params);
-    return response;
+    const response = await buildingService.getBuildings(params);
+    return response.data;
   }
 );
 
 export const fetchBuildingById = createAsyncThunk(
   'asset/fetchBuildingById',
   async (id: number) => {
-    const response = await buildingApi.getBuildingById(id);
-    return response;
+    const response = await buildingService.getBuilding(id);
+    return response.data;
   }
 );
 
@@ -105,8 +104,8 @@ const assetSlice = createSlice({
       })
       .addCase(fetchAssets.fulfilled, (state, action) => {
         state.loading = false;
-        state.assets = action.payload.items;
-        state.totalAssets = action.payload.total;
+        state.assets = Array.isArray(action.payload) ? action.payload : action.payload.items || [];
+        state.totalAssets = Array.isArray(action.payload) ? action.payload.length : action.payload.total || 0;
       })
       .addCase(fetchAssets.rejected, (state, action) => {
         state.loading = false;
@@ -192,8 +191,8 @@ const assetSlice = createSlice({
       })
       .addCase(fetchBuildings.fulfilled, (state, action) => {
         state.loading = false;
-        state.buildings = action.payload.items;
-        state.totalBuildings = action.payload.total;
+        state.buildings = Array.isArray(action.payload) ? action.payload : action.payload.items || [];
+        state.totalBuildings = Array.isArray(action.payload) ? action.payload.length : action.payload.total || 0;
       })
       .addCase(fetchBuildings.rejected, (state, action) => {
         state.loading = false;

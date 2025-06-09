@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"building-asset-management/internal/model"
-	"building-asset-management/internal/service"
-	"building-asset-management/pkg/response"
+	"building-asset-backend/internal/model"
+	"building-asset-backend/internal/service"
+	"building-asset-backend/pkg/response"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,7 +33,7 @@ func (a *AssetAPI) GetAssets(c *gin.Context) {
 
 	assets, total, err := a.assetService.GetAssets(page, pageSize, name, assetType, status)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "获取资产列表失败", err.Error())
+		response.ErrorWithData(c, http.StatusInternalServerError, "获取资产列表失败", err.Error())
 		return
 	}
 
@@ -49,13 +49,13 @@ func (a *AssetAPI) GetAssets(c *gin.Context) {
 func (a *AssetAPI) GetAsset(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的资产ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的资产ID")
 		return
 	}
 
 	asset, err := a.assetService.GetAssetByID(uint(id))
 	if err != nil {
-		response.Error(c, http.StatusNotFound, "资产不存在", err.Error())
+		response.Error(c, http.StatusNotFound, "资产不存在")
 		return
 	}
 
@@ -66,16 +66,14 @@ func (a *AssetAPI) GetAsset(c *gin.Context) {
 func (a *AssetAPI) CreateAsset(c *gin.Context) {
 	var req model.Asset
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Error(c, http.StatusBadRequest, "请求参数错误", err.Error())
+		response.Error(c, http.StatusBadRequest, "请求参数错误")
 		return
 	}
 
-	userID := c.GetUint("userID")
-	req.CreatedBy = userID
 
 	asset, err := a.assetService.CreateAsset(&req)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "创建资产失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "创建资产失败")
 		return
 	}
 
@@ -86,22 +84,20 @@ func (a *AssetAPI) CreateAsset(c *gin.Context) {
 func (a *AssetAPI) UpdateAsset(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的资产ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的资产ID")
 		return
 	}
 
 	var req model.Asset
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Error(c, http.StatusBadRequest, "请求参数错误", err.Error())
+		response.Error(c, http.StatusBadRequest, "请求参数错误")
 		return
 	}
 
-	userID := c.GetUint("userID")
-	req.UpdatedBy = userID
 
 	asset, err := a.assetService.UpdateAsset(uint(id), &req)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "更新资产失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "更新资产失败")
 		return
 	}
 
@@ -112,12 +108,12 @@ func (a *AssetAPI) UpdateAsset(c *gin.Context) {
 func (a *AssetAPI) DeleteAsset(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的资产ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的资产ID")
 		return
 	}
 
 	if err := a.assetService.DeleteAsset(uint(id)); err != nil {
-		response.Error(c, http.StatusInternalServerError, "删除资产失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "删除资产失败")
 		return
 	}
 
@@ -135,7 +131,7 @@ func (a *AssetAPI) GetBuildings(c *gin.Context) {
 
 	buildings, total, err := a.assetService.GetBuildings(page, pageSize, uint(assetID), name)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "获取建筑列表失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "获取建筑列表失败")
 		return
 	}
 
@@ -151,13 +147,13 @@ func (a *AssetAPI) GetBuildings(c *gin.Context) {
 func (a *AssetAPI) GetBuilding(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的建筑ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的建筑ID")
 		return
 	}
 
 	building, err := a.assetService.GetBuildingByID(uint(id))
 	if err != nil {
-		response.Error(c, http.StatusNotFound, "建筑不存在", err.Error())
+		response.Error(c, http.StatusNotFound, "建筑不存在")
 		return
 	}
 
@@ -168,16 +164,14 @@ func (a *AssetAPI) GetBuilding(c *gin.Context) {
 func (a *AssetAPI) CreateBuilding(c *gin.Context) {
 	var req model.Building
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Error(c, http.StatusBadRequest, "请求参数错误", err.Error())
+		response.Error(c, http.StatusBadRequest, "请求参数错误")
 		return
 	}
 
-	userID := c.GetUint("userID")
-	req.CreatedBy = userID
 
 	building, err := a.assetService.CreateBuilding(&req)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "创建建筑失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "创建建筑失败")
 		return
 	}
 
@@ -188,22 +182,20 @@ func (a *AssetAPI) CreateBuilding(c *gin.Context) {
 func (a *AssetAPI) UpdateBuilding(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的建筑ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的建筑ID")
 		return
 	}
 
 	var req model.Building
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Error(c, http.StatusBadRequest, "请求参数错误", err.Error())
+		response.Error(c, http.StatusBadRequest, "请求参数错误")
 		return
 	}
 
-	userID := c.GetUint("userID")
-	req.UpdatedBy = userID
 
 	building, err := a.assetService.UpdateBuilding(uint(id), &req)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "更新建筑失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "更新建筑失败")
 		return
 	}
 
@@ -214,12 +206,12 @@ func (a *AssetAPI) UpdateBuilding(c *gin.Context) {
 func (a *AssetAPI) DeleteBuilding(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的建筑ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的建筑ID")
 		return
 	}
 
 	if err := a.assetService.DeleteBuilding(uint(id)); err != nil {
-		response.Error(c, http.StatusInternalServerError, "删除建筑失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "删除建筑失败")
 		return
 	}
 
@@ -234,7 +226,7 @@ func (a *AssetAPI) GetFloors(c *gin.Context) {
 
 	floors, err := a.assetService.GetFloorsByBuildingID(uint(buildingID))
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "获取楼层列表失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "获取楼层列表失败")
 		return
 	}
 
@@ -245,16 +237,14 @@ func (a *AssetAPI) GetFloors(c *gin.Context) {
 func (a *AssetAPI) CreateFloor(c *gin.Context) {
 	var req model.Floor
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Error(c, http.StatusBadRequest, "请求参数错误", err.Error())
+		response.Error(c, http.StatusBadRequest, "请求参数错误")
 		return
 	}
 
-	userID := c.GetUint("userID")
-	req.CreatedBy = userID
 
 	floor, err := a.assetService.CreateFloor(&req)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "创建楼层失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "创建楼层失败")
 		return
 	}
 
@@ -265,22 +255,20 @@ func (a *AssetAPI) CreateFloor(c *gin.Context) {
 func (a *AssetAPI) UpdateFloor(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的楼层ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的楼层ID")
 		return
 	}
 
 	var req model.Floor
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Error(c, http.StatusBadRequest, "请求参数错误", err.Error())
+		response.Error(c, http.StatusBadRequest, "请求参数错误")
 		return
 	}
 
-	userID := c.GetUint("userID")
-	req.UpdatedBy = userID
 
 	floor, err := a.assetService.UpdateFloor(uint(id), &req)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "更新楼层失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "更新楼层失败")
 		return
 	}
 
@@ -291,12 +279,12 @@ func (a *AssetAPI) UpdateFloor(c *gin.Context) {
 func (a *AssetAPI) DeleteFloor(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的楼层ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的楼层ID")
 		return
 	}
 
 	if err := a.assetService.DeleteFloor(uint(id)); err != nil {
-		response.Error(c, http.StatusInternalServerError, "删除楼层失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "删除楼层失败")
 		return
 	}
 
@@ -311,7 +299,7 @@ func (a *AssetAPI) GetRooms(c *gin.Context) {
 
 	rooms, err := a.assetService.GetRoomsByFloorID(uint(floorID))
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "获取房间列表失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "获取房间列表失败")
 		return
 	}
 
@@ -322,16 +310,14 @@ func (a *AssetAPI) GetRooms(c *gin.Context) {
 func (a *AssetAPI) CreateRoom(c *gin.Context) {
 	var req model.Room
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Error(c, http.StatusBadRequest, "请求参数错误", err.Error())
+		response.Error(c, http.StatusBadRequest, "请求参数错误")
 		return
 	}
 
-	userID := c.GetUint("userID")
-	req.CreatedBy = userID
 
 	room, err := a.assetService.CreateRoom(&req)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "创建房间失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "创建房间失败")
 		return
 	}
 
@@ -342,22 +328,20 @@ func (a *AssetAPI) CreateRoom(c *gin.Context) {
 func (a *AssetAPI) UpdateRoom(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的房间ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的房间ID")
 		return
 	}
 
 	var req model.Room
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Error(c, http.StatusBadRequest, "请求参数错误", err.Error())
+		response.Error(c, http.StatusBadRequest, "请求参数错误")
 		return
 	}
 
-	userID := c.GetUint("userID")
-	req.UpdatedBy = userID
 
 	room, err := a.assetService.UpdateRoom(uint(id), &req)
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "更新房间失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "更新房间失败")
 		return
 	}
 
@@ -368,12 +352,12 @@ func (a *AssetAPI) UpdateRoom(c *gin.Context) {
 func (a *AssetAPI) DeleteRoom(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "无效的房间ID", err.Error())
+		response.Error(c, http.StatusBadRequest, "无效的房间ID")
 		return
 	}
 
 	if err := a.assetService.DeleteRoom(uint(id)); err != nil {
-		response.Error(c, http.StatusInternalServerError, "删除房间失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "删除房间失败")
 		return
 	}
 
@@ -384,7 +368,7 @@ func (a *AssetAPI) DeleteRoom(c *gin.Context) {
 func (a *AssetAPI) GetAssetStatistics(c *gin.Context) {
 	stats, err := a.assetService.GetAssetStatistics()
 	if err != nil {
-		response.Error(c, http.StatusInternalServerError, "获取统计数据失败", err.Error())
+		response.Error(c, http.StatusInternalServerError, "获取统计数据失败")
 		return
 	}
 
