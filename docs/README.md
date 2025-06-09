@@ -1,4 +1,41 @@
-# 楼宇资产管理平台需求文档
+# 楼宇资产管理平台文档
+
+## 文档目录
+
+### 需求文档
+- [项目概述](./requirements-overview.md)
+- [功能需求](./functional-requirements.md)
+- [技术需求](./technical-requirements.md)
+
+### 设计文档
+- [数据模型设计](./data-model-design.md)
+- [技术架构设计](./technical-architecture.md)
+- [API接口设计](./api-design.md)
+
+### 项目管理
+- [项目实施计划](./project-management.md)
+
+## 快速导航
+
+### 核心功能模块
+1. **资产管理** - 四级资产管理体系（资产-楼宇-楼层-房间）
+2. **地图展示** - 基于天地图的资产可视化展示
+3. **数据统计** - 多维度数据分析与报表
+4. **系统管理** - 用户、角色、权限、日志管理
+
+### 技术栈
+- 前端：React + Ant Design + TypeScript
+- 后端：Golang + Gin + GORM
+- 数据库：MySQL + Redis
+- 地图：天地图政务版
+
+## 文档更新说明
+
+最后更新：2024年1月
+- 聚焦楼宇资产管理核心功能
+- 移除企业管理、租赁管理等扩展模块
+- 明确技术栈选型
+- 简化项目周期为13周
 
 ## 文档概述
 
@@ -7,44 +44,26 @@
 ## 文档结构
 
 ### 1. [需求概述](requirements-overview.md)
-项目背景、目标、系统架构概览、主要功能模块介绍。
+项目背景、建设目标、建设范围等总体概述。
 
-### 2. [功能需求详细说明](functional-requirements.md)
-详细描述资产管理平台各功能模块的具体需求，包括：
-- 楼宇资产管理
-- 资产地图展示
-- 楼宇载体数据
-- 系统管理功能
+### 2. [功能需求](functional-requirements.md)
+详细的功能需求说明，包括各个模块的具体功能要求。
 
 ### 3. [技术要求](technical-requirements.md)
-涵盖系统的技术架构、性能要求、安全要求、可靠性要求等非功能性需求。
+系统技术架构、性能、安全等非功能性需求。
 
 ### 4. [数据模型设计](data-model-design.md)
-资产管理相关的核心数据模型设计，包括主要实体、属性和关系。
+数据库设计方案，包括实体关系图和表结构设计。
 
 ### 5. [项目实施计划](project-implementation.md)
 项目实施计划、开发计划、测试计划等。
 
-## 快速导航
-
-### 按角色查看
-- **项目管理者**：请查看[需求概述](requirements-overview.md)和[项目实施计划](project-implementation.md)
-- **技术架构师**：请查看[技术要求](technical-requirements.md)和[数据模型设计](data-model-design.md)
-- **开发人员**：请查看[功能需求](functional-requirements.md)和[数据模型设计](data-model-design.md)
-- **测试人员**：请查看[功能需求](functional-requirements.md)和[技术要求](technical-requirements.md)
-
-### 按功能模块查看
-- **资产管理功能**：[功能需求 - 第1节](functional-requirements.md#1-楼宇资产管理)
-- **地图展示功能**：[功能需求 - 第2节](functional-requirements.md#2-资产地图)
-- **数据统计功能**：[功能需求 - 第3节](functional-requirements.md#3-楼宇载体数据)
-- **系统管理功能**：[功能需求 - 第4节](functional-requirements.md#4-系统管理)
-
 ## 项目关键信息
 
 - **项目范围**：楼宇资产管理平台（PC端）
-- **核心功能**：资产管理、地图展示、数据统计、系统管理
-- **技术架构**：前后端分离、B/S架构
-- **地图引擎**：天地图政务版
+- **开发周期**：13周
+- **主要用户**：区/街道资产管理人员
+- **数据规模**：支持全区楼宇资产管理（预计万级数据量）
 
 ## 更新记录
 
