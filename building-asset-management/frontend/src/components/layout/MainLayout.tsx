@@ -1,20 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, Menu, Avatar, Dropdown, Space, message } from 'antd';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
+  DashboardOutlined,
+  BankOutlined,
+  EnvironmentOutlined,
+  BarChartOutlined,
   UserOutlined,
   LogoutOutlined,
   BuildOutlined,
-  EnvironmentOutlined,
-  BarChartOutlined,
-  SettingOutlined,
-  DashboardOutlined,
 } from '@ant-design/icons';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { logout } from '../../store/slices/authSlice';
-import './MainLayout.css';
 
 const { Header, Sider, Content } = Layout;
 
@@ -23,34 +20,46 @@ const MainLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state) => state.auth);
+  const user = useAppSelector((state) => state.auth.user);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/login');
+    message.success('退出成功');
+  };
+
+  const userMenu = (
+    <Menu>
+      <Menu.Item key="profile" icon={<UserOutlined />}>
+        个人信息
+      </Menu.Item>
+      <Menu.Divider />
+      <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={handleLogout}>
+        退出登录
+      </Menu.Item>
+    </Menu>
+  );
 
   const menuItems = [
     {
       key: '/dashboard',
       icon: <DashboardOutlined />,
-      label: '仪表盘',
+      label: '首页',
     },
     {
       key: '/asset',
-      icon: <BuildOutlined />,
+      icon: <BankOutlined />,
       label: '资产管理',
       children: [
         {
-          key: '/asset/list',
+          key: '/assets',
+          icon: <BankOutlined />,
           label: '资产列表',
         },
         {
-          key: '/asset/building',
-          label: '楼宇管理',
-        },
-        {
-          key: '/asset/floor',
-          label: '楼层管理',
-        },
-        {
-          key: '/asset/room',
-          label: '房间管理',
+          key: '/buildings',
+          icon: <BuildOutlined />,
+          label: '建筑列表',
         },
       ],
     },
@@ -63,111 +72,32 @@ const MainLayout: React.FC = () => {
       key: '/statistics',
       icon: <BarChartOutlined />,
       label: '数据统计',
-      children: [
-        {
-          key: '/statistics/overview',
-          label: '综合统计',
-        },
-        {
-          key: '/statistics/analysis',
-          label: '数据分析',
-        },
-      ],
-    },
-    {
-      key: '/system',
-      icon: <SettingOutlined />,
-      label: '系统管理',
-      children: [
-        {
-          key: '/system/user',
-          label: '用户管理',
-        },
-        {
-          key: '/system/role',
-          label: '角色管理',
-        },
-        {
-          key: '/system/menu',
-          label: '菜单管理',
-        },
-        {
-          key: '/system/log',
-          label: '日志管理',
-        },
-      ],
     },
   ];
 
-  const handleMenuClick = ({ key }: { key: string }) => {
-    navigate(key);
-  };
-
-  const handleLogout = async () => {
-    try {
-      await dispatch(logout()).unwrap();
-      message.success('退出成功');
-      navigate('/login');
-    } catch (error) {
-      message.error('退出失败');
-    }
-  };
-
-  const userMenu = (
-    <Menu
-      items={[
-        {
-          key: 'profile',
-          icon: <UserOutlined />,
-          label: '个人中心',
-          onClick: () => navigate('/profile'),
-        },
-        {
-          type: 'divider',
-        },
-        {
-          key: 'logout',
-          icon: <LogoutOutlined />,
-          label: '退出登录',
-          onClick: handleLogout,
-        },
-      ]}
-    />
-  );
-
   return (
-    <Layout className="main-layout">
-      <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="logo">
-          <BuildOutlined />
-          {!collapsed && <span>楼宇资产管理</span>}
-        </div>
+    <Layout style={{ minHeight: '100vh' }}>
+      <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
+        <div style={{ height: 32, margin: 16, background: 'rgba(255, 255, 255, 0.2)' }} />
         <Menu
           theme="dark"
           mode="inline"
           selectedKeys={[location.pathname]}
           items={menuItems}
-          onClick={handleMenuClick}
+          onClick={({ key }) => navigate(key)}
         />
       </Sider>
       <Layout>
-        <Header className="site-header">
-          <div className="header-left">
-            {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-              className: 'trigger',
-              onClick: () => setCollapsed(!collapsed),
-            })}
-          </div>
-          <div className="header-right">
-            <Dropdown overlay={userMenu} placement="bottomRight">
-              <Space className="user-info" style={{ cursor: 'pointer' }}>
-                <Avatar icon={<UserOutlined />} />
-                <span>{user?.name || '用户'}</span>
-              </Space>
-            </Dropdown>
-          </div>
+        <Header style={{ padding: '0 16px', background: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h2>建筑资产管理平台</h2>
+          <Dropdown overlay={userMenu} placement="bottomRight">
+            <Space style={{ cursor: 'pointer' }}>
+              <Avatar size="small" icon={<UserOutlined />} />
+              <span>{user?.real_name || user?.username || '用户'}</span>
+            </Space>
+          </Dropdown>
         </Header>
-        <Content className="site-content">
+        <Content style={{ margin: '16px' }}>
           <Outlet />
         </Content>
       </Layout>
