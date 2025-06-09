@@ -1,8 +1,8 @@
-# 楼宇管理平台数据模型设计
+# 楼宇资产管理平台数据模型设计
 
 ## 数据模型概述
 
-本文档描述楼宇管理平台的核心数据模型设计，包括主要实体、属性和关系。
+本文档描述楼宇资产管理平台的核心数据模型设计，包括资产管理、系统管理相关的实体、属性和关系。
 
 ## 核心实体模型
 
@@ -25,9 +25,11 @@ Asset {
     asset_images: text -- 资产图片（JSON）
     description: text -- 资产描述
     use_date: date -- 使用日期
-    status: varchar(20) -- 状态
-    created_at: datetime
-    updated_at: datetime
+    status: varchar(20) -- 状态（正常/停用）
+    created_by: bigint -- 创建人
+    created_at: datetime -- 创建时间
+    updated_by: bigint -- 更新人
+    updated_at: datetime -- 更新时间
 }
 ```
 
@@ -45,13 +47,15 @@ Building {
     total_area: decimal(10,2) -- 建筑面积
     rentable_area: decimal(10,2) -- 可出租面积
     building_height: decimal(6,2) -- 建筑高度
-    rental_index: varchar(100) -- 租赁指标
+    floor_count: int -- 楼层数量
     building_tags: varchar(500) -- 楼宇标签
     building_images: text -- 楼宇图片
     description: text -- 楼宇描述
-    use_date: date -- 使用日期
-    status: varchar(20)
+    build_date: date -- 建成日期
+    status: varchar(20) -- 状态（正常/停用/装修）
+    created_by: bigint
     created_at: datetime
+    updated_by: bigint
     updated_at: datetime
 }
 ```
@@ -69,8 +73,10 @@ Floor {
     floor_type: varchar(50) -- 楼层类型
     floor_plan: varchar(500) -- 平面图URL
     remark: text -- 备注
-    status: varchar(20)
+    status: varchar(20) -- 状态（正常/装修/停用）
+    created_by: bigint
     created_at: datetime
+    updated_by: bigint
     updated_at: datetime
 }
 ```
@@ -84,206 +90,71 @@ Room {
     room_number: varchar(20) -- 房间号
     area: decimal(10,2) -- 面积
     room_type: varchar(50) -- 房间类型
-    room_status: varchar(20) -- 状态（空置/已租/装修等）
+    room_status: varchar(20) -- 状态（空置/已租/装修/自用）
     position: varchar(100) -- 区域位置
     asset_ownership: varchar(50) -- 资产权属
+    remark: text -- 备注
+    created_by: bigint
     created_at: datetime
+    updated_by: bigint
     updated_at: datetime
 }
 ```
 
-### 2. 企业管理相关
+### 2. 系统管理相关
 
-#### 2.1 企业信息（Enterprise）
+#### 2.1 组织机构（Organization）
 ```sql
-Enterprise {
+Organization {
     id: bigint (PK)
-    enterprise_code: varchar(50) -- 企业编号
-    enterprise_name: varchar(200) -- 企业名称
-    unified_social_credit_code: varchar(50) -- 统一社会信用代码
-    legal_person: varchar(50) -- 法人代表
-    registered_capital: decimal(15,2) -- 注册资本
-    establishment_date: date -- 成立日期
-    enterprise_type: varchar(50) -- 企业类型
-    industry_id: bigint (FK) -- 所属行业
-    business_scope: text -- 经营范围
-    registered_address: varchar(500) -- 注册地址
+    parent_id: bigint -- 上级机构
+    org_code: varchar(50) -- 机构编号（GS+信用代码后六位）
+    org_name: varchar(100) -- 机构名称
+    org_type: varchar(20) -- 机构类型
     contact_person: varchar(50) -- 联系人
     contact_phone: varchar(20) -- 联系电话
-    employee_count: int -- 员工数量
-    is_blacklist: boolean -- 是否黑名单
-    tags: text -- 标签（JSON）
-    status: varchar(20)
-    created_at: datetime
-    updated_at: datetime
-}
-```
-
-#### 2.2 企业画像（EnterpriseProfile）
-```sql
-EnterpriseProfile {
-    id: bigint (PK)
-    enterprise_id: bigint (FK) -- 企业ID
-    revenue_scale: decimal(15,2) -- 营收规模
-    tax_contribution: decimal(15,2) -- 税收贡献
-    growth_rate: decimal(5,2) -- 增长率
-    innovation_level: varchar(20) -- 创新能力等级
-    credit_rating: varchar(20) -- 信用评级
-    risk_level: varchar(20) -- 风险等级
-    development_potential: varchar(20) -- 发展潜力
-    social_responsibility: varchar(20) -- 社会责任
-    last_update_date: date
-    created_at: datetime
-    updated_at: datetime
-}
-```
-
-#### 2.3 企业分类（EnterpriseCategory）
-```sql
-EnterpriseCategory {
-    id: bigint (PK)
-    parent_id: bigint -- 上级分类
-    category_name: varchar(100) -- 分类名称
-    category_code: varchar(50) -- 分类编码
-    category_type: varchar(50) -- 分类类型
-    sort_order: int -- 排序
-    status: varchar(20)
-    created_at: datetime
-    updated_at: datetime
-}
-```
-
-### 3. 租赁管理相关
-
-#### 3.1 租赁合同（LeaseContract）
-```sql
-LeaseContract {
-    id: bigint (PK)
-    contract_no: varchar(50) -- 合同编号
-    enterprise_id: bigint (FK) -- 企业ID
-    building_id: bigint (FK) -- 楼宇ID
-    room_ids: text -- 房间ID列表（JSON）
-    lease_area: decimal(10,2) -- 租赁面积
-    lease_price: decimal(10,2) -- 租赁单价
-    total_amount: decimal(15,2) -- 租金总额
-    payment_method: varchar(50) -- 收费方式
-    payment_cycle: varchar(50) -- 收款周期
-    lease_start_date: date -- 租赁开始日期
-    lease_end_date: date -- 租赁结束日期
-    contract_file: varchar(500) -- 合同文件
-    recruit_year: int -- 招引年份
-    status: varchar(20) -- 状态（生效/到期/终止）
-    created_at: datetime
-    updated_at: datetime
-}
-```
-
-#### 3.2 租金账单（RentBill）
-```sql
-RentBill {
-    id: bigint (PK)
-    bill_no: varchar(50) -- 账单编号
-    contract_id: bigint (FK) -- 合同ID
-    enterprise_id: bigint (FK) -- 企业ID
-    bill_period: varchar(20) -- 账期
-    bill_amount: decimal(15,2) -- 应收金额
-    paid_amount: decimal(15,2) -- 实收金额
-    bill_date: date -- 账单日期
-    due_date: date -- 到期日期
-    payment_date: date -- 付款日期
-    payment_status: varchar(20) -- 支付状态
-    remark: text
-    created_at: datetime
-    updated_at: datetime
-}
-```
-
-### 4. 能耗管理相关
-
-#### 4.1 能耗设备（EnergyDevice）
-```sql
-EnergyDevice {
-    id: bigint (PK)
-    device_code: varchar(50) -- 设备编号
-    device_name: varchar(100) -- 设备名称
-    device_type: varchar(20) -- 设备类型（水表/电表/燃气表）
-    asset_id: bigint (FK) -- 所属资产
-    building_id: bigint (FK) -- 所属楼宇
-    account_no: varchar(50) -- 账户编号
-    owner: varchar(100) -- 表具所属主体
+    address: varchar(200) -- 机构地址
+    sort_order: int -- 排序号
     status: varchar(20) -- 状态
     created_at: datetime
     updated_at: datetime
 }
 ```
 
-#### 4.2 能耗数据（EnergyData）
-```sql
-EnergyData {
-    id: bigint (PK)
-    device_id: bigint (FK) -- 设备ID
-    period: varchar(20) -- 所属月份
-    last_reading_date: datetime -- 上次抄表时间
-    last_reading: decimal(10,2) -- 上次读数
-    current_reading_date: datetime -- 本次抄表时间
-    current_reading: decimal(10,2) -- 本次读数
-    usage: decimal(10,2) -- 用量
-    reader: varchar(50) -- 抄表人
-    created_at: datetime
-    updated_at: datetime
-}
-```
-
-### 5. 系统管理相关
-
-#### 5.1 组织机构（Organization）
-```sql
-Organization {
-    id: bigint (PK)
-    parent_id: bigint -- 上级机构
-    org_code: varchar(50) -- 机构编号
-    org_name: varchar(100) -- 机构名称
-    contact_person: varchar(50) -- 联系人
-    contact_phone: varchar(20) -- 联系电话
-    sort_order: int
-    status: varchar(20)
-    created_at: datetime
-    updated_at: datetime
-}
-```
-
-#### 5.2 用户（User）
+#### 2.2 用户（User）
 ```sql
 User {
     id: bigint (PK)
-    username: varchar(50) -- 用户名
+    username: varchar(50) -- 用户名（唯一）
     password: varchar(255) -- 密码（加密）
     real_name: varchar(50) -- 真实姓名
     org_id: bigint (FK) -- 所属机构
-    phone: varchar(20) -- 电话
-    email: varchar(100) -- 邮箱
-    status: varchar(20)
-    last_login_time: datetime
+    phone: varchar(20) -- 手机号码
+    email: varchar(100) -- 电子邮箱
+    status: varchar(20) -- 账号状态
+    last_login_time: datetime -- 最后登录时间
+    last_login_ip: varchar(50) -- 最后登录IP
     created_at: datetime
     updated_at: datetime
 }
 ```
 
-#### 5.3 角色（Role）
+#### 2.3 角色（Role）
 ```sql
 Role {
     id: bigint (PK)
     role_code: varchar(50) -- 角色编码
     role_name: varchar(100) -- 角色名称
-    org_id: bigint (FK) -- 所属部门
-    data_scope: varchar(20) -- 数据权限范围
-    status: varchar(20)
+    role_type: varchar(20) -- 角色类型
+    data_scope: varchar(20) -- 数据权限范围（全部/本级/本级及以下）
+    description: text -- 角色描述
+    status: varchar(20) -- 状态
     created_at: datetime
     updated_at: datetime
 }
 ```
 
-#### 5.4 菜单（Menu）
+#### 2.4 菜单（Menu）
 ```sql
 Menu {
     id: bigint (PK)
@@ -294,48 +165,63 @@ Menu {
     menu_path: varchar(200) -- 路径
     component: varchar(200) -- 组件
     permission: varchar(100) -- 权限标识
-    sort_order: int
-    status: varchar(20)
+    sort_order: int -- 排序号
+    visible: boolean -- 是否显示
+    status: varchar(20) -- 状态
     created_at: datetime
     updated_at: datetime
 }
 ```
 
-### 6. 预警消息相关
-
-#### 6.1 预警规则（AlertRule）
+#### 2.5 数据字典（Dictionary）
 ```sql
-AlertRule {
+Dictionary {
     id: bigint (PK)
-    rule_name: varchar(100) -- 规则名称
-    rule_type: varchar(50) -- 规则类型
-    condition_expression: text -- 条件表达式
-    threshold_value: varchar(100) -- 阈值
-    alert_level: varchar(20) -- 预警级别
-    message_template: text -- 消息模板
-    target_roles: text -- 推送角色（JSON）
-    status: varchar(20)
+    parent_id: bigint -- 上级字典
+    dict_type: varchar(50) -- 字典类型
+    dict_name: varchar(100) -- 字典名称
+    dict_code: varchar(50) -- 字典编码
+    dict_value: varchar(200) -- 字典值
+    sort_order: int -- 排序号
+    remark: text -- 备注
+    status: varchar(20) -- 状态
     created_at: datetime
     updated_at: datetime
 }
 ```
 
-#### 6.2 预警记录（AlertRecord）
+### 3. 日志相关
+
+#### 3.1 登录日志（LoginLog）
 ```sql
-AlertRecord {
+LoginLog {
     id: bigint (PK)
-    rule_id: bigint (FK) -- 规则ID
-    alert_type: varchar(50) -- 预警类型
-    alert_content: text -- 预警内容
-    related_id: bigint -- 关联ID
-    related_type: varchar(50) -- 关联类型
-    alert_time: datetime -- 预警时间
-    read_status: varchar(20) -- 阅读状态
-    handle_status: varchar(20) -- 处理状态
-    handle_user_id: bigint -- 处理人
-    handle_time: datetime -- 处理时间
-    handle_remark: text -- 处理备注
-    created_at: datetime
+    user_id: bigint -- 用户ID
+    username: varchar(50) -- 用户名
+    login_time: datetime -- 登录时间
+    login_ip: varchar(50) -- 登录IP
+    login_location: varchar(100) -- 登录地点
+    browser: varchar(100) -- 浏览器
+    os: varchar(100) -- 操作系统
+    login_status: varchar(20) -- 登录状态（成功/失败）
+    msg: varchar(500) -- 消息
+}
+```
+
+#### 3.2 操作日志（OperationLog）
+```sql
+OperationLog {
+    id: bigint (PK)
+    user_id: bigint -- 操作用户ID
+    username: varchar(50) -- 操作用户名
+    operation_module: varchar(100) -- 操作模块
+    operation_type: varchar(20) -- 操作类型（增/删/改/查/导入/导出）
+    operation_object: varchar(200) -- 操作对象
+    operation_content: text -- 操作内容
+    operation_time: datetime -- 操作时间
+    operation_ip: varchar(50) -- 操作IP
+    operation_result: varchar(20) -- 操作结果（成功/失败）
+    error_msg: text -- 错误信息
 }
 ```
 
@@ -345,12 +231,11 @@ AlertRecord {
 1. **资产-楼宇**：一对多关系，一个资产可包含多栋楼宇
 2. **楼宇-楼层**：一对多关系，一栋楼宇包含多个楼层
 3. **楼层-房间**：一对多关系，一个楼层包含多个房间
-4. **企业-租赁合同**：一对多关系，一个企业可有多份合同
-5. **租赁合同-租金账单**：一对多关系，一份合同产生多个账单
-6. **用户-角色**：多对多关系，通过中间表关联
-7. **角色-菜单**：多对多关系，通过中间表关联
+4. **组织-用户**：一对多关系，一个组织包含多个用户
+5. **用户-角色**：多对多关系，通过中间表关联
+6. **角色-菜单**：多对多关系，通过中间表关联
 
-### 关联表示例
+### 关联表
 
 #### 用户角色关联（UserRole）
 ```sql
@@ -373,8 +258,33 @@ RoleMenu {
 ## 数据库设计原则
 
 1. **规范化**：遵循数据库第三范式，避免数据冗余
-2. **索引优化**：为常用查询字段建立索引
+2. **索引优化**：为常用查询字段建立索引（如：编号、名称、状态）
 3. **数据完整性**：使用外键约束保证引用完整性
 4. **扩展性**：预留扩展字段，使用JSON存储灵活数据
-5. **审计追踪**：所有表包含创建时间和更新时间
-6. **软删除**：使用状态字段实现逻辑删除
+5. **审计追踪**：所有表包含创建人、创建时间、更新人、更新时间
+6. **软删除**：使用状态字段实现逻辑删除，保留历史数据
+
+## 索引设计建议
+
+### 资产表索引
+- asset_code（唯一索引）
+- asset_name
+- street_id
+- status
+
+### 楼宇表索引
+- building_code（唯一索引）
+- building_name
+- asset_id
+- status
+
+### 用户表索引
+- username（唯一索引）
+- phone
+- org_id
+- status
+
+### 日志表索引
+- user_id + operation_time（组合索引）
+- operation_module
+- operation_type
