@@ -1,142 +1,142 @@
-# Building Asset Management Platform
+# 楼宇资产管理平台
 
-A comprehensive building asset management system with multi-level asset hierarchy, map visualization, data analytics, and complete system management features.
+一个综合性的楼宇资产管理系统，具有多级资产层次结构、地图可视化、数据分析和完整的系统管理功能。
 
-## Features
+## 功能特性
 
-- 🏢 **Asset Management** - Four-level hierarchy (Asset → Building → Floor → Room)
-- 🗺️ **Map Display** - Integration with Tianditu for asset visualization
-- 📊 **Data Analytics** - Multi-dimensional statistics and charts
-- 👥 **System Management** - Users, roles, permissions, and audit logs
-- 🔐 **Security** - JWT authentication and RBAC authorization
+- 🏢 **资产管理** - 四级层次结构（资产 → 楼宇 → 楼层 → 房间）
+- 🗺️ **地图展示** - 集成天地图进行资产可视化
+- 📊 **数据分析** - 多维度统计和图表
+- 👥 **系统管理** - 用户、角色、权限和审计日志
+- 🔐 **安全性** - JWT 认证和 RBAC 授权
 
-## Tech Stack
+## 技术栈
 
-### Backend
-- **Language**: Go 1.18+
-- **Framework**: Gin
-- **Database**: MySQL 5.7+ / SQLite (for demo)
-- **Cache**: Redis
+### 后端
+- **语言**: Go 1.18+
+- **框架**: Gin
+- **数据库**: MySQL 5.7+ / SQLite（演示用）
+- **缓存**: Redis
 - **ORM**: GORM
 
-### Frontend
-- **Framework**: React 18 + TypeScript
-- **UI Library**: Ant Design 5
-- **State Management**: Redux Toolkit
-- **Charts**: Ant Design Charts
-- **Build Tool**: Create React App
+### 前端
+- **框架**: React 18 + TypeScript
+- **UI 库**: Ant Design 5
+- **状态管理**: Redux Toolkit
+- **图表**: Ant Design Charts
+- **构建工具**: Create React App
 
-## Project Structure
+## 项目结构
 
 ```
 .
-├── backend/            # Go backend service
-│   ├── api/           # API handlers
-│   ├── config/        # Configuration files
-│   ├── internal/      # Internal packages
-│   ├── middleware/    # Middleware
-│   ├── pkg/          # Shared packages
-│   └── router/       # Route definitions
-├── frontend/          # React frontend application
-│   ├── public/       # Static assets
-│   └── src/          # Source code
-├── docs/             # Documentation
-├── scripts/          # Utility scripts
-├── docker-compose.yml # Docker composition
-└── Makefile          # Build automation
+├── backend/            # Go 后端服务
+│   ├── api/           # API 处理器
+│   ├── config/        # 配置文件
+│   ├── internal/      # 内部包
+│   ├── middleware/    # 中间件
+│   ├── pkg/          # 共享包
+│   └── router/       # 路由定义
+├── frontend/          # React 前端应用
+│   ├── public/       # 静态资源
+│   └── src/          # 源代码
+├── docs/             # 文档
+├── scripts/          # 实用脚本
+├── docker-compose.yml # Docker 编排
+└── Makefile          # 构建自动化
 ```
 
-## Quick Start
+## 快速开始
 
-### Prerequisites
+### 前置条件
 
 - Go 1.18+
 - Node.js 14+
-- MySQL 5.7+ (optional, uses SQLite by default)
-- Redis (optional)
+- MySQL 5.7+（可选，默认使用 SQLite）
+- Redis（可选）
 
-### Installation
+### 安装
 
-1. Clone the repository
+1. 克隆仓库
 ```bash
 git clone <repository-url>
 cd building-asset-management
 ```
 
-2. Install dependencies
+2. 安装依赖
 ```bash
 make install
 ```
 
-3. Start development servers
+3. 启动开发服务器
 ```bash
 make dev
 ```
 
-The application will be available at:
-- Frontend: http://localhost:3000
-- Backend: http://localhost:8080
+应用将在以下地址可用：
+- 前端：http://localhost:3000
+- 后端：http://localhost:8080
 
-Default credentials:
-- Username: `admin`
-- Password: `admin123`
+默认登录凭据：
+- 用户名：`admin`
+- 密码：`admin123`
 
-### Using Docker
+### 使用 Docker
 
 ```bash
-# Start all services
+# 启动所有服务
 docker-compose up -d
 
-# Stop services
+# 停止服务
 docker-compose down
 
-# View logs
+# 查看日志
 docker-compose logs -f
 ```
 
-## Development
+## 开发
 
-### Backend Development
+### 后端开发
 
 ```bash
-# Run backend only
+# 仅运行后端
 make backend-dev
 
-# Run tests
+# 运行测试
 make test-backend
 
-# Format code
+# 格式化代码
 cd backend && go fmt ./...
 ```
 
-### Frontend Development
+### 前端开发
 
 ```bash
-# Run frontend only
+# 仅运行前端
 make frontend-dev
 
-# Run tests
+# 运行测试
 make test-frontend
 
-# Build for production
+# 构建生产版本
 make build-frontend
 ```
 
-## API Documentation
+## API 文档
 
-The API follows RESTful conventions:
+API 遵循 RESTful 约定：
 
-- `GET /api/v1/assets` - List assets
-- `POST /api/v1/assets` - Create asset
-- `GET /api/v1/assets/:id` - Get asset details
-- `PUT /api/v1/assets/:id` - Update asset
-- `DELETE /api/v1/assets/:id` - Delete asset
+- `GET /api/v1/assets` - 列出资产
+- `POST /api/v1/assets` - 创建资产
+- `GET /api/v1/assets/:id` - 获取资产详情
+- `PUT /api/v1/assets/:id` - 更新资产
+- `DELETE /api/v1/assets/:id` - 删除资产
 
-See [API Documentation](docs/api-design.md) for complete reference.
+完整参考请查看 [API 文档](docs/api-design.md)。
 
-## Configuration
+## 配置
 
-Backend configuration is managed through `backend/config/config.yaml`:
+后端配置通过 `backend/config/config.yaml` 管理：
 
 ```yaml
 server:
@@ -153,18 +153,18 @@ database:
     database: building_asset
 ```
 
-## Contributing
+## 贡献
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. Fork 仓库
+2. 创建您的功能分支（`git checkout -b feature/amazing-feature`）
+3. 提交您的更改（`git commit -m '添加一些很棒的功能'`）
+4. 推送到分支（`git push origin feature/amazing-feature`）
+5. 开启一个拉取请求
 
-## License
+## 许可证
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+本项目基于 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
 
-## Support
+## 支持
 
-For support, email support@example.com or create an issue in the repository.
+如需支持，请发送邮件至 support@example.com 或在仓库中创建一个问题。

@@ -1,77 +1,77 @@
-# Security Architecture
+# 安全架构
 
-## Overview
+## 概述
 
-The Building Asset Management Platform implements a comprehensive security architecture based on industry best practices. This document outlines the security measures, authentication mechanisms, and authorization strategies used throughout the system.
+楼宇资产管理平台基于业界最佳实践实现了全面的安全架构。本文档概述了整个系统中使用的安全措施、认证机制和授权策略。
 
-## Authentication
+## 认证
 
-### JWT (JSON Web Tokens)
+### JWT（JSON Web Tokens）
 
-The platform uses JWT for stateless authentication:
+平台使用 JWT 进行无状态认证：
 
-- **Token Structure**: Header.Payload.Signature
-- **Algorithm**: HS256 (HMAC with SHA-256)
-- **Token Lifetime**: 24 hours (configurable)
-- **Refresh Token**: 7 days (configurable)
+- **令牌结构**：Header.Payload.Signature
+- **算法**：HS256（使用 SHA-256 的 HMAC）
+- **令牌有效期**：24 小时（可配置）
+- **刷新令牌**：7 天（可配置）
 
-### Authentication Flow
+### 认证流程
 
 ```mermaid
 sequenceDiagram
-    participant User
-    participant Frontend
-    participant Backend
-    participant Database
+    participant 用户
+    participant 前端
+    participant 后端
+    participant 数据库
     
-    User->>Frontend: Enter credentials
-    Frontend->>Backend: POST /api/v1/auth/login
-    Backend->>Database: Verify credentials
-    Database-->>Backend: User data
-    Backend->>Backend: Generate JWT
-    Backend-->>Frontend: JWT + Refresh token
-    Frontend->>Frontend: Store tokens
-    Frontend->>Backend: API requests with JWT
-    Backend->>Backend: Verify JWT
-    Backend-->>Frontend: Protected resources
+    用户->>前端: 输入凭据
+    前端->>后端: POST /api/v1/auth/login
+    后端->>数据库: 验证凭据
+    数据库-->>后端: 用户数据
+    后端->>后端: 生成 JWT
+    后端-->>前端: JWT + 刷新令牌
+    前端->>前端: 存储令牌
+    前端->>后端: 带 JWT 的 API 请求
+    后端->>后端: 验证 JWT
+    后端-->>前端: 受保护的资源
 ```
 
-### Password Security
+### 密码安全
 
-- **Hashing**: bcrypt with cost factor 10
-- **Minimum Requirements**: 6 characters (configurable)
-- **Storage**: Only hashed passwords stored in database
+- **哈希算法**：使用成本因子 10 的 bcrypt
+- **最低要求**：6 个字符（可配置）
+- **存储方式**：数据库仅存储哈希后的密码
 
-## Authorization
+## 授权
 
-### RBAC (Role-Based Access Control)
+### RBAC（基于角色的访问控制）
 
-The platform implements a flexible RBAC system:
+平台实现了灵活的 RBAC 系统：
 
-#### Role Hierarchy
-1. **Super Admin**: Full system access
-2. **Admin**: Organization-level administration
-3. **Manager**: Asset management capabilities
-4. **User**: Basic viewing permissions
+#### 角色层次
+1. **超级管理员**：完全系统访问权限
+2. **管理员**：组织级别管理权限
+3. **经理**：资产管理能力
+4. **用户**：基本查看权限
 
-#### Permission Model
+#### 权限模型
 
 ```go
 type Permission struct {
-    Resource string // e.g., "asset", "user", "report"
-    Action   string // e.g., "create", "read", "update", "delete"
+    Resource string // 例如："asset"、"user"、"report"
+    Action   string // 例如："create"、"read"、"update"、"delete"
 }
 ```
 
-### API Security
+### API 安全
 
-#### Request Authentication
-All API requests (except public endpoints) require:
+#### 请求认证
+所有 API 请求（公开端点除外）都需要：
 ```http
 Authorization: Bearer <JWT_TOKEN>
 ```
 
-#### CORS Configuration
+#### CORS 配置
 ```go
 cors.Config{
     AllowOrigins:     []string{"http://localhost:3000"},
@@ -83,18 +83,18 @@ cors.Config{
 }
 ```
 
-## Data Protection
+## 数据保护
 
-### Database Security
+### 数据库安全
 
-1. **Connection Encryption**: TLS/SSL for database connections
-2. **Query Protection**: Parameterized queries to prevent SQL injection
-3. **Access Control**: Principle of least privilege for database users
+1. **连接加密**：数据库连接使用 TLS/SSL
+2. **查询保护**：使用参数化查询防止 SQL 注入
+3. **访问控制**：数据库用户遵循最小权限原则
 
-### API Security Headers
+### API 安全头
 
 ```go
-// Security headers middleware
+// 安全头中间件
 func SecurityHeaders() gin.HandlerFunc {
     return func(c *gin.Context) {
         c.Header("X-Content-Type-Options", "nosniff")
@@ -106,17 +106,17 @@ func SecurityHeaders() gin.HandlerFunc {
 }
 ```
 
-## Audit and Logging
+## 审计和日志
 
-### Audit Trail
+### 审计跟踪
 
-All sensitive operations are logged:
-- User authentication attempts
-- Permission changes
-- Data modifications
-- System configuration changes
+记录所有敏感操作：
+- 用户认证尝试
+- 权限变更
+- 数据修改
+- 系统配置变更
 
-### Log Structure
+### 日志结构
 
 ```json
 {
@@ -130,80 +130,80 @@ All sensitive operations are logged:
 }
 ```
 
-## Session Management
+## 会话管理
 
-### Token Lifecycle
+### 令牌生命周期
 
-1. **Login**: Generate access and refresh tokens
-2. **API Calls**: Validate access token on each request
-3. **Token Refresh**: Use refresh token to get new access token
-4. **Logout**: Invalidate tokens (optional blacklist)
+1. **登录**：生成访问令牌和刷新令牌
+2. **API 调用**：每个请求验证访问令牌
+3. **令牌刷新**：使用刷新令牌获取新的访问令牌
+4. **登出**：使令牌失效（可选黑名单）
 
-### Security Considerations
+### 安全考虑
 
-- Tokens stored in httpOnly cookies (production)
-- Secure flag enabled for HTTPS
-- SameSite attribute to prevent CSRF
-- Token rotation on refresh
+- 令牌存储在 httpOnly cookies 中（生产环境）
+- 为 HTTPS 启用 Secure 标志
+- SameSite 属性防止 CSRF
+- 刷新时进行令牌轮换
 
-## Best Practices Implementation
+## 最佳实践实施
 
-### Input Validation
+### 输入验证
 
-- All inputs validated at API layer
-- Type checking and sanitization
-- Length limits enforced
-- Special character handling
+- 在 API 层验证所有输入
+- 类型检查和清理
+- 强制执行长度限制
+- 特殊字符处理
 
-### Error Handling
+### 错误处理
 
-- Generic error messages to prevent information leakage
-- Detailed errors logged internally only
-- Rate limiting on authentication endpoints
+- 通用错误消息防止信息泄露
+- 仅在内部记录详细错误
+- 认证端点的速率限制
 
-### Security Updates
+### 安全更新
 
-- Regular dependency updates
-- Security patch monitoring
-- Vulnerability scanning in CI/CD pipeline
+- 定期依赖更新
+- 安全补丁监控
+- CI/CD 管道中的漏洞扫描
 
-## Compliance Considerations
+## 合规性考虑
 
-### Data Privacy
+### 数据隐私
 
-- Personal data encryption at rest
-- Right to erasure (GDPR compliance ready)
-- Data minimization principles
-- Access logs for audit trails
+- 静态数据加密
+- 删除权（GDPR 合规就绪）
+- 数据最小化原则
+- 审计跟踪的访问日志
 
-### Security Standards
+### 安全标准
 
-The platform is designed to align with:
-- OWASP Top 10 security risks
-- ISO 27001 principles
-- SOC 2 requirements (where applicable)
+平台设计符合：
+- OWASP Top 10 安全风险
+- ISO 27001 原则
+- SOC 2 要求（适用情况下）
 
-## Incident Response
+## 事件响应
 
-### Security Monitoring
+### 安全监控
 
-- Failed login attempt tracking
-- Unusual access pattern detection
-- API rate limiting and throttling
-- Security event logging
+- 失败登录尝试跟踪
+- 异常访问模式检测
+- API 速率限制和节流
+- 安全事件日志记录
 
-### Response Procedures
+### 响应程序
 
-1. **Detection**: Automated alerts for security events
-2. **Analysis**: Log review and impact assessment
-3. **Containment**: Account lockout, token revocation
-4. **Recovery**: System restoration procedures
-5. **Documentation**: Incident report generation
+1. **检测**：安全事件的自动警报
+2. **分析**：日志审查和影响评估
+3. **遏制**：账户锁定、令牌撤销
+4. **恢复**：系统恢复程序
+5. **文档**：事件报告生成
 
-## Future Enhancements
+## 未来增强
 
-- Multi-factor authentication (MFA)
-- OAuth2/SAML integration
-- IP whitelisting
-- Advanced threat detection
-- Encryption key rotation
+- 多因素认证（MFA）
+- OAuth2/SAML 集成
+- IP 白名单
+- 高级威胁检测
+- 加密密钥轮换
