@@ -78,7 +78,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
-        state.refreshToken = action.payload.refreshToken;
+        state.refreshToken = action.payload.refreshToken || null;
         state.isAuthenticated = true;
       })
       .addCase(login.rejected, (state, action) => {
@@ -107,7 +107,7 @@ const authSlice = createSlice({
     builder
       .addCase(refreshTokenAsync.fulfilled, (state, action) => {
         state.token = action.payload.token;
-        state.refreshToken = action.payload.refreshToken;
+        state.refreshToken = action.payload.refreshToken || null;
       })
       .addCase(refreshTokenAsync.rejected, (state) => {
         state.user = null;

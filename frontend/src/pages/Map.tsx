@@ -30,7 +30,7 @@ const Map: React.FC = () => {
 
       const script = document.createElement('script');
       script.type = 'text/javascript';
-      script.src = 'http://api.tianditu.gov.cn/api?v=4.0&tk=您的天地图密钥'; // 需要替换为实际密钥
+      script.src = 'http://api.tianditu.gov.cn/api?v=4.0&tk=0361d56dfa968d3d585706f672aab830'; // 需要替换为实际密钥
       script.onload = () => resolve(true);
       script.onerror = () => reject(new Error('Failed to load TianDiTu script'));
       document.head.appendChild(script);
@@ -64,12 +64,12 @@ const Map: React.FC = () => {
   // 获取资产数据
   const fetchAssets = async () => {
     try {
-      const response = await assetService.getAssets({ page_size: 100 });
-      setAssets(response.data.list || []);
+      const response = await assetService.getAssets({ pageSize: 100 });
+      setAssets(response.data.items || []);
       
       // 添加标记点
-      if (response.data.list && mapInstance.current) {
-        addMarkers(response.data.list);
+      if (response.data.items && mapInstance.current) {
+        addMarkers(response.data.items);
       }
     } catch (error) {
       console.error('Failed to fetch assets:', error);
@@ -97,11 +97,11 @@ const Map: React.FC = () => {
       // 创建信息窗口
       const info = `
         <div style="padding: 10px;">
-          <h4>${asset.asset_name}</h4>
+          <h4>${asset.assetName}</h4>
           <p>地址：${asset.address || '未设置'}</p>
-          <p>土地性质：${asset.land_nature || '未知'}</p>
-          <p>总面积：${asset.total_area || 0}m²</p>
-          <p>可租面积：${asset.rentable_area || 0}m²</p>
+          <p>资产类型：${asset.assetType || '未知'}</p>
+          <p>总面积：${asset.totalArea || 0}m²</p>
+          <p>建筑面积：${asset.buildArea || 0}m²</p>
         </div>
       `;
       
@@ -157,7 +157,7 @@ const Map: React.FC = () => {
         >
           {assets.map(asset => (
             <Option key={asset.id} value={asset.id}>
-              {asset.asset_name}
+              {asset.assetName}
             </Option>
           ))}
         </Select>
