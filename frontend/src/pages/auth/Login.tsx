@@ -104,7 +104,7 @@ const Login: React.FC = () => {
           </Text>
           <br />
           <Text type="secondary" style={{ fontSize: 10 }}>
-            Powered by React + Go + AI Technology
+            Powered by Realsee Technology
           </Text>
         </div>
       </Card>

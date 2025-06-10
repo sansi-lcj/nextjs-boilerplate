@@ -20,7 +20,7 @@ import {
   BulbOutlined,
 } from '@ant-design/icons';
 import useAuthStore from '../../store/slices/authSlice';
-import { useTheme } from '../../hooks/useTheme';
+import { useThemeStore } from '../../store/theme';
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -81,7 +81,7 @@ const MainLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuthStore();
-  const { theme, setTheme, isDark } = useTheme();
+  const { isDark, toggleTheme, setTheme } = useThemeStore();
 
   const handleMenuClick = ({ key }: { key: string }) => {
     const findPath = (items: MenuItem[], targetKey: string): string | undefined => {
@@ -242,7 +242,7 @@ const MainLayout: React.FC = () => {
               <Dropdown
                 menu={{
                   items: themeMenuItems,
-                  onClick: ({ key }) => setTheme(key as any)
+                  onClick: () => toggleTheme()
                 }}
                 trigger={['click']}
               >
