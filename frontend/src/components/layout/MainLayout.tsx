@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layout, Menu, Avatar, Dropdown, Badge, Space, Typography, Button, Tooltip, theme } from 'antd';
+import { Layout, Menu, Avatar, Dropdown, Badge, Space, Typography, Button, Tooltip } from 'antd';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
   DashboardOutlined,
@@ -30,255 +30,248 @@ interface MenuItem {
   key: string;
   icon: React.ReactNode;
   label: string;
+  path?: string;
   children?: MenuItem[];
 }
 
+const menuItems: MenuItem[] = [
+  {
+    key: 'dashboard',
+    icon: <DashboardOutlined />,
+    label: '仪表盘',
+    path: '/'
+  },
+  {
+    key: 'asset',
+    icon: <BuildOutlined />,
+    label: '资产管理',
+    children: [
+      { key: 'asset-list', icon: <BuildOutlined />, label: '资产列表', path: '/assets' },
+      { key: 'building-list', icon: <HomeOutlined />, label: '楼宇管理', path: '/buildings' },
+      { key: 'floor-list', icon: <EnvironmentOutlined />, label: '楼层管理', path: '/floors' },
+      { key: 'room-list', icon: <HomeOutlined />, label: '房间管理', path: '/rooms' },
+    ]
+  },
+  {
+    key: 'map',
+    icon: <EnvironmentOutlined />,
+    label: '地图展示',
+    path: '/map'
+  },
+  {
+    key: 'statistics',
+    icon: <BarChartOutlined />,
+    label: '统计分析',
+    path: '/statistics'
+  },
+  {
+    key: 'system',
+    icon: <SettingOutlined />,
+    label: '系统管理',
+    children: [
+      { key: 'user-management', icon: <UserOutlined />, label: '用户管理', path: '/system/users' },
+      { key: 'role-management', icon: <TeamOutlined />, label: '角色管理', path: '/system/roles' },
+      { key: 'organization-management', icon: <BuildOutlined />, label: '组织管理', path: '/system/organizations' },
+      { key: 'permission-management', icon: <SafetyOutlined />, label: '权限管理', path: '/system/permissions' },
+    ]
+  },
+];
+
 const MainLayout: React.FC = () => {
+  const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
-  const { theme: themeMode, setTheme } = useTheme();
-  
-  const [collapsed, setCollapsed] = useState(false);
+  const { theme, setTheme, isDark } = useTheme();
 
-  // 菜单项配置
-  const menuItems: MenuItem[] = [
-    {
-      key: '/dashboard',
-      icon: <DashboardOutlined />,
-      label: '仪表盘',
-    },
-    {
-      key: '/assets-parent',
-      icon: <BuildOutlined />,
-      label: '资产管理',
-      children: [
-        {
-          key: '/assets',
-          icon: <BuildOutlined />,
-          label: '资产列表',
-        },
-        {
-          key: '/buildings',
-          icon: <HomeOutlined />,
-          label: '楼宇管理',
-        },
-        {
-          key: '/floors',
-          icon: <HomeOutlined />,
-          label: '楼层管理',
-        },
-        {
-          key: '/rooms',
-          icon: <HomeOutlined />,
-          label: '房间管理',
-        },
-      ],
-    },
-    {
-      key: '/map',
-      icon: <EnvironmentOutlined />,
-      label: '地图展示',
-    },
-    {
-      key: '/statistics',
-      icon: <BarChartOutlined />,
-      label: '数据分析',
-    },
-    {
-      key: '/system',
-      icon: <SettingOutlined />,
-      label: '系统管理',
-      children: [
-        {
-          key: '/system/users',
-          icon: <UserOutlined />,
-          label: '用户管理',
-        },
-        {
-          key: '/system/roles',
-          icon: <TeamOutlined />,
-          label: '角色管理',
-        },
-        {
-          key: '/system/permissions',
-          icon: <SafetyOutlined />,
-          label: '权限管理',
-        },
-        {
-          key: '/system/organizations',
-          icon: <TeamOutlined />,
-          label: '组织管理',
-        },
-      ],
-    },
-  ];
+  const handleMenuClick = ({ key }: { key: string }) => {
+    const findPath = (items: MenuItem[], targetKey: string): string | undefined => {
+      for (const item of items) {
+        if (item.key === targetKey && item.path) {
+          return item.path;
+        }
+        if (item.children) {
+          const path = findPath(item.children, targetKey);
+          if (path) return path;
+        }
+      }
+    };
 
-  // 主题切换图标
-  const getThemeIcon = () => {
-    switch (themeMode) {
-      case 'light':
-        return <SunOutlined />;
-      case 'dark':
-        return <MoonOutlined />;
-      case 'auto':
-        return <BulbOutlined />;
-      default:
-        return <BulbOutlined />;
+    const path = findPath(menuItems, key);
+    if (path) {
+      navigate(path);
     }
   };
 
-  // 主题菜单
-  const themeMenuItems = [
-    {
-      key: 'light',
-      icon: <SunOutlined />,
-      label: '浅色主题',
-      onClick: () => setTheme('light'),
-    },
-    {
-      key: 'dark',
-      icon: <MoonOutlined />,
-      label: '深色主题',
-      onClick: () => setTheme('dark'),
-    },
-    {
-      key: 'auto',
-      icon: <BulbOutlined />,
-      label: '跟随系统',
-      onClick: () => setTheme('auto'),
-    },
-  ];
+  const handleUserMenuClick = ({ key }: { key: string }) => {
+    if (key === 'logout') {
+      dispatch(logout());
+      navigate('/login');
+    }
+  };
 
-  // 用户菜单
+  const getSelectedKeys = () => {
+    const findKey = (items: MenuItem[], targetPath: string): string | undefined => {
+      for (const item of items) {
+        if (item.path === targetPath) {
+          return item.key;
+        }
+        if (item.children) {
+          const key = findKey(item.children, targetPath);
+          if (key) return key;
+        }
+      }
+    };
+    return [findKey(menuItems, location.pathname) || 'dashboard'];
+  };
+
+  const getOpenKeys = () => {
+    const findParentKey = (items: MenuItem[], targetPath: string): string | undefined => {
+      for (const item of items) {
+        if (item.children) {
+          for (const child of item.children) {
+            if (child.path === targetPath) {
+              return item.key;
+            }
+          }
+        }
+      }
+    };
+    const parentKey = findParentKey(menuItems, location.pathname);
+    return parentKey ? [parentKey] : [];
+  };
+
   const userMenuItems = [
     {
       key: 'profile',
+      label: '个人资料',
       icon: <UserOutlined />,
-      label: '个人信息',
-      onClick: () => navigate('/profile'),
-    },
-    {
-      key: 'settings',
-      icon: <SettingOutlined />,
-      label: '系统设置',
-      onClick: () => navigate('/settings'),
     },
     {
       type: 'divider' as const,
     },
     {
       key: 'logout',
-      icon: <LogoutOutlined />,
       label: '退出登录',
-      onClick: () => {
-        dispatch(logout());
-        navigate('/login');
-      },
+      icon: <LogoutOutlined />,
     },
   ];
 
-  // 获取当前路径
-  const currentPath = location.pathname;
-  const selectedKeys = [currentPath];
-  const openKeys = menuItems
-    .filter(item => item.children?.some(child => child.key === currentPath))
-    .map(item => item.key);
+  const themeMenuItems = [
+    {
+      key: 'light',
+      label: '浅色主题',
+      icon: <SunOutlined />,
+    },
+    {
+      key: 'dark',
+      label: '深色主题',
+      icon: <MoonOutlined />,
+    },
+    {
+      key: 'auto',
+      label: '跟随系统',
+      icon: <BulbOutlined />,
+    },
+  ];
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider 
-        trigger={null} 
-        collapsible 
+      <Sider
+        trigger={null}
+        collapsible
         collapsed={collapsed}
-        width={200}
+        width={260}
+        theme={isDark ? 'dark' : 'light'}
       >
-        {/* Logo区域 */}
         <div style={{
           height: 64,
           display: 'flex',
           alignItems: 'center',
           justifyContent: collapsed ? 'center' : 'flex-start',
-          padding: collapsed ? 0 : '0 24px',
+          padding: collapsed ? 0 : '0 16px',
         }}>
-          <BuildOutlined style={{ 
-            fontSize: 24, 
-            marginRight: collapsed ? 0 : 12
+          <BuildOutlined style={{
+            fontSize: 24,
+            color: '#1677ff',
           }} />
           {!collapsed && (
             <Text strong style={{ fontSize: 16 }}>
-              楼宇管理
+              楼宇资产管理
             </Text>
           )}
         </div>
 
-        {/* 菜单 */}
         <Menu
+          theme={isDark ? 'dark' : 'light'}
           mode="inline"
-          selectedKeys={selectedKeys}
-          defaultOpenKeys={openKeys}
+          selectedKeys={getSelectedKeys()}
+          defaultOpenKeys={getOpenKeys()}
           items={menuItems}
-          onClick={({ key }) => navigate(key)}
+          onClick={handleMenuClick}
+          inlineCollapsed={collapsed}
         />
       </Sider>
-      
+
       <Layout>
         <Header style={{ padding: 0 }}>
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
             justifyContent: 'space-between',
-            height: '100%',
-            padding: '0 24px'
+            padding: '0 16px',
+            height: '100%'
           }}>
-            {/* 左侧 */}
             <Button
               type="text"
               icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
               onClick={() => setCollapsed(!collapsed)}
+              size="large"
             />
 
-            {/* 右侧 */}
-            <Space>
-              {/* 主题切换 */}
-              <Dropdown 
-                menu={{ items: themeMenuItems, selectedKeys: [themeMode] }}
+            <Space size="middle">
+              <Tooltip title="消息通知">
+                <Badge count={5} size="small">
+                  <Button
+                    type="text"
+                    icon={<BellOutlined />}
+                    size="large"
+                  />
+                </Badge>
+              </Tooltip>
+
+              <Dropdown
+                menu={{
+                  items: themeMenuItems,
+                  onClick: ({ key }) => setTheme(key as any)
+                }}
                 trigger={['click']}
-                placement="bottomRight"
               >
-                <Button
-                  type="text"
-                  icon={getThemeIcon()}
-                />
+                <Button type="text" size="large">
+                  {isDark ? <MoonOutlined /> : <SunOutlined />}
+                </Button>
               </Dropdown>
 
-              {/* 通知 */}
-              <Badge count={5} size="small">
-                <Button
-                  type="text"
-                  icon={<BellOutlined />}
-                />
-              </Badge>
-
-              {/* 用户信息 */}
-              <Dropdown 
-                menu={{ items: userMenuItems }}
+              <Dropdown
+                menu={{
+                  items: userMenuItems,
+                  onClick: handleUserMenuClick
+                }}
                 trigger={['click']}
-                placement="bottomRight"
               >
                 <Space style={{ cursor: 'pointer' }}>
-                  <Avatar size="small" icon={<UserOutlined />} />
-                  <Text>{user?.name || user?.username}</Text>
+                  <Avatar icon={<UserOutlined />} />
+                  <Text>{user?.name || '用户'}</Text>
                 </Space>
               </Dropdown>
             </Space>
           </div>
         </Header>
-        
+
         <Content style={{ margin: 24 }}>
-          <div style={{ 
-            padding: 24, 
+          <div style={{
+            padding: 24,
             minHeight: 360,
           }}>
             <Outlet />
