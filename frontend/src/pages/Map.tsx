@@ -105,55 +105,64 @@ const Map: React.FC = () => {
   const fetchAssets = async () => {
     try {
       const response = await assetService.getAssets({ pageSize: 100 });
-      let assetList = response.data.items || [];
+      let assetList = (response.data as any)?.data || [];
       
       // 如果没有数据，使用模拟数据
       if (assetList.length === 0) {
         assetList = [
           {
             id: 1,
-            assetCode: 'AS001',
-            assetName: '创新大厦',
+            asset_code: 'AS001',
+            asset_name: '创新大厦',
             address: '北京市朝阳区建国路88号',
-            assetType: 'office' as const,
-            totalArea: 50000,
-            buildArea: 45000,
+            asset_type: 'office' as const,
+            total_area: 50000,
+            build_area: 45000,
             province: '北京市',
             city: '北京市',
             district: '朝阳区',
+            street_id: 1,
             status: 'normal' as const,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            created_by: 1,
+            updated_by: 1,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
           },
           {
             id: 2,
-            assetCode: 'AS002', 
-            assetName: '科技园区A座',
+            asset_code: 'AS002', 
+            asset_name: '科技园区A座',
             address: '北京市海淀区中关村大街35号',
-            assetType: 'industrial' as const,
-            totalArea: 80000,
-            buildArea: 70000,
+            asset_type: 'industrial' as const,
+            total_area: 80000,
+            build_area: 70000,
             province: '北京市',
             city: '北京市',
             district: '海淀区',
+            street_id: 2,
             status: 'normal' as const,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            created_by: 1,
+            updated_by: 1,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
           },
           {
             id: 3,
-            assetCode: 'AS003',
-            assetName: '商业综合体',
+            asset_code: 'AS003',
+            asset_name: '商业综合体',
             address: '北京市西城区金融街19号',
-            assetType: 'commercial' as const,
-            totalArea: 120000,
-            buildArea: 100000,
+            asset_type: 'commercial' as const,
+            total_area: 120000,
+            build_area: 100000,
             province: '北京市',
             city: '北京市',
             district: '西城区',
+            street_id: 3,
             status: 'maintenance' as const,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            created_by: 1,
+            updated_by: 1,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
           }
         ];
       }
@@ -172,18 +181,21 @@ const Map: React.FC = () => {
       const mockAssets = [
         {
           id: 1,
-          assetCode: 'AS001',
-          assetName: '创新大厦',
+          asset_code: 'AS001',
+          asset_name: '创新大厦',
           address: '北京市朝阳区建国路88号',
-          assetType: 'office' as const,
-          totalArea: 50000,
-          buildArea: 45000,
+          asset_type: 'office' as const,
+          total_area: 50000,
+          build_area: 45000,
           province: '北京市',
           city: '北京市',
           district: '朝阳区',
+          street_id: 1,
           status: 'normal' as const,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          created_by: 1,
+          updated_by: 1,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         }
       ];
       
@@ -224,10 +236,10 @@ const Map: React.FC = () => {
       // 创建信息窗口内容
       const infoContent = `
         <div style="padding: 12px; min-width: 200px;">
-          <h4>${asset.assetName}</h4>
-          <p><strong>资产编码：</strong>${asset.assetCode || '未设置'}</p>
+          <h4>${asset.asset_name}</h4>
+          <p><strong>资产编码：</strong>${asset.asset_code || '未设置'}</p>
           <p><strong>地址：</strong>${asset.address || '未设置'}</p>
-          <p><strong>总面积：</strong>${asset.totalArea || 0} m²</p>
+          <p><strong>总面积：</strong>${asset.total_area || 0} m²</p>
           <p><strong>状态：</strong>${asset.status === 'normal' ? '正常' : '维护中'}</p>
         </div>
       `;
@@ -309,7 +321,7 @@ const Map: React.FC = () => {
             >
               {assets.map(asset => (
                 <Option key={asset.id} value={asset.id}>
-                  {asset.assetName}
+                  {asset.asset_name}
                 </Option>
               ))}
             </Select>

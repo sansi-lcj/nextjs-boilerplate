@@ -68,25 +68,24 @@ const AssetList: React.FC = () => {
       
       const transformedAssets = rawAssets.map((item: any) => ({
         id: item.id,
-        assetCode: item.asset_code || `AS${String(item.id).padStart(3, '0')}`,
-        assetName: item.asset_name || `资产${item.id}`,
-        assetType: item.asset_type || 'office',
-        totalArea: item.total_area || 0,
-        buildArea: item.rentable_area || 0,
+        asset_code: item.asset_code || `AS${String(item.id).padStart(3, '0')}`,
+        asset_name: item.asset_name || `资产${item.id}`,
+        total_area: item.total_area || 0,
+        rentable_area: item.rentable_area || 0,
         address: item.address || '',
-        province: '',
-        city: '',
-        district: '',
+        street_id: item.street_id || 1,
         status: item.status === 'active' ? 'normal' : (item.status || 'normal'),
-        createdAt: item.created_at || new Date().toISOString(),
-        updatedAt: item.updated_at || new Date().toISOString(),
+        created_by: item.created_by || 1,
+        updated_by: item.updated_by || 1,
+        created_at: item.created_at || new Date().toISOString(),
+        updated_at: item.updated_at || new Date().toISOString(),
       }));
       
       setAssets(transformedAssets);
       setTotal(apiData.total || 0);
       
       // 计算统计数据
-      const totalArea = transformedAssets.reduce((sum: number, asset: Asset) => sum + (asset.totalArea || 0), 0);
+      const totalArea = transformedAssets.reduce((sum: number, asset: Asset) => sum + (asset.total_area || 0), 0);
       setStatistics({
         totalAssets: transformedAssets.length,
         totalArea,
@@ -101,40 +100,38 @@ const AssetList: React.FC = () => {
       const mockAssets: Asset[] = [
         {
           id: 1,
-          assetCode: 'AS001',
-          assetName: '创新科技大厦',
-          assetType: 'office' as const,
-          totalArea: 45000,
-          buildArea: 38000,
-          province: '北京市',
-          city: '北京市',
-          district: '朝阳区',
+          asset_code: 'AS001',
+          asset_name: '创新科技大厦',
+          total_area: 45000,
+          rentable_area: 38000,
           address: '北京市朝阳区建国路88号',
+          street_id: 1,
           status: 'normal' as const,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          created_by: 1,
+          updated_by: 1,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         },
         {
           id: 2,
-          assetCode: 'AS002',
-          assetName: '国际商务中心',
-          assetType: 'commercial' as const,
-          totalArea: 68000,
-          buildArea: 58000,
-          province: '上海市',
-          city: '上海市',
-          district: '浦东新区',
+          asset_code: 'AS002',
+          asset_name: '国际商务中心',
+          total_area: 68000,
+          rentable_area: 58000,
           address: '上海市浦东新区陆家嘴金融街168号',
+          street_id: 2,
           status: 'normal' as const,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          created_by: 1,
+          updated_by: 1,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         },
       ];
       
       setAssets(mockAssets);
       setTotal(2);
       
-      const totalArea = mockAssets.reduce((sum, asset) => sum + (asset.totalArea || 0), 0);
+      const totalArea = mockAssets.reduce((sum, asset) => sum + (asset.total_area || 0), 0);
       setStatistics({
         totalAssets: mockAssets.length,
         totalArea,
@@ -190,15 +187,12 @@ const AssetList: React.FC = () => {
   const handleEdit = (asset: Asset) => {
     setEditingAsset(asset);
     form.setFieldsValue({
-      assetName: asset.assetName,
-      assetCode: asset.assetCode,
-      assetType: asset.assetType,
+      asset_name: asset.asset_name,
+      asset_code: asset.asset_code,
       address: asset.address,
-      totalArea: asset.totalArea,
-      buildArea: asset.buildArea,
-      province: asset.province,
-      city: asset.city,
-      district: asset.district,
+      total_area: asset.total_area,
+      rentable_area: asset.rentable_area,
+      street_id: asset.street_id,
     });
     setModalVisible(true);
   };
@@ -221,40 +215,21 @@ const AssetList: React.FC = () => {
     return <Tag color={config.color}>{config.text}</Tag>;
   };
 
-  // 资产类型标签渲染
-  const getTypeTag = (type: string) => {
-    const typeMap = {
-      office: { color: 'blue', text: '办公楼' },
-      commercial: { color: 'purple', text: '商业楼' },
-      residential: { color: 'cyan', text: '住宅' },
-      industrial: { color: 'orange', text: '工业' },
-      mixed: { color: 'green', text: '综合楼' },
-    };
-    const config = typeMap[type as keyof typeof typeMap] || typeMap.office;
-    return <Tag color={config.color}>{config.text}</Tag>;
-  };
-
   const columns: ColumnsType<Asset> = [
     {
       title: '资产名称',
-      dataIndex: 'assetName',
-      key: 'assetName',
+      dataIndex: 'asset_name',
+      key: 'asset_name',
       render: (text, record) => (
         <div>
           <Text strong>{text}</Text>
           <div>
             <Text type="secondary" style={{ fontSize: 12 }}>
-              {record.assetCode}
+              {record.asset_code}
             </Text>
           </div>
         </div>
       ),
-    },
-    {
-      title: '资产类型',
-      dataIndex: 'assetType',
-      key: 'assetType',
-      render: getTypeTag,
     },
     {
       title: '地址',
@@ -264,15 +239,15 @@ const AssetList: React.FC = () => {
     },
     {
       title: '总面积(㎡)',
-      dataIndex: 'totalArea',
-      key: 'totalArea',
+      dataIndex: 'total_area',
+      key: 'total_area',
       align: 'right',
       render: (area) => area?.toLocaleString() || '-',
     },
     {
-      title: '建筑面积(㎡)',
-      dataIndex: 'buildArea',
-      key: 'buildArea',
+      title: '可租面积(㎡)',
+      dataIndex: 'rentable_area',
+      key: 'rentable_area',
       align: 'right',
       render: (area) => area?.toLocaleString() || '-',
     },
@@ -430,7 +405,7 @@ const AssetList: React.FC = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="assetName"
+                name="asset_name"
                 label="资产名称"
                 rules={[{ required: true, message: '请输入资产名称' }]}
               >
@@ -439,7 +414,7 @@ const AssetList: React.FC = () => {
             </Col>
             <Col span={12}>
               <Form.Item
-                name="assetCode"
+                name="asset_code"
                 label="资产编码"
                 rules={[{ required: true, message: '请输入资产编码' }]}
               >
@@ -451,25 +426,22 @@ const AssetList: React.FC = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="assetType"
-                label="资产类型"
-                rules={[{ required: true, message: '请选择资产类型' }]}
-              >
-                <Select placeholder="请选择资产类型">
-                  <Select.Option value="office">办公楼</Select.Option>
-                  <Select.Option value="commercial">商业楼</Select.Option>
-                  <Select.Option value="residential">住宅</Select.Option>
-                  <Select.Option value="industrial">工业</Select.Option>
-                  <Select.Option value="mixed">综合楼</Select.Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
                 name="address"
                 label="详细地址"
               >
                 <Input placeholder="请输入详细地址" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="street_id"
+                label="所属街道"
+                rules={[{ required: true, message: '请选择所属街道' }]}
+              >
+                <Select placeholder="请选择所属街道">
+                  <Select.Option value={1}>街道1</Select.Option>
+                  <Select.Option value={2}>街道2</Select.Option>
+                </Select>
               </Form.Item>
             </Col>
           </Row>
@@ -477,7 +449,7 @@ const AssetList: React.FC = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="totalArea"
+                name="total_area"
                 label="总面积(㎡)"
                 rules={[{ required: true, message: '请输入总面积' }]}
               >
@@ -490,33 +462,15 @@ const AssetList: React.FC = () => {
             </Col>
             <Col span={12}>
               <Form.Item
-                name="buildArea"
-                label="建筑面积(㎡)"
-                rules={[{ required: true, message: '请输入建筑面积' }]}
+                name="rentable_area"
+                label="可租面积(㎡)"
+                rules={[{ required: true, message: '请输入可租面积' }]}
               >
                 <InputNumber 
-                  placeholder="请输入建筑面积" 
+                  placeholder="请输入可租面积" 
                   style={{ width: '100%' }}
                   min={0}
                 />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item name="province" label="省份">
-                <Input placeholder="请输入省份" />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item name="city" label="城市">
-                <Input placeholder="请输入城市" />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item name="district" label="区县">
-                <Input placeholder="请输入区县" />
               </Form.Item>
             </Col>
           </Row>

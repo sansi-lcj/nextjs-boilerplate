@@ -1,6 +1,26 @@
-import { Asset, Building, Floor, Room, AssetQueryParams, BuildingQueryParams, FloorQueryParams, RoomQueryParams, AssetFormData, BuildingFormData, FloorFormData, RoomFormData, AssetStatistics, BuildingStatistics, FloorStatistics, RoomStatistics } from '../types/asset';
-import { get, post, put, del } from '../utils/request';
-import { ApiResponse, PageData } from '../types';
+import { 
+  Asset, 
+  Building, 
+  Floor, 
+  Room, 
+  AssetQueryParams, 
+  BuildingQueryParams, 
+  FloorQueryParams, 
+  RoomQueryParams, 
+  AssetFormData, 
+  BuildingFormData, 
+  CreateFloorRequest as FloorFormData,
+  CreateRoomRequest as RoomFormData,
+  AssetStatistics, 
+  BuildingStatistics, 
+  FloorStatistics, 
+  RoomStatistics 
+} from '../types/asset';
+import { get, post, put, del, http } from '../utils/request';
+import { ApiResponse, PaginatedResponse } from '../types';
+
+// 使用 PaginatedResponse 替代 PageData
+type PageData<T> = PaginatedResponse<T>;
 
 // 资产相关API
 export const assetService = {
@@ -43,7 +63,7 @@ export const assetService = {
 
   // 删除资产图片
   async deleteAssetImage(id: number, imageUrl: string): Promise<ApiResponse<void>> {
-    return await del(`/assets/${id}/images`, { imageUrl });
+    return await http.delete(`/assets/${id}/images`, { params: { imageUrl } });
   },
 };
 

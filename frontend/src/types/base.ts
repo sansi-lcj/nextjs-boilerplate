@@ -24,7 +24,7 @@ export interface ApiResponse<T = any> {
   timestamp: number;
 }
 
-// 分页响应 - 与后端响应格式对应
+// 分页响应
 export interface PaginatedResponse<T = any> {
   list: T[];
   page: number;
@@ -50,30 +50,29 @@ export interface BaseQuery extends PaginationQuery, SortQuery {
   [key: string]: any;
 }
 
-// 通用状态枚举 - 与后端状态字段对应
+// 通用状态枚举
 export type Status = 'active' | 'inactive' | 'normal' | 'disabled';
 
 // 操作类型
 export type OperationType = 'create' | 'update' | 'delete' | 'view';
 
-// 表格操作配置
-export interface TableAction<T = any> {
+// 表格操作接口
+export interface TableAction {
   key: string;
   label: string;
   type?: 'primary' | 'default' | 'danger';
-  icon?: string;
+  icon?: React.ReactNode;
   permission?: string;
-  onClick?: (record: T) => void;
 }
 
 // 表单字段配置
 export interface FormField {
   key: string;
   label: string;
-  type: 'input' | 'select' | 'textarea' | 'number' | 'date' | 'switch' | 'upload';
+  type: 'input' | 'select' | 'textarea' | 'number' | 'date' | 'switch';
   required?: boolean;
   placeholder?: string;
-  options?: Option[];
+  options?: Array<{ label: string; value: any }>;
   rules?: any[];
 }
 
@@ -91,7 +90,6 @@ export interface Option {
   label: string;
   value: string | number;
   disabled?: boolean;
-  children?: Option[];
 }
 
 // 文件上传响应
@@ -99,78 +97,4 @@ export interface UploadResponse {
   url: string;
   filename: string;
   size: number;
-}
-
-// 日期范围
-export interface DateRange {
-  startDate: string;
-  endDate: string;
-}
-
-// 路由菜单项
-export interface MenuItem {
-  key: string;
-  label: string;
-  icon?: string;
-  path?: string;
-  children?: MenuItem[];
-  permission?: string;
-}
-
-// 错误信息
-export interface ErrorInfo {
-  field: string;
-  message: string;
-}
-
-// 坐标位置
-export interface Coordinates {
-  longitude: number;
-  latitude: number;
-}
-
-// 地址信息
-export interface AddressInfo {
-  province?: string;
-  city?: string;
-  district?: string;
-  street?: string;
-  detail?: string;
-  full_address?: string;
-}
-
-// 统计数据项
-export interface StatisticItem {
-  label: string;
-  value: number | string;
-  unit?: string;
-  change?: number;
-  trend?: 'up' | 'down' | 'stable';
-}
-
-// 图表数据
-export interface ChartData {
-  name: string;
-  value: number;
-  [key: string]: any;
-}
-
-// 表格列配置
-export interface TableColumn {
-  title: string;
-  dataIndex: string;
-  key?: string;
-  width?: number;
-  fixed?: 'left' | 'right';
-  sorter?: boolean;
-  filters?: Array<{ text: string; value: any }>;
-  render?: (value: any, record: any, index: number) => any;
-}
-
-// 搜索表单配置
-export interface SearchForm {
-  fields: FormField[];
-  layout?: 'horizontal' | 'vertical' | 'inline';
-  onSearch?: (values: any) => void;
-  onReset?: () => void;
 }

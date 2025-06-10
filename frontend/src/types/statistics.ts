@@ -448,4 +448,210 @@ export interface ChartOptions {
   };
   colors?: string[];
   theme?: 'light' | 'dark';
+}
+
+// 统计查询接口
+export interface StatisticsQuery {
+  dimension?: StatisticsDimension;
+  metric?: StatisticsMetric;
+  timeRange?: TimeRange;
+  startDate?: string;
+  endDate?: string;
+  groupBy?: string;
+  filters?: Record<string, any>;
+  orderBy?: string;
+  limit?: number;
+}
+
+// 图表数据
+export interface ChartData {
+  name: string;
+  value: number;
+  type?: string;
+  category?: string;
+  color?: string;
+  percentage?: number;
+  extra?: Record<string, any>;
+}
+
+// 指标数据
+export interface MetricData {
+  id: string;
+  name: string;
+  value: number;
+  unit?: string;
+  change?: number;
+  changeType?: 'increase' | 'decrease' | 'stable';
+  target?: number;
+  status?: 'good' | 'warning' | 'critical';
+  trend?: TrendDataPoint[];
+  lastUpdated?: string;
+}
+
+// 仪表板数据
+export interface DashboardData {
+  overview: StatisticsOverview;
+  keyMetrics: MetricData[];
+  charts: {
+    assetDistribution: ChartData[];
+    utilizationTrend: TrendData;
+    departmentComparison: ComparisonData[];
+    recentActivities: RecentActivity[];
+  };
+  alerts: AlertRecord[];
+  lastUpdated: string;
+}
+
+// 统计摘要
+export interface StatisticsSummary {
+  totalAssets: number;
+  totalValue: number;
+  activeAssets: number;
+  maintenanceAssets: number;
+  utilizationRate: number;
+  growthRate: number;
+  topCategories: Array<{
+    category: string;
+    count: number;
+    value: number;
+  }>;
+  monthlyTrend: TrendData;
+  yearOverYearGrowth: number;
+}
+
+// 时间序列数据
+export interface TimeSeriesData {
+  timestamp: string;
+  value: number;
+  metric: string;
+  dimension?: string;
+}
+
+// 对比数据
+export interface ComparisonData {
+  name: string;
+  current: number;
+  previous: number;
+  change: number;
+  changePercentage: number;
+  trend: 'up' | 'down' | 'stable';
+}
+
+// 地理数据
+export interface GeographicData {
+  region: string;
+  latitude: number;
+  longitude: number;
+  value: number;
+  count: number;
+  density?: number;
+}
+
+// 最近活动
+export interface RecentActivity {
+  id: string;
+  type: string;
+  description: string;
+  timestamp: string;
+  user?: string;
+  assetId?: number;
+  assetName?: string;
+}
+
+// 报表数据
+export interface ReportData {
+  reportId: string;
+  reportName: string;
+  reportType: string;
+  data: any;
+  generatedAt: string;
+  generatedBy: string;
+  parameters?: Record<string, any>;
+}
+
+// 导出配置
+export interface ExportConfig {
+  format: 'pdf' | 'excel' | 'csv';
+  includeCharts?: boolean;
+  includeRawData?: boolean;
+  dateRange?: {
+    start: string;
+    end: string;
+  };
+  filters?: Record<string, any>;
+}
+
+// 资产统计
+export interface AssetStatistics extends StatisticsOverview {
+  byCategory: ChartData[];
+  byStatus: ChartData[];
+  byDepartment: ChartData[];
+  valueDistribution: ValueRangeDistribution[];
+}
+
+// 楼宇统计
+export interface BuildingStatistics {
+  totalBuildings: number;
+  totalFloors: number;
+  totalArea: number;
+  averageUtilization: number;
+  byType: ChartData[];
+  byStatus: ChartData[];
+}
+
+// 楼层统计
+export interface FloorStatistics {
+  totalFloors: number;
+  totalRooms: number;
+  occupiedRooms: number;
+  availableRooms: number;
+  occupancyRate: number;
+  byFunction: ChartData[];
+}
+
+// 房间统计
+export interface RoomStatistics {
+  totalRooms: number;
+  occupiedRooms: number;
+  availableRooms: number;
+  maintenanceRooms: number;
+  byType: ChartData[];
+  byStatus: ChartData[];
+  averageSize: number;
+}
+
+// 价值统计
+export interface ValueStatistics {
+  totalOriginalValue: number;
+  totalCurrentValue: number;
+  totalDepreciation: number;
+  averageValue: number;
+  distribution: ValueRangeDistribution[];
+  trend: TrendData;
+}
+
+// 使用统计
+export interface UsageStatistics {
+  id: string;
+  name: string;
+  totalCapacity: number;
+  usedCapacity: number;
+  utilizationRate: number;
+  peakUsage: number;
+  averageUsage: number;
+  trend: TrendDataPoint[];
+}
+
+// 实时数据
+export interface RealTimeData {
+  timestamp: string;
+  metrics: MetricData[];
+  alerts: AlertRecord[];
+  activities: RecentActivity[];
+  systemStatus: {
+    cpu: number;
+    memory: number;
+    disk: number;
+    network: number;
+  };
 } 

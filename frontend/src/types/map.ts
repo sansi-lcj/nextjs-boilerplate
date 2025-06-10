@@ -534,4 +534,77 @@ export interface MapExportResult {
     width: number;
     height: number;
   };
-} 
+}
+
+// 地图区域
+export interface MapRegion {
+  id: string;
+  name: string;
+  type: 'district' | 'street' | 'community' | 'custom';
+  level: number;
+  bounds: Bounds;
+  center: Coordinates;
+  zoom?: number;
+  properties?: Record<string, any>;
+}
+
+// 热力图数据（之前可能没有定义）
+export interface HeatmapData {
+  coordinates: Coordinates;
+  weight: number;
+  radius?: number;
+}
+
+// 聚类数据
+export interface ClusterData {
+  id: string;
+  coordinates: Coordinates;
+  count: number;
+  bounds: Bounds;
+  points?: MapPoint[];
+}
+
+// 路线数据
+export interface RouteData {
+  id?: string;
+  start: Coordinates;
+  end: Coordinates;
+  waypoints?: Coordinates[];
+  distance: number;
+  duration: number;
+  path: Coordinates[];
+  instructions?: string[];
+  mode: 'driving' | 'walking' | 'transit';
+}
+
+// POI（兴趣点）数据
+export interface POIData {
+  id: string;
+  name: string;
+  category: string;
+  coordinates: Coordinates;
+  address?: string;
+  phone?: string;
+  rating?: number;
+  tags?: string[];
+  distance?: number;
+}
+
+// 地理围栏数据
+export interface GeofenceData {
+  id: string;
+  name: string;
+  type: 'circle' | 'polygon' | 'rectangle';
+  center?: Coordinates;
+  radius?: number;
+  points?: Coordinates[];
+  bounds?: Bounds;
+  status: 'active' | 'inactive';
+  createdAt: string;
+  updatedAt?: string;
+  triggerOn?: 'enter' | 'exit' | 'both';
+  notificationEnabled?: boolean;
+}
+
+// 导出 SearchResult 别名，兼容旧代码
+export type SearchResult = MapSearchResult; 

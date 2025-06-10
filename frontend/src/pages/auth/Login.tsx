@@ -2,20 +2,18 @@ import React from 'react';
 import { Form, Input, Button, Card, message, Space, Typography } from 'antd';
 import { UserOutlined, LockOutlined, RocketOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { login } from '../../store/slices/authSlice';
+import useAuthStore from '../../store/slices/authSlice';
 import { LoginRequest } from '../../types/user';
 
 const { Title, Text } = Typography;
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.auth);
+  const { loading, login } = useAuthStore();
   
   const onFinish = async (values: LoginRequest) => {
     try {
-      await dispatch(login(values)).unwrap();
+      await login(values);
       message.success('登录成功');
       navigate('/');
     } catch (error: any) {

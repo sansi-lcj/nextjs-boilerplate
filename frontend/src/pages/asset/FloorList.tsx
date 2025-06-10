@@ -54,46 +54,50 @@ const FloorList: React.FC = () => {
       const response = await floorService.getFloors(params);
       
       // 使用模拟数据
-      if (!response.data.items || response.data.items.length === 0) {
+      if (!(response.data as any)?.data || (response.data as any).data.length === 0) {
         const mockFloors: Floor[] = [
           {
             id: 1,
-            floorCode: 'FL001',
-            floorName: '一楼',
-            buildingId: 1,
-            building: { id: 1, buildingName: '创新大厦' } as any,
-            floorNumber: 1,
-            floorType: 'ground' as const,
-            ceilingHeight: 3.5,
-            roomCount: 8,
-            totalArea: 1200,
-            usableArea: 1000,
-            status: 'normal',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            floor_name: '一楼',
+            building_id: 1,
+            building: { id: 1, building_name: '创新大厦' } as any,
+            floor_number: 1,
+            floor_area: 2500,
+            rentable_area: 2000,
+            rented_area: 1500,
+            avg_rent_price: 120,
+            occupancy_rate: 75,
+            status: 'normal' as const,
+            created_by: 1,
+            updated_by: 1,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
           },
           {
             id: 2,
-            floorCode: 'FL002',
-            floorName: '二楼',
-            buildingId: 1,
-            building: { id: 1, buildingName: '创新大厦' } as any,
-            floorNumber: 2,
-            floorType: 'office' as const,
-            ceilingHeight: 3.5,
-            roomCount: 10,
-            totalArea: 1200,
-            usableArea: 1000,
-            status: 'normal',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            floor_name: '二楼',
+            building_id: 1,
+            building: { id: 1, building_name: '创新大厦' } as any,
+            floor_number: 2,
+            floor_area: 2500,
+            rentable_area: 2000,
+            rented_area: 1000,
+            avg_rent_price: 100,
+            occupancy_rate: 50,
+            status: 'normal' as const,
+            created_by: 1,
+            updated_by: 1,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
           }
         ];
+        
+        console.log('设置楼层数据:', mockFloors);
         setFloors(mockFloors);
         setTotal(mockFloors.length);
       } else {
-        setFloors(response.data.items);
-        setTotal(response.data.total);
+        setFloors((response.data as any).data);
+        setTotal((response.data as any).total || 0);
       }
     } catch (error) {
       console.error('Failed to fetch floors:', error);

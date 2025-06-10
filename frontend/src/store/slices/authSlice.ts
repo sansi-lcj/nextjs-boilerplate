@@ -2,7 +2,7 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 import { User, LoginRequest, LoginResponse } from '../../types/user';
-import * as authService from '../../services/auth';
+import { authService, saveAuthInfo, clearAuthInfo, getStoredUser, isAuthenticated, getStoredRefreshToken } from '../../services/auth';
 import { MessageUtils } from '../../utils/message';
 
 export interface AuthState {
@@ -26,10 +26,10 @@ export interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
   subscribeWithSelector((set, get) => ({
-    user: authService.getStoredUser(),
+    user: getStoredUser(),
     token: localStorage.getItem('token'),
     refreshToken: localStorage.getItem('refreshToken'),
-    isAuthenticated: authService.isAuthenticated(),
+    isAuthenticated: isAuthenticated(),
     loading: false,
     error: null,
 
@@ -37,7 +37,7 @@ export const useAuthStore = create<AuthState>()(
       try {
         set({ loading: true, error: null });
         const response = await authService.login(credentials);
-        authService.saveAuthInfo(response);
+        saveAuthInfo(response);
         
         set({
           user: response.user,
@@ -65,7 +65,7 @@ export const useAuthStore = create<AuthState>()(
       try {
         set({ loading: true });
         await authService.logout();
-        authService.clearAuthInfo();
+        clearAuthInfo();
         
         set({
           user: null,
@@ -86,13 +86,13 @@ export const useAuthStore = create<AuthState>()(
 
     refreshTokenAsync: async () => {
       try {
-        const { refreshToken } = get();
+        const refreshToken = getStoredRefreshToken();
         if (!refreshToken) {
           throw new Error('No refresh token available');
         }
         
-        const response = await authService.refreshToken(refreshToken);
-        authService.saveAuthInfo(response);
+        const response = await authService.refreshToken({ refreshToken });
+        saveAuthInfo(response);
         
         set({
           token: response.token,
@@ -101,7 +101,7 @@ export const useAuthStore = create<AuthState>()(
         });
       } catch (error: any) {
         // Token 刷新失败，清除认证信息
-        authService.clearAuthInfo();
+        clearAuthInfo();
         set({
           user: null,
           token: null,
@@ -136,7 +136,7 @@ export const useAuthStore = create<AuthState>()(
     },
 
     clearAuth: () => {
-      authService.clearAuthInfo();
+      clearAuthInfo();
       set({
         user: null,
         token: null,

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../store';
+import useAuthStore from '../store/slices/authSlice';
+import type { Role } from '../types/user';
 
 // 权限代码定义
 export const PermissionCodes = {
@@ -123,8 +123,8 @@ interface UsePermissionReturn {
 export const usePermission = (): UsePermissionReturn => {
   const [userPermissions, setUserPermissions] = useState<string[]>([]);
   
-  // 从Redux store获取用户信息
-  const user = useSelector((state: RootState) => state.auth.user);
+  // 从 zustand store 获取用户信息
+  const user = useAuthStore(state => state.user);
   
   // 获取用户权限列表
   const getUserPermissions = useCallback((): string[] => {
@@ -134,7 +134,7 @@ export const usePermission = (): UsePermissionReturn => {
     const roles = user.roles || [];
     const permissions = new Set<string>();
     
-    roles.forEach(role => {
+    roles.forEach((role: Role) => {
       const roleCode = role.code;
       const rolePerms = RolePermissions[roleCode as keyof typeof RolePermissions] || [];
       rolePerms.forEach(perm => permissions.add(perm));
@@ -173,7 +173,7 @@ export const usePermission = (): UsePermissionReturn => {
   // 检查是否为管理员
   const isAdmin = useCallback((): boolean => {
     if (!user) return false;
-    return user.roles?.some(role => role.code === 'admin') || false;
+    return user.roles?.some((role: Role) => role.code === 'admin') || false;
   }, [user]);
   
   // 检查模块查看权限

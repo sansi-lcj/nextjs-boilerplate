@@ -1,14 +1,42 @@
 import { http } from '../utils/request';
-import type { 
-  LoginRequest, 
-  LoginResponse, 
-  RefreshTokenRequest,
-  RegisterRequest,
-  User,
-  UpdatePasswordRequest,
-  ResetPasswordRequest
-} from '../types/auth';
-import type { ApiResponse } from '../types/common';
+import type { User, Role, LoginRequest, LoginResponse, ChangePasswordRequest } from '../types/user';
+import type { LoginFormData } from '../types/auth';
+import type { ApiResponse } from '../types/index';
+
+// 本地存储键名常量
+const TOKEN_KEY = 'accessToken';
+const REFRESH_TOKEN_KEY = 'refreshToken';
+const USER_KEY = 'user';
+
+// 定义本地接口
+interface RefreshTokenRequest {
+  refreshToken: string;
+}
+
+interface RegisterRequest {
+  username: string;
+  password: string;
+  name: string;
+  email?: string;
+  phone?: string;
+}
+
+interface UpdatePasswordRequest {
+  old_password: string;
+  new_password: string;
+  confirm_password: string;
+}
+
+interface ResetPasswordRequest {
+  email: string;
+  code: string;
+  new_password: string;
+}
+
+// 扩展LoginResponse来包含refreshToken
+interface ExtendedLoginResponse extends LoginResponse {
+  refreshToken?: string;
+}
 
 /**
  * 认证服务类
@@ -18,8 +46,8 @@ export class AuthService {
    * 用户登录
    */
   async login(data: LoginRequest): Promise<LoginResponse> {
-    const response = await http.post<ApiResponse<LoginResponse>>('/auth/login', data);
-    return response.data;
+    const response = await http.post<LoginResponse>('/auth/login', data);
+    return response;
   }
 
   /**
@@ -108,7 +136,7 @@ export class AuthService {
    */
   async hasRole(role: string): Promise<boolean> {
     const user = await this.getCurrentUser();
-    return user.roles.some(r => r.roleCode === role);
+    return user.roles ? user.roles.some((r: Role) => r.code === role) : false;
   }
 }
 
@@ -124,7 +152,7 @@ export const changePassword = async (data: {
 };
 
 // 存储认证信息
-export const saveAuthInfo = (authData: LoginResponse): void => {
+export const saveAuthInfo = (authData: ExtendedLoginResponse): void => {
   localStorage.setItem(TOKEN_KEY, authData.token);
   if (authData.refreshToken) {
     localStorage.setItem(REFRESH_TOKEN_KEY, authData.refreshToken);
@@ -221,5 +249,8 @@ export const autoRefreshToken = async (): Promise<LoginResponse | null> => {
 // 检查是否为管理员
 export const isAdmin = (): boolean => {
   const user = getStoredUser();
-  return user && (user.roles.some(r => r.roleCode === 'admin') || user.roles.some(r => r.roleCode === 'super_admin'));
+  return !!(user && user.roles && (
+    user.roles.some((r: Role) => r.code === 'admin') || 
+    user.roles.some((r: Role) => r.code === 'super_admin')
+  ));
 };

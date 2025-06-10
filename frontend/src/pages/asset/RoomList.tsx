@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Space, Card, Input, Select, message, Modal, Form, InputNumber, Popconfirm, Tag } from 'antd';
+import { Table, Button, Space, Card, Input, Select, message, Modal, Form, InputNumber, Popconfirm, Tag, Switch } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, HomeOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { Room, RoomQueryParams, Floor, Building } from '../../types/asset';
@@ -36,7 +36,7 @@ const RoomList: React.FC = () => {
       label: '所属楼层',
       type: 'select',
       options: floors.map(floor => ({
-        label: floor.floorName,
+        label: floor.floor_name || '',
         value: floor.id,
       })),
     },
@@ -90,98 +90,98 @@ const RoomList: React.FC = () => {
       const mockRooms: Room[] = [
         {
           id: 1,
-          roomCode: 'R001',
-          roomName: '会议室A',
-          roomNumber: '101',
-          floorId: 1,
-          floor: { id: 1, floorName: 'F1 大堂层' } as Floor,
-          roomType: 'meeting',
-          area: 50,
-          usableArea: 45,
-          capacity: 12,
-          status: 'available',
-          occupancyStatus: 'vacant',
-          rent: 5000,
-          rentUnit: 'monthly',
-          description: '大型会议室',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          room_number: '101',
+          floor_id: 1,
+          floor: { id: 1, floor_name: 'F1 大堂层', floor_number: 1 } as Floor,
+          room_type: 'meeting' as const,
+          room_area: 50,
+          rent_price: 3000,
+          decoration: 'luxury' as const,
+          orientation: 'south' as const,
+          has_window: true,
+          has_ac: true,
+          description: '豪华会议室，配备现代化设备',
+          status: 'available' as const,
+          created_by: 1,
+          updated_by: 1,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         },
         {
           id: 2,
-          roomCode: 'R002',
-          roomName: '办公室B',
-          roomNumber: '1001',
-          floorId: 2,
-          floor: { id: 2, floorName: 'F10 办公层' } as Floor,
-          roomType: 'office',
-          area: 80,
-          usableArea: 75,
-          capacity: 6,
-          status: 'available',
-          occupancyStatus: 'occupied',
-          rent: 8000,
-          rentUnit: 'monthly',
-          description: '标准办公室',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          room_number: '1001',
+          floor_id: 2,
+          floor: { id: 2, floor_name: 'F10 办公层', floor_number: 10 } as Floor,
+          room_type: 'office' as const,
+          room_area: 80,
+          rent_price: 5000,
+          decoration: 'luxury' as const,
+          orientation: 'south' as const,
+          has_window: true,
+          has_ac: true,
+          description: '景观办公室，视野开阔',
+          status: 'rented' as const,
+          created_by: 1,
+          updated_by: 1,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         },
         {
           id: 3,
-          roomCode: 'R003',
-          roomName: '小型会议室',
-          roomNumber: '2001',
-          floorId: 3,
-          floor: { id: 3, floorName: 'F20 顶层办公' } as Floor,
-          roomType: 'meeting',
-          area: 30,
-          usableArea: 28,
-          capacity: 6,
-          status: 'available',
-          occupancyStatus: 'vacant',
-          rent: 3000,
-          rentUnit: 'monthly',
-          description: '小型讨论室',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          room_number: '2001',
+          floor_id: 3,
+          floor: { id: 3, floor_name: 'F20 顶层办公', floor_number: 20 } as Floor,
+          room_type: 'meeting' as const,
+          room_area: 30,
+          rent_price: 2000,
+          decoration: 'simple' as const,
+          orientation: 'east' as const,
+          has_window: true,
+          has_ac: true,
+          description: '小型会议室，适合6人团队',
+          status: 'available' as const,
+          created_by: 1,
+          updated_by: 1,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         },
         {
           id: 4,
-          roomCode: 'R004',
-          roomName: '开放办公区',
-          roomNumber: '1002',
-          floorId: 2,
-          floor: { id: 2, floorName: 'F10 办公层' } as Floor,
-          roomType: 'office',
-          area: 120,
-          usableArea: 110,
-          capacity: 20,
-          status: 'available',
-          occupancyStatus: 'occupied',
-          rent: 12000,
-          rentUnit: 'monthly',
-          description: '开放式办公区域',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          room_number: '1002',
+          floor_id: 2,
+          floor: { id: 2, floor_name: 'F10 办公层', floor_number: 10 } as Floor,
+          room_type: 'office' as const,
+          room_area: 120,
+          rent_price: 8000,
+          decoration: 'luxury' as const,
+          orientation: 'south' as const,
+          has_window: true,
+          has_ac: true,
+          description: '大型开放式办公空间',
+          status: 'available' as const,
+          created_by: 1,
+          updated_by: 1,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         },
         {
           id: 5,
-          roomCode: 'R005',
-          roomName: '储藏室',
-          roomNumber: '1003',
-          floorId: 2,
-          floor: { id: 2, floorName: 'F10 办公层' } as Floor,
-          roomType: 'storage',
-          area: 20,
-          usableArea: 18,
-          capacity: 0,
-          status: 'available',
-          occupancyStatus: 'vacant',
-          rent: 1000,
-          rentUnit: 'monthly',
+          room_number: '1003',
+          floor_id: 2,
+          floor: { id: 2, floor_name: 'F10 办公层', floor_number: 10 } as Floor,
+          room_type: 'other' as const,
+          room_area: 20,
+          rent_price: 1000,
+          decoration: 'blank' as const,
+          orientation: 'north' as const,
+          has_window: false,
+          has_ac: false,
           description: '文件储藏室',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          status: 'available' as const,
+          created_by: 1,
+          updated_by: 1,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         },
       ];
       
@@ -200,14 +200,14 @@ const RoomList: React.FC = () => {
   const fetchFloors = async () => {
     try {
       const response = await floorService.getFloors({ page: 1, pageSize: 100 });
-      setFloors(response.data.items || []);
+      setFloors((response.data as any)?.items || []);
     } catch (error) {
       console.error('Error fetching floors:', error);
       // 设置模拟数据
       setFloors([
-        { id: 1, floorName: 'F1 大堂层', floorNumber: 1 } as Floor,
-        { id: 2, floorName: 'F10 办公层', floorNumber: 10 } as Floor,
-        { id: 3, floorName: 'F20 顶层办公', floorNumber: 20 } as Floor,
+        { id: 1, floor_name: 'F1 大堂层', floor_number: 1 } as Floor,
+        { id: 2, floor_name: 'F10 办公层', floor_number: 10 } as Floor,
+        { id: 3, floor_name: 'F20 顶层办公', floor_number: 20 } as Floor,
       ]);
     }
   };
@@ -216,13 +216,13 @@ const RoomList: React.FC = () => {
   const fetchBuildings = async () => {
     try {
       const response = await buildingService.getBuildings({ page: 1, pageSize: 100 });
-      setBuildings(response.data.items || []);
+      setBuildings((response.data as any)?.items || []);
     } catch (error) {
       console.error('Error fetching buildings:', error);
       // 设置模拟数据
       setBuildings([
-        { id: 1, buildingName: '创新大厦A座' } as Building,
-        { id: 2, buildingName: '创新大厦B座' } as Building,
+        { id: 1, building_name: '创新大厦A座' } as Building,
+        { id: 2, building_name: '创新大厦B座' } as Building,
       ]);
     }
   };
@@ -279,18 +279,17 @@ const RoomList: React.FC = () => {
   const handleEdit = (room: Room) => {
     setEditingRoom(room);
     form.setFieldsValue({
-      roomCode: room.roomCode,
-      roomName: room.roomName,
-      roomNumber: room.roomNumber,
-      floorId: room.floorId,
-      roomType: room.roomType,
-      area: room.area,
-      usableArea: room.usableArea,
-      capacity: room.capacity,
-      status: room.status,
-      rent: room.rent,
-      rentUnit: room.rentUnit,
+      room_number: room.room_number,
+      floor_id: room.floor_id,
+      room_type: room.room_type,
+      room_area: room.room_area,
+      rent_price: room.rent_price,
+      decoration: room.decoration,
+      orientation: room.orientation,
+      has_window: room.has_window,
+      has_ac: room.has_ac,
       description: room.description,
+      status: room.status,
     });
     setModalVisible(true);
   };
@@ -304,60 +303,35 @@ const RoomList: React.FC = () => {
 
   const columns: ColumnsType<Room> = [
     {
-      title: '房间编码',
-      dataIndex: 'roomCode',
-      key: 'roomCode',
+      title: '房间号',
+      dataIndex: 'room_number',
+      key: 'room_number',
       width: 120,
       fixed: 'left',
-      sorter: (a, b) => (a.roomCode || '').localeCompare(b.roomCode || ''),
-      render: (code: string) => (
-        <span style={{ fontFamily: 'Monaco, monospace', fontSize: '12px', color: '#666' }}>
-          {code}
-        </span>
-      ),
-    },
-    {
-      title: '房间名称',
-      dataIndex: 'roomName',
-      key: 'roomName',
-      width: 200,
-      fixed: 'left',
-      sorter: (a, b) => (a.roomName || '').localeCompare(b.roomName || ''),
-      render: (name: string) => (
-        <span style={{ fontWeight: 600, color: '#1890ff' }}>{name}</span>
-      ),
-    },
-    {
-      title: '房间号',
-      dataIndex: 'roomNumber',
-      key: 'roomNumber',
-      width: 100,
-      sorter: (a, b) => (a.roomNumber || '').localeCompare(b.roomNumber || ''),
+      sorter: (a, b) => (a.room_number || '').localeCompare(b.room_number || ''),
       render: (number: string) => (
         <Tag color="blue">{number}</Tag>
       ),
     },
     {
       title: '所属楼层',
-      dataIndex: ['floor', 'floorName'],
-      key: 'floorName',
+      dataIndex: ['floor', 'floor_name'],
+      key: 'floor_name',
       width: 150,
-      render: (floorName: string) => (
-        <Tag color="cyan">{floorName}</Tag>
+      render: (floor_name: string) => (
+        <Tag color="cyan">{floor_name}</Tag>
       ),
     },
     {
       title: '房间类型',
-      dataIndex: 'roomType',
-      key: 'roomType',
+      dataIndex: 'room_type',
+      key: 'room_type',
       width: 120,
       render: (type: string) => {
         const typeConfig: Record<string, { text: string; color: string }> = {
           'office': { text: '办公室', color: 'blue' },
           'meeting': { text: '会议室', color: 'green' },
-          'storage': { text: '储藏室', color: 'orange' },
-          'restroom': { text: '洗手间', color: 'purple' },
-          'pantry': { text: '茶水间', color: 'magenta' },
+          'other': { text: '其他', color: 'orange' },
         };
         const config = typeConfig[type] || { text: type, color: 'default' };
         return <Tag color={config.color}>{config.text}</Tag>;
@@ -365,65 +339,56 @@ const RoomList: React.FC = () => {
     },
     {
       title: '面积 (㎡)',
-      dataIndex: 'area',
-      key: 'area',
+      dataIndex: 'room_area',
+      key: 'room_area',
       width: 100,
-      sorter: (a, b) => (a.area || 0) - (b.area || 0),
-      render: (area: number) => (
+      sorter: (a, b) => (a.room_area || 0) - (b.room_area || 0),
+      render: (room_area: number) => (
         <span style={{ fontWeight: 500 }}>
-          {area ? area.toLocaleString() : '-'}
-        </span>
-      ),
-    },
-    {
-      title: '可用面积 (㎡)',
-      dataIndex: 'usableArea',
-      key: 'usableArea',
-      width: 120,
-      sorter: (a, b) => (a.usableArea || 0) - (b.usableArea || 0),
-      render: (area: number) => (
-        <span style={{ fontWeight: 500 }}>
-          {area ? area.toLocaleString() : '-'}
-        </span>
-      ),
-    },
-    {
-      title: '容纳人数',
-      dataIndex: 'capacity',
-      key: 'capacity',
-      width: 100,
-      sorter: (a, b) => (a.capacity || 0) - (b.capacity || 0),
-      render: (capacity: number) => (
-        <span style={{ fontWeight: 500, color: '#722ed1' }}>
-          {capacity ? `${capacity}人` : '-'}
+          {room_area ? room_area.toLocaleString() : '-'}
         </span>
       ),
     },
     {
       title: '租金 (元/月)',
-      dataIndex: 'rent',
-      key: 'rent',
+      dataIndex: 'rent_price',
+      key: 'rent_price',
       width: 120,
-      sorter: (a, b) => (a.rent || 0) - (b.rent || 0),
-      render: (rent: number) => (
+      sorter: (a, b) => (a.rent_price || 0) - (b.rent_price || 0),
+      render: (rent_price: number) => (
         <span style={{ fontWeight: 500, color: '#52c41a' }}>
-          {rent ? `¥${rent.toLocaleString()}` : '-'}
+          {rent_price ? `¥${rent_price.toLocaleString()}` : '-'}
         </span>
       ),
     },
     {
-      title: '使用状态',
-      dataIndex: 'occupancyStatus',
-      key: 'occupancyStatus',
+      title: '装修情况',
+      dataIndex: 'decoration',
+      key: 'decoration',
       width: 100,
-      render: (status: string) => {
-        const statusConfig: Record<string, { text: string; color: string }> = {
-          'vacant': { text: '空闲', color: 'default' },
-          'occupied': { text: '使用中', color: 'success' },
-          'reserved': { text: '预订', color: 'warning' },
+      render: (decoration: string) => {
+        const decorationConfig: Record<string, { text: string; color: string }> = {
+          'blank': { text: '毛坯', color: 'default' },
+          'simple': { text: '简装', color: 'blue' },
+          'luxury': { text: '精装', color: 'gold' },
         };
-        const config = statusConfig[status] || { text: status, color: 'default' };
+        const config = decorationConfig[decoration] || { text: decoration, color: 'default' };
         return <Tag color={config.color}>{config.text}</Tag>;
+      },
+    },
+    {
+      title: '朝向',
+      dataIndex: 'orientation',
+      key: 'orientation',
+      width: 80,
+      render: (orientation: string) => {
+        const orientationConfig: Record<string, string> = {
+          'east': '东',
+          'south': '南',
+          'west': '西',
+          'north': '北',
+        };
+        return orientationConfig[orientation] || orientation;
       },
     },
     {
@@ -432,16 +397,16 @@ const RoomList: React.FC = () => {
       key: 'status',
       width: 100,
       filters: [
-        { text: '可用', value: 'available' },
+        { text: '可租', value: 'available' },
+        { text: '已租', value: 'rented' },
         { text: '维护中', value: 'maintenance' },
-        { text: '停用', value: 'disabled' },
       ],
       onFilter: (value, record) => record.status === value,
       render: (status: string) => {
         const statusConfig: Record<string, { text: string; color: string }> = {
-          'available': { text: '可用', color: 'success' },
-          'maintenance': { text: '维护中', color: 'warning' },
-          'disabled': { text: '停用', color: 'default' },
+          'available': { text: '可租', color: 'success' },
+          'rented': { text: '已租', color: 'warning' },
+          'maintenance': { text: '维护中', color: 'default' },
         };
         const config = statusConfig[status] || { text: status, color: 'default' };
         return <Tag color={config.color}>{config.text}</Tag>;
@@ -547,23 +512,7 @@ const RoomList: React.FC = () => {
             style={{ marginTop: 16 }}
           >
             <Form.Item
-              name="roomCode"
-              label="房间编码"
-              rules={[{ required: true, message: '请输入房间编码' }]}
-            >
-              <Input placeholder="请输入房间编码，如 R001" />
-            </Form.Item>
-
-            <Form.Item
-              name="roomName"
-              label="房间名称"
-              rules={[{ required: true, message: '请输入房间名称' }]}
-            >
-              <Input placeholder="请输入房间名称" />
-            </Form.Item>
-
-            <Form.Item
-              name="roomNumber"
+              name="room_number"
               label="房间号"
               rules={[{ required: true, message: '请输入房间号' }]}
             >
@@ -571,35 +520,33 @@ const RoomList: React.FC = () => {
             </Form.Item>
 
             <Form.Item
-              name="floorId"
+              name="floor_id"
               label="所属楼层"
               rules={[{ required: true, message: '请选择所属楼层' }]}
             >
               <Select placeholder="请选择所属楼层">
                 {floors.map(floor => (
                   <Select.Option key={floor.id} value={floor.id}>
-                    {floor.floorName}
+                    {floor.floor_name}
                   </Select.Option>
                 ))}
               </Select>
             </Form.Item>
 
             <Form.Item
-              name="roomType"
+              name="room_type"
               label="房间类型"
               rules={[{ required: true, message: '请选择房间类型' }]}
             >
               <Select placeholder="请选择房间类型">
                 <Select.Option value="office">办公室</Select.Option>
                 <Select.Option value="meeting">会议室</Select.Option>
-                <Select.Option value="storage">储藏室</Select.Option>
-                <Select.Option value="restroom">洗手间</Select.Option>
-                <Select.Option value="pantry">茶水间</Select.Option>
+                <Select.Option value="other">其他</Select.Option>
               </Select>
             </Form.Item>
 
             <Form.Item
-              name="area"
+              name="room_area"
               label="面积(㎡)"
               rules={[{ required: true, message: '请输入面积' }]}
             >
@@ -611,30 +558,7 @@ const RoomList: React.FC = () => {
             </Form.Item>
 
             <Form.Item
-              name="usableArea"
-              label="可用面积(㎡)"
-              rules={[{ required: true, message: '请输入可用面积' }]}
-            >
-              <InputNumber
-                placeholder="请输入可用面积"
-                min={0}
-                style={{ width: '100%' }}
-              />
-            </Form.Item>
-
-            <Form.Item
-              name="capacity"
-              label="容纳人数"
-            >
-              <InputNumber
-                placeholder="请输入容纳人数"
-                min={0}
-                style={{ width: '100%' }}
-              />
-            </Form.Item>
-
-            <Form.Item
-              name="rent"
+              name="rent_price"
               label="租金(元/月)"
             >
               <InputNumber
@@ -642,6 +566,45 @@ const RoomList: React.FC = () => {
                 min={0}
                 style={{ width: '100%' }}
               />
+            </Form.Item>
+
+            <Form.Item
+              name="decoration"
+              label="装修情况"
+            >
+              <Select placeholder="请选择装修情况">
+                <Select.Option value="blank">毛坯</Select.Option>
+                <Select.Option value="simple">简装</Select.Option>
+                <Select.Option value="luxury">精装</Select.Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              name="orientation"
+              label="朝向"
+            >
+              <Select placeholder="请选择朝向">
+                <Select.Option value="east">东</Select.Option>
+                <Select.Option value="south">南</Select.Option>
+                <Select.Option value="west">西</Select.Option>
+                <Select.Option value="north">北</Select.Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              name="has_window"
+              label="是否有窗"
+              valuePropName="checked"
+            >
+              <Switch />
+            </Form.Item>
+
+            <Form.Item
+              name="has_ac"
+              label="是否有空调"
+              valuePropName="checked"
+            >
+              <Switch />
             </Form.Item>
 
             <Form.Item

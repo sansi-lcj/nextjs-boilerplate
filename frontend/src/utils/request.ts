@@ -12,6 +12,7 @@ export interface RequestConfig extends AxiosRequestConfig {
   skipErrorHandler?: boolean;
   retryCount?: number;
   retryDelay?: number;
+  retries?: number;
 }
 
 // 响应数据接口
@@ -60,7 +61,7 @@ class HttpClient {
   constructor() {
     this.retryConfig = DEFAULT_RETRY_CONFIG;
     this.instance = axios.create({
-      baseURL: process.env.REACT_APP_API_BASE_URL || '/api/v1',
+      baseURL: '/api/v1',
       timeout: 30000,
       headers: {
         'Content-Type': 'application/json',
@@ -257,9 +258,12 @@ class HttpClient {
   /**
    * GET 请求
    */
-  async get<T = any>(url: string, config?: RequestConfig): Promise<T> {
-    const response = await this.instance.get<ResponseData<T>>(url, config);
-    return response.data;
+  async get<T = any>(url: string, params?: any, config?: RequestConfig): Promise<T> {
+    const response = await this.instance.get<ResponseData<T>>(url, {
+      ...config,
+      params: params
+    });
+    return response.data.data;
   }
 
   /**
@@ -267,7 +271,7 @@ class HttpClient {
    */
   async post<T = any>(url: string, data?: any, config?: RequestConfig): Promise<T> {
     const response = await this.instance.post<ResponseData<T>>(url, data, config);
-    return response.data;
+    return response.data.data;
   }
 
   /**
@@ -275,7 +279,7 @@ class HttpClient {
    */
   async put<T = any>(url: string, data?: any, config?: RequestConfig): Promise<T> {
     const response = await this.instance.put<ResponseData<T>>(url, data, config);
-    return response.data;
+    return response.data.data;
   }
 
   /**
@@ -283,7 +287,7 @@ class HttpClient {
    */
   async patch<T = any>(url: string, data?: any, config?: RequestConfig): Promise<T> {
     const response = await this.instance.patch<ResponseData<T>>(url, data, config);
-    return response.data;
+    return response.data.data;
   }
 
   /**
@@ -291,7 +295,7 @@ class HttpClient {
    */
   async delete<T = any>(url: string, config?: RequestConfig): Promise<T> {
     const response = await this.instance.delete<ResponseData<T>>(url, config);
-    return response.data;
+    return response.data.data;
   }
 
   /**
@@ -317,7 +321,7 @@ class HttpClient {
       },
     });
     
-    return response.data;
+    return response.data.data;
   }
 
   /**
@@ -408,9 +412,6 @@ export const http = new HttpClient();
 
 // 导出默认实例
 export default http;
-
-// 导出类型
-export type { RequestConfig, ResponseData, ErrorResponse };
 
 // 便捷方法（向后兼容）
 export const get = http.get.bind(http);

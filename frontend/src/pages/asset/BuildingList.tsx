@@ -14,21 +14,21 @@ const BuildingList: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchParams, setSearchParams] = useState({
-    buildingName: '',
-    buildingType: '',
-    assetId: '',
+    building_name: '',
+    building_type: '',
+    asset_id: '',
   });
 
   // 搜索过滤字段配置
   const filterFields: FilterField[] = [
     {
-      key: 'buildingName',
+      key: 'building_name',
       label: '楼宇名称',
       type: 'search',
       placeholder: '请输入楼宇名称搜索',
     },
     {
-      key: 'buildingType',
+      key: 'building_type',
       label: '楼宇类型',
       type: 'select',
       options: [
@@ -79,91 +79,106 @@ const BuildingList: React.FC = () => {
       const mockBuildings: Building[] = [
         {
           id: 1,
-          buildingCode: 'BD001',
-          buildingName: '创新大厦A座',
-          buildingType: 'office',
-          assetId: 1,
-          asset: { id: 1, assetName: '科技园区' } as any,
-          totalArea: 15000,
-          buildArea: 12000,
-          floorCount: 20,
-          structure: 'concrete',
-          status: 'normal',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          building_code: 'B001',
+          building_name: '创新大厦',
+          building_type: 'office',
+          asset_id: 1,
+          asset: { id: 1, asset_name: '科技园区' } as any,
+          total_area: 15000,
+          rentable_area: 13000,
+          total_floors: 20,
+          underground_floors: 2,
+          property_company: '物业管理有限公司',
+          status: 'normal' as const,
+          created_by: 1,
+          updated_by: 1,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         },
         {
           id: 2,
-          buildingCode: 'BD002',
-          buildingName: '创新大厦B座',
-          buildingType: 'commercial',
-          assetId: 1,
-          asset: { id: 1, assetName: '科技园区' } as any,
-          totalArea: 12000,
-          buildArea: 10000,
-          floorCount: 15,
-          structure: 'steel',
-          status: 'normal',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          building_code: 'B002',
+          building_name: '科技园A座',
+          building_type: 'industrial',
+          asset_id: 2,
+          asset: { id: 2, asset_name: '商业综合体' } as any,
+          total_area: 12000,
+          rentable_area: 10000,
+          total_floors: 15,
+          underground_floors: 1,
+          property_company: '园区物业',
+          status: 'normal' as const,
+          created_by: 1,
+          updated_by: 1,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         },
         {
           id: 3,
-          buildingCode: 'BD003',
-          buildingName: '商业广场',
-          buildingType: 'commercial',
-          assetId: 2,
-          asset: { id: 2, assetName: '商业综合体' } as any,
-          totalArea: 8000,
-          buildArea: 7200,
-          floorCount: 8,
-          structure: 'mixed',
-          status: 'normal',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          building_code: 'B003',
+          building_name: '商业中心1号楼',
+          building_type: 'commercial',
+          asset_id: 3,
+          asset: { id: 3, asset_name: '商业综合体' } as any,
+          total_area: 8000,
+          rentable_area: 7200,
+          total_floors: 8,
+          underground_floors: 2,
+          property_company: '商业物业管理',
+          status: 'normal' as const,
+          created_by: 1,
+          updated_by: 1,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         },
         {
           id: 4,
-          buildingCode: 'BD004',
-          buildingName: '研发中心',
-          buildingType: 'office',
-          assetId: 1,
-          asset: { id: 1, assetName: '科技园区' } as any,
-          totalArea: 18000,
-          buildArea: 16000,
-          floorCount: 25,
-          structure: 'concrete',
-          status: 'normal',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          building_code: 'B004',
+          building_name: '办公楼D座',
+          building_type: 'office',
+          asset_id: 1,
+          asset: { id: 1, asset_name: '科技园区' } as any,
+          total_area: 18000,
+          rentable_area: 16000,
+          total_floors: 25,
+          underground_floors: 3,
+          property_company: '物业管理有限公司',
+          status: 'normal' as const,
+          created_by: 1,
+          updated_by: 1,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         },
         {
           id: 5,
-          buildingCode: 'BD005',
-          buildingName: '员工餐厅',
-          buildingType: 'auxiliary',
-          assetId: 1,
-          asset: { id: 1, assetName: '科技园区' } as any,
-          totalArea: 3000,
-          buildArea: 2800,
-          floorCount: 3,
-          structure: 'steel',
-          status: 'normal',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          building_code: 'B005',
+          building_name: '研发中心',
+          building_type: 'auxiliary',
+          asset_id: 2,
+          asset: { id: 2, asset_name: '商业综合体' } as any,
+          total_area: 3000,
+          rentable_area: 2800,
+          total_floors: 3,
+          underground_floors: 0,
+          property_company: '后勤管理部',
+          status: 'normal' as const,
+          created_by: 1,
+          updated_by: 1,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         }
       ];
       
       // 应用搜索过滤
       let filteredBuildings = mockBuildings;
-      if (searchParams.buildingName) {
+      if (searchParams.building_name) {
         filteredBuildings = filteredBuildings.filter(building =>
-          building.buildingName.includes(searchParams.buildingName)
+          building.building_name.includes(searchParams.building_name)
         );
       }
-      if (searchParams.buildingType) {
+      if (searchParams.building_type) {
         filteredBuildings = filteredBuildings.filter(building =>
-          building.buildingType === searchParams.buildingType
+          building.building_type === searchParams.building_type
         );
       }
       
@@ -186,16 +201,16 @@ const BuildingList: React.FC = () => {
   // 处理重置
   const handleReset = () => {
     setSearchParams({
-      buildingName: '',
-      buildingType: '',
-      assetId: '',
+      building_name: '',
+      building_type: '',
+      asset_id: '',
     });
     setPage(1);
   };
 
   const handleEdit = (building: Building) => {
     console.log('编辑楼宇:', building);
-    message.info(`编辑楼宇: ${building.buildingName}`);
+    message.info(`编辑楼宇: ${building.building_name}`);
     // TODO: 实现编辑功能
   };
 
@@ -223,11 +238,11 @@ const BuildingList: React.FC = () => {
   const columns: ColumnsType<Building> = [
     {
       title: '楼宇编码',
-      dataIndex: 'buildingCode',
-      key: 'buildingCode',
+      dataIndex: 'building_code',
+      key: 'building_code',
       width: 120,
       fixed: 'left',
-      sorter: (a, b) => (a.buildingCode || '').localeCompare(b.buildingCode || ''),
+      sorter: (a, b) => (a.building_code || '').localeCompare(b.building_code || ''),
       render: (code: string) => (
         <span 
           className="building-code"
@@ -248,11 +263,11 @@ const BuildingList: React.FC = () => {
     },
     {
       title: '楼宇名称',
-      dataIndex: 'buildingName',
-      key: 'buildingName',
+      dataIndex: 'building_name',
+      key: 'building_name',
       width: 200,
       fixed: 'left',
-      sorter: (a, b) => (a.buildingName || '').localeCompare(b.buildingName || ''),
+      sorter: (a, b) => (a.building_name || '').localeCompare(b.building_name || ''),
       render: (name: string) => (
         <span 
           className="building-name"
@@ -271,10 +286,10 @@ const BuildingList: React.FC = () => {
     },
     {
       title: '所属资产',
-      dataIndex: ['asset', 'assetName'],
-      key: 'assetName',
+      dataIndex: ['asset', 'asset_name'],
+      key: 'asset_name',
       width: 180,
-      render: (assetName: string) => (
+      render: (asset_name: string) => (
         <Tag 
           className="tag-enhanced"
           style={{
@@ -286,14 +301,14 @@ const BuildingList: React.FC = () => {
             padding: '4px 12px'
           }}
         >
-          {assetName}
+          {asset_name}
         </Tag>
       ),
     },
     {
       title: '楼宇类型',
-      dataIndex: 'buildingType',
-      key: 'buildingType',
+      dataIndex: 'building_type',
+      key: 'building_type',
       width: 120,
       render: (type: string) => {
         const typeConfig: Record<string, { text: string; gradient: string }> = {
@@ -340,60 +355,46 @@ const BuildingList: React.FC = () => {
       },
     },
     {
-      title: '总面积 (㎡)',
-      dataIndex: 'totalArea',
-      key: 'totalArea',
+      title: '总面积',
+      dataIndex: 'total_area',
+      key: 'total_area',
       width: 120,
-      sorter: (a, b) => (a.totalArea || 0) - (b.totalArea || 0),
+      sorter: (a, b) => (a.total_area || 0) - (b.total_area || 0),
       render: (area: number) => (
-        <div style={{ textAlign: 'right' }}>
-          <span 
-            style={{ 
-              fontWeight: 600,
-              fontSize: '13px',
-              color: '#374151',
-              background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%)',
-              padding: '2px 8px',
-              borderRadius: '6px',
-              border: '1px solid rgba(16, 185, 129, 0.2)'
-            }}
-          >
-            {area ? area.toLocaleString('zh-CN') : '-'}
-          </span>
-        </div>
+        <span 
+          style={{ 
+            fontWeight: 500,
+            color: '#1890ff' 
+          }}
+        >
+          {area ? `${area.toLocaleString()} ㎡` : '-'}
+        </span>
       ),
     },
     {
-      title: '建筑面积 (㎡)',
-      dataIndex: 'buildArea',
-      key: 'buildArea',
-      width: 130,
-      sorter: (a, b) => (a.buildArea || 0) - (b.buildArea || 0),
+      title: '可租面积',
+      dataIndex: 'rentable_area',
+      key: 'rentable_area',
+      width: 120,
+      sorter: (a, b) => (a.rentable_area || 0) - (b.rentable_area || 0),
       render: (area: number) => (
-        <div style={{ textAlign: 'right' }}>
-          <span 
-            style={{ 
-              fontWeight: 600,
-              fontSize: '13px',
-              color: '#374151',
-              background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%)',
-              padding: '2px 8px',
-              borderRadius: '6px',
-              border: '1px solid rgba(59, 130, 246, 0.2)'
-            }}
-          >
-            {area ? area.toLocaleString('zh-CN') : '-'}
-          </span>
-        </div>
+        <span 
+          style={{ 
+            fontWeight: 500,
+            color: '#52c41a' 
+          }}
+        >
+          {area ? `${area.toLocaleString()} ㎡` : '-'}
+        </span>
       ),
     },
     {
       title: '楼层数',
-      dataIndex: 'floorCount',
-      key: 'floorCount',
+      dataIndex: 'total_floors',
+      key: 'total_floors',
       width: 100,
-      sorter: (a, b) => (a.floorCount || 0) - (b.floorCount || 0),
-      render: (count: number) => (
+      sorter: (a, b) => (a.total_floors || 0) - (b.total_floors || 0),
+      render: (floors: number) => (
         <div style={{ textAlign: 'center' }}>
           <span 
             style={{ 
@@ -405,50 +406,10 @@ const BuildingList: React.FC = () => {
               backgroundClip: 'text'
             }}
           >
-            {count ? `${count}层` : '-'}
+            {floors ? `${floors}层` : '-'}
           </span>
         </div>
       ),
-    },
-    {
-      title: '结构类型',
-      dataIndex: 'structure',
-      key: 'structure',
-      width: 120,
-      render: (structure: string) => {
-        const structureConfig: Record<string, { text: string; gradient: string }> = {
-          'concrete': { 
-            text: '混凝土', 
-            gradient: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)' 
-          },
-          'steel': { 
-            text: '钢结构', 
-            gradient: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' 
-          },
-          'mixed': { 
-            text: '混合结构', 
-            gradient: 'linear-gradient(135deg, #3730a3 0%, #312e81 100%)' 
-          },
-        };
-        const config = structureConfig[structure] || { 
-          text: structure, 
-          gradient: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)' 
-        };
-        return (
-          <Tag 
-            style={{
-              background: config.gradient,
-              color: '#fff',
-              border: 'none',
-              borderRadius: '8px',
-              fontWeight: 500,
-              padding: '4px 12px'
-            }}
-          >
-            {config.text}
-          </Tag>
-        );
-      },
     },
     {
       title: '状态',
@@ -521,7 +482,7 @@ const BuildingList: React.FC = () => {
           </Button>
           <Popconfirm
             title="确定要删除这个楼宇吗？"
-            onConfirm={() => handleDelete(record.id, record.buildingName)}
+            onConfirm={() => handleDelete(record.id, record.building_name)}
             okText="确定"
             cancelText="取消"
           >

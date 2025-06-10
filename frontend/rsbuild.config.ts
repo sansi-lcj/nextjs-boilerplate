@@ -24,6 +24,12 @@ export default defineConfig({
     port: 3000,
     host: '0.0.0.0',
     open: false,
+    proxy: {
+      '/api': {
+        target: 'http://backend:8080',
+        changeOrigin: true,
+      },
+    },
   },
   dev: {
     hmr: true,

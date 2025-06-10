@@ -19,8 +19,7 @@ import {
   MoonOutlined,
   BulbOutlined,
 } from '@ant-design/icons';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { logout } from '../../store/slices/authSlice';
+import useAuthStore from '../../store/slices/authSlice';
 import { useTheme } from '../../hooks/useTheme';
 
 const { Header, Sider, Content } = Layout;
@@ -81,8 +80,7 @@ const MainLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, logout } = useAuthStore();
   const { theme, setTheme, isDark } = useTheme();
 
   const handleMenuClick = ({ key }: { key: string }) => {
@@ -104,9 +102,9 @@ const MainLayout: React.FC = () => {
     }
   };
 
-  const handleUserMenuClick = ({ key }: { key: string }) => {
+  const handleUserMenuClick = async ({ key }: { key: string }) => {
     if (key === 'logout') {
-      dispatch(logout());
+      await logout();
       navigate('/login');
     }
   };
