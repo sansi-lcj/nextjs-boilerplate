@@ -53,24 +53,100 @@ const MainLayout: React.FC = () => {
   }, []);
 
   // 全屏切换
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-      setIsFullscreen(true);
-    } else {
-      document.exitFullscreen();
-      setIsFullscreen(false);
+  const toggleFullscreen = async () => {
+    try {
+      const isCurrentlyFullscreen = !!(
+        document.fullscreenElement ||
+        (document as any).webkitFullscreenElement ||
+        (document as any).msFullscreenElement
+      );
+
+      console.log('当前全屏状态:', isCurrentlyFullscreen);
+
+      if (!isCurrentlyFullscreen) {
+        // 进入全屏
+        console.log('尝试进入全屏...');
+        if (document.documentElement.requestFullscreen) {
+          await document.documentElement.requestFullscreen();
+          console.log('使用标准 requestFullscreen API');
+          
+          // 延时检查全屏是否真正生效
+          setTimeout(() => {
+            const isNowFullscreen = !!(
+              document.fullscreenElement ||
+              (document as any).webkitFullscreenElement ||
+              (document as any).msFullscreenElement
+            );
+            
+            if (!isNowFullscreen) {
+              console.warn('全屏API调用成功但未生效，可能受到环境限制');
+              // 在实际用户环境中，可以显示提示
+              // alert('全屏模式暂时不可用，您可以按 F11 键手动进入全屏');
+            }
+          }, 500);
+          
+        } else if ((document.documentElement as any).webkitRequestFullscreen) {
+          // Safari 兼容
+          await (document.documentElement as any).webkitRequestFullscreen();
+          console.log('使用 webkit requestFullscreen API');
+        } else if ((document.documentElement as any).msRequestFullscreen) {
+          // IE/Edge 兼容
+          await (document.documentElement as any).msRequestFullscreen();
+          console.log('使用 ms requestFullscreen API');
+        } else {
+          console.warn('浏览器不支持全屏 API');
+          // 如果不支持全屏API，至少显示提示
+          alert('您的浏览器不支持全屏功能，请按 F11 键进入全屏模式');
+          return;
+        }
+      } else {
+        // 退出全屏
+        console.log('尝试退出全屏...');
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+          console.log('使用标准 exitFullscreen API');
+        } else if ((document as any).webkitExitFullscreen) {
+          // Safari 兼容
+          await (document as any).webkitExitFullscreen();
+          console.log('使用 webkit exitFullscreen API');
+        } else if ((document as any).msExitFullscreen) {
+          // IE/Edge 兼容
+          await (document as any).msExitFullscreen();
+          console.log('使用 ms exitFullscreen API');
+        }
+      }
+    } catch (error: any) {
+      console.error('全屏操作失败:', error);
+      // 如果API调用失败，提供备选方案
+      if (error?.name === 'NotAllowedError') {
+        alert('全屏请求被阻止，请确保页面已获得用户授权。您也可以按 F11 键进入全屏模式。');
+      } else {
+        alert('全屏功能暂时不可用，请按 F11 键进入全屏模式。');
+      }
     }
   };
 
   // 监听全屏状态变化
   useEffect(() => {
     const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
+      const isCurrentlyFullscreen = !!(
+        document.fullscreenElement ||
+        (document as any).webkitFullscreenElement ||
+        (document as any).msFullscreenElement
+      );
+      setIsFullscreen(isCurrentlyFullscreen);
     };
     
+    // 添加多种浏览器兼容的事件监听
     document.addEventListener('fullscreenchange', handleFullscreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('msfullscreenchange', handleFullscreenChange);
+    
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('msfullscreenchange', handleFullscreenChange);
+    };
   }, []);
 
   // 菜单项配置
@@ -81,7 +157,7 @@ const MainLayout: React.FC = () => {
       label: '仪表盘',
     },
     {
-      key: '/assets',
+      key: '/assets-parent',
       icon: <BuildOutlined />,
       label: '资产管理',
       children: [
@@ -353,16 +429,19 @@ const MainLayout: React.FC = () => {
                   fontSize: '16px',
                   width: 40,
                   height: 40,
-                  color: '#ffffff',
+                  color: 'var(--text-primary)',
+                  background: 'transparent',
+                  border: 'none',
+                  boxShadow: 'none',
                   marginRight: '16px'
                 }}
               />
               
               {/* 面包屑导航 */}
-              <div style={{ color: '#b8c5d1', fontSize: '14px' }}>
+              <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
                 <Space>
                   <span>当前位置:</span>
-                  <span style={{ color: '#00d9ff' }}>
+                  <span style={{ color: 'var(--primary-color)' }}>
                     {menuItems.find(item => 
                       item.key === currentPath || 
                       item.children?.some(child => child.key === currentPath)
@@ -376,13 +455,11 @@ const MainLayout: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               {/* 系统时间 */}
               <div style={{ 
-                color: '#b8c5d1', 
-                fontSize: '14px',
+                color: 'var(--text-secondary)', 
+                fontSize: '13px',
                 fontFamily: 'monospace',
-                background: 'rgba(0, 217, 255, 0.1)',
-                padding: '4px 8px',
-                borderRadius: '4px',
-                border: '1px solid rgba(0, 217, 255, 0.3)'
+                fontWeight: 500,
+                letterSpacing: '0.5px'
               }}>
                 {currentTime.toLocaleString()}
               </div>
@@ -393,7 +470,12 @@ const MainLayout: React.FC = () => {
                   type="text"
                   icon={isFullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
                   onClick={toggleFullscreen}
-                  style={{ color: '#ffffff' }}
+                  style={{ 
+                    color: 'var(--text-primary)',
+                    background: 'transparent',
+                    border: 'none',
+                    boxShadow: 'none'
+                  }}
                 />
               </Tooltip>
 
@@ -407,18 +489,28 @@ const MainLayout: React.FC = () => {
                   <Button
                     type="text"
                     icon={<BellOutlined />}
-                    style={{ color: '#ffffff' }}
+                    style={{ 
+                      color: 'var(--text-primary)',
+                      background: 'transparent',
+                      border: 'none',
+                      boxShadow: 'none'
+                    }}
                   />
                 </Badge>
               </Dropdown>
 
               {/* GitHub链接 */}
-              <Tooltip title="查看源代码">
+              <Tooltip title="查看项目源代码">
                 <Button
                   type="text"
                   icon={<GithubOutlined />}
-                  onClick={() => window.open('https://github.com', '_blank')}
-                  style={{ color: '#ffffff' }}
+                  onClick={() => window.open('https://github.com/sansi-lcj/nextjs-boilerplate', '_blank')}
+                  style={{ 
+                    color: '#ffffff',
+                    background: 'transparent',
+                    border: 'none',
+                    boxShadow: 'none'
+                  }}
                 />
               </Tooltip>
 
@@ -432,26 +524,51 @@ const MainLayout: React.FC = () => {
                   display: 'flex', 
                   alignItems: 'center', 
                   cursor: 'pointer',
-                  padding: '4px 12px',
+                  padding: '6px 12px',
                   borderRadius: '8px',
                   background: 'rgba(0, 217, 255, 0.1)',
                   border: '1px solid rgba(0, 217, 255, 0.3)',
-                  transition: 'all 0.3s ease'
+                  transition: 'all 0.3s ease',
+                  minWidth: '120px'
                 }}>
                   <Avatar 
-                    size="small" 
+                    size={32} 
                     icon={<UserOutlined />}
                     style={{ 
                       background: 'linear-gradient(135deg, #00d9ff, #0066ff)',
-                      marginRight: '8px'
+                      marginRight: '10px',
+                      flexShrink: 0
                     }}
                   />
-                  <div>
-                    <div style={{ color: '#ffffff', fontSize: '14px', fontWeight: 500 }}>
-                      {user?.name || '管理员'}
+                  <div style={{ 
+                    display: 'flex', 
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                    minWidth: 0,
+                    flex: 1
+                  }}>
+                    <div style={{ 
+                      color: '#ffffff', 
+                      fontSize: '13px', 
+                      fontWeight: 500,
+                      lineHeight: '18px',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      width: '100%'
+                    }}>
+                      {user?.name || '系统管理员'}
                     </div>
-                    <div style={{ color: '#6b7280', fontSize: '12px' }}>
-                      {(user?.roles?.[0] as any)?.name || user?.roles?.[0] || 'Administrator'}
+                    <div style={{ 
+                      color: '#8b949e', 
+                      fontSize: '11px',
+                      lineHeight: '14px',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      width: '100%'
+                    }}>
+                      {(user?.roles?.[0] as any)?.name || user?.roles?.[0] || '系统管理员'}
                     </div>
                   </div>
                 </div>

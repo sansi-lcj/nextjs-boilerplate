@@ -4,11 +4,6 @@ import { ApiResponse } from '../types';
 
 // 动态获取API基础URL
 const getApiBaseUrl = (): string => {
-  // 如果有环境变量设置，优先使用环境变量
-  if (process.env.REACT_APP_API_BASE_URL) {
-    return process.env.REACT_APP_API_BASE_URL;
-  }
-  
   // 获取当前页面的host
   const currentHost = window.location.hostname;
   const currentProtocol = window.location.protocol;

@@ -81,14 +81,34 @@ const Statistics: React.FC = () => {
     return <div>暂无数据</div>;
   }
 
-  // 饼图配置 - 使用简化配置避免语法错误
+  // 饼图配置 - 优化配置避免错误
   const pieConfig = {
     angleField: 'value',
     colorField: 'type',
     radius: 0.8,
+    innerRadius: 0.4,
     legend: {
-      position: 'bottom',
+      position: 'bottom' as const,
     },
+    label: {
+      type: 'inner',
+      offset: '-30%',
+      content: ({ percent }: any) => `${(percent * 100).toFixed(0)}%`,
+      style: {
+        fill: '#fff',
+        fontSize: 12,
+        fontWeight: 'bold',
+      },
+    },
+    color: ['#1890ff', '#52c41a', '#faad14', '#f5222d'],
+    interactions: [
+      {
+        type: 'element-selected',
+      },
+      {
+        type: 'element-active',
+      },
+    ],
   };
 
   // 模拟月度趋势数据
@@ -113,20 +133,100 @@ const Statistics: React.FC = () => {
     yField: 'value',
     seriesField: 'type',
     legend: {
-      position: 'top',
+      position: 'top' as const,
     },
     smooth: true,
+    color: ['#1890ff', '#52c41a'],
+    point: {
+      size: 4,
+      shape: 'circle',
+    },
+    tooltip: {
+      shared: true,
+      showCrosshairs: true,
+    },
+    xAxis: {
+      grid: {
+        line: {
+          style: {
+            stroke: '#f0f0f0',
+          },
+        },
+      },
+    },
+    yAxis: {
+      grid: {
+        line: {
+          style: {
+            stroke: '#f0f0f0',
+          },
+        },
+      },
+    },
   };
 
   return (
     <div style={{ padding: '0' }}>
+      {/* 自定义样式 */}
+      <style>{`
+        .tech-decoration {
+          background: linear-gradient(135deg, #1e2442 0%, #252b45 100%);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(10px);
+          border-radius: 12px;
+          transition: all 0.3s ease;
+        }
+        
+        .tech-decoration:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 32px rgba(0, 217, 255, 0.2);
+          border-color: rgba(0, 217, 255, 0.3);
+        }
+        
+        .tech-decoration .ant-card-head {
+          background: transparent;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .tech-decoration .ant-card-body {
+          background: transparent;
+        }
+        
+        .tech-decoration .ant-statistic-title {
+          color: #b8c5d1;
+          font-size: 14px;
+          margin-bottom: 8px;
+        }
+        
+        .tech-decoration .ant-statistic-content {
+          color: #ffffff;
+        }
+        
+        .chart-container {
+          margin: 16px 0;
+          padding: 8px;
+          border-radius: 8px;
+          background: rgba(255, 255, 255, 0.02);
+        }
+        
+        @media (max-width: 768px) {
+          .tech-decoration {
+            margin-bottom: 16px;
+          }
+          
+          .chart-container {
+            margin: 8px 0;
+          }
+        }
+      `}</style>
+
       {/* 头部标题 */}
       <div style={{ 
         marginBottom: '24px',
         background: 'linear-gradient(135deg, #1e2442 0%, #252b45 100%)',
         padding: '20px 24px',
         borderRadius: '12px',
-        border: '1px solid var(--border-color)'
+        border: '1px solid rgba(255, 255, 255, 0.1)'
       }}>
         <h2 style={{ 
           color: '#ffffff', 
@@ -144,7 +244,7 @@ const Statistics: React.FC = () => {
         </p>
       </div>
 
-      <Row gutter={[16, 16]}>
+      <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
         {/* 统计卡片 */}
         <Col xs={24} sm={12} lg={6}>
           <Card className="tech-decoration" hoverable>
@@ -216,7 +316,7 @@ const Statistics: React.FC = () => {
         </Col>
       </Row>
 
-      <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
+      <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
         {/* 面积统计 */}
         <Col xs={24} lg={12}>
           <Card title={
@@ -273,7 +373,7 @@ const Statistics: React.FC = () => {
         </Col>
       </Row>
 
-      <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
+      <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
         {/* 房间类型分布 */}
         <Col xs={24} lg={12}>
           <Card title={
@@ -306,7 +406,7 @@ const Statistics: React.FC = () => {
         <span style={{ color: '#ffffff' }}>
           📋 资产状态详情
         </span>
-      } style={{ marginTop: 16 }} className="tech-decoration">
+      } className="tech-decoration">
         <Table
           dataSource={statistics.assetStatusData}
           columns={[
@@ -366,9 +466,15 @@ const Statistics: React.FC = () => {
               },
             },
           ]}
-          pagination={false}
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条`,
+          }}
           rowKey={(record) => `${record.type}-${record.status}-${record.count}`}
           size="middle"
+          scroll={{ x: 600 }}
         />
       </Card>
     </div>

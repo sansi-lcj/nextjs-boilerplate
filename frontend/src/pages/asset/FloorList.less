@@ -1,0 +1,611 @@
+// 楼层管理页面样式 - 现代化设计
+.floor-list-page {
+  .ant-page-container {
+    background: #f8fafc;
+    min-height: 100vh;
+  }
+}
+
+// 楼层管理容器样式
+.floor-list-container {
+  padding: 24px;
+  background: #f8fafc;
+  min-height: 100vh;
+
+  // 面包屑导航样式
+  .page-breadcrumb {
+    margin-bottom: 24px;
+    
+    .ant-breadcrumb {
+      .ant-breadcrumb-link {
+        color: #64748b;
+        font-weight: 500;
+        transition: color 0.2s ease;
+        
+        &:hover {
+          color: #3b82f6;
+        }
+      }
+      
+      .ant-breadcrumb-separator {
+        color: #cbd5e1;
+      }
+    }
+  }
+
+  // 页面头部样式
+  .page-header {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    
+    .page-title {
+      color: #1e293b;
+      margin: 0;
+      font-size: 28px;
+      font-weight: 700;
+      text-shadow: none;
+    }
+    
+    .page-description {
+      color: #475569;
+      margin: 8px 0 0 0;
+      font-size: 16px;
+      font-weight: 400;
+    }
+    
+    .add-btn {
+      background: #3b82f6;
+      border: none;
+      border-radius: 8px;
+      color: #ffffff;
+      font-weight: 600;
+      height: 44px;
+      padding: 0 24px;
+      font-size: 14px;
+      box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: #2563eb;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+        color: #ffffff;
+      }
+      
+      &:focus {
+        background: #2563eb;
+        color: #ffffff;
+      }
+    }
+  }
+
+  // 搜索栏样式
+  .search-bar {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+    .search-form {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+
+      .search-input {
+        flex: 1;
+        min-width: 200px;
+        
+        input {
+          background: #f8fafc !important;
+          border: 1px solid #d1d5db !important;
+          color: #1f2937 !important;
+          border-radius: 8px !important;
+          padding: 10px 12px !important;
+          font-size: 14px !important;
+          font-weight: 400 !important;
+          
+          &::placeholder {
+            color: #6b7280 !important;
+            font-weight: 400 !important;
+          }
+          
+          &:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+            background: #ffffff !important;
+            outline: none !important;
+          }
+        }
+      }
+
+      .filter-select {
+        min-width: 150px;
+        
+        .ant-select-selector {
+          background: #f8fafc !important;
+          border: 1px solid #d1d5db !important;
+          color: #1f2937 !important;
+          border-radius: 8px !important;
+          padding: 2px 8px !important;
+          height: 38px !important;
+        }
+        
+        .ant-select-selection-placeholder {
+          color: #6b7280 !important;
+          font-weight: 400 !important;
+        }
+        
+        .ant-select-selection-item {
+          color: #1f2937 !important;
+          font-weight: 500 !important;
+        }
+        
+        &.ant-select-focused .ant-select-selector {
+          border-color: #3b82f6 !important;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+        }
+      }
+
+      .search-actions {
+        display: flex;
+        gap: 12px;
+        
+        .search-btn {
+          background: #3b82f6;
+          border: none;
+          border-radius: 8px;
+          color: #ffffff;
+          font-weight: 600;
+          height: 38px;
+          padding: 0 20px;
+          font-size: 14px;
+          transition: all 0.2s ease;
+          
+          &:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            color: #ffffff;
+          }
+        }
+        
+        .reset-btn {
+          background: #f8fafc;
+          border: 1px solid #d1d5db;
+          border-radius: 8px;
+          color: #475569;
+          font-weight: 500;
+          height: 38px;
+          padding: 0 20px;
+          font-size: 14px;
+          transition: all 0.2s ease;
+          
+          &:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+            border-color: #9ca3af;
+          }
+        }
+        
+        .expand-btn {
+          background: #f3f4f6;
+          border: 1px solid #d1d5db;
+          border-radius: 8px;
+          color: #374151;
+          font-weight: 500;
+          height: 38px;
+          padding: 0 16px;
+          font-size: 14px;
+          transition: all 0.2s ease;
+          
+          &:hover {
+            background: #e5e7eb;
+            color: #1f2937;
+          }
+        }
+      }
+    }
+  }
+
+  // 表格区域样式
+  .table-section {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      
+      h4 {
+        color: #0f172a;
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+      }
+    }
+
+    .ant-table {
+      background: transparent !important;
+      
+      .ant-table-thead > tr > th {
+        background: #f8fafc !important;
+        border-bottom: 2px solid #e2e8f0 !important;
+        color: #0f172a !important;
+        font-weight: 700 !important;
+        font-size: 14px !important;
+        padding: 16px 12px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        
+        &:first-child {
+          border-top-left-radius: 8px;
+        }
+        
+        &:last-child {
+          border-top-right-radius: 8px;
+        }
+      }
+      
+      .ant-table-tbody > tr {
+        background: #ffffff !important;
+        transition: all 0.2s ease !important;
+        
+        &:hover {
+          background: #f1f5f9 !important;
+          transform: translateY(-1px) !important;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+        }
+        
+        > td {
+          border-bottom: 1px solid #e2e8f0 !important;
+          color: #1f2937 !important;
+          padding: 16px 12px !important;
+          font-size: 14px !important;
+        }
+      }
+    }
+  }
+}
+
+// 楼层编码样式
+.floor-code {
+  display: inline-block;
+  background: #1e293b;
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: #0f172a;
+    transform: scale(1.05);
+  }
+}
+
+// 楼层名称样式
+.floor-name {
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  color: #0f172a !important;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    color: #3b82f6 !important;
+  }
+}
+
+// 楼层号样式
+.floor-number {
+  background: #3b82f6;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  display: inline-block;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: #2563eb;
+    transform: scale(1.05);
+  }
+}
+
+// 楼层类型标签样式
+.floor-type-tag {
+  background: #fef3c7 !important;
+  color: #d97706 !important;
+  border: none !important;
+  padding: 4px 12px !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  transition: all 0.2s ease !important;
+  
+  &:hover {
+    background: #fde68a !important;
+    transform: scale(1.05) !important;
+  }
+  
+  &.office-floor {
+    background: #eff6ff !important;
+    color: #2563eb !important;
+    
+    &:hover {
+      background: #dbeafe !important;
+    }
+  }
+  
+  &.ground-floor {
+    background: #f0fdf4 !important;
+    color: #16a34a !important;
+    
+    &:hover {
+      background: #dcfce7 !important;
+    }
+  }
+  
+  &.parking-floor {
+    background: #fafafa !important;
+    color: #525252 !important;
+    
+    &:hover {
+      background: #f5f5f5 !important;
+    }
+  }
+}
+
+// 面积徽章样式
+.area-badge {
+  background: #10b981;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  display: inline-block;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: #059669;
+    transform: scale(1.05);
+  }
+}
+
+// 房间数样式
+.room-count {
+  background: #e0e7ff;
+  color: #3730a3;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  display: inline-block;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: #c7d2fe;
+    transform: scale(1.05);
+  }
+}
+
+// 状态标签样式
+.status-tag {
+  border-radius: 6px !important;
+  padding: 4px 12px !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
+  
+  &.normal-status {
+    background: #dcfce7 !important;
+    color: #166534 !important;
+    
+    &:hover {
+      background: #bbf7d0 !important;
+      transform: scale(1.05) !important;
+    }
+  }
+  
+  &.maintenance-status {
+    background: #fef3c7 !important;
+    color: #92400e !important;
+    
+    &:hover {
+      background: #fde68a !important;
+      transform: scale(1.05) !important;
+    }
+  }
+  
+  &.inactive-status {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+    
+    &:hover {
+      background: #fecaca !important;
+      transform: scale(1.05) !important;
+    }
+  }
+}
+
+// 操作按钮样式
+.action-btn {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 6px !important;
+  border: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-right: 8px !important;
+  transition: all 0.2s ease !important;
+  
+  .anticon {
+    font-size: 14px !important;
+  }
+  
+  &.edit-btn {
+    background: #fef3c7 !important;
+    color: #d97706 !important;
+    
+    &:hover {
+      background: #fde68a !important;
+      color: #b45309 !important;
+      transform: translateY(-1px) !important;
+    }
+  }
+  
+  &.delete-btn {
+    background: #fef2f2 !important;
+    color: #dc2626 !important;
+    
+    &:hover {
+      background: #fee2e2 !important;
+      color: #b91c1c !important;
+      transform: translateY(-1px) !important;
+    }
+  }
+}
+
+// 分页器样式
+.ant-pagination {
+  margin-top: 24px !important;
+  
+  .ant-pagination-item {
+    background: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    color: #374151 !important;
+    font-weight: 500 !important;
+    
+    a {
+      color: #374151 !important;
+    }
+    
+    &.ant-pagination-item-active {
+      background: #3b82f6 !important;
+      border-color: #3b82f6 !important;
+      
+      a {
+        color: #ffffff !important;
+      }
+    }
+    
+    &:hover {
+      border-color: #3b82f6 !important;
+      
+      a {
+        color: #3b82f6 !important;
+      }
+    }
+    
+    &.ant-pagination-item-active:hover {
+      a {
+        color: #ffffff !important;
+      }
+    }
+  }
+  
+  .ant-pagination-prev,
+  .ant-pagination-next {
+    .ant-pagination-item-link {
+      background: #ffffff !important;
+      border: 1px solid #d1d5db !important;
+      color: #374151 !important;
+    }
+    
+    &:hover .ant-pagination-item-link {
+      border-color: #3b82f6 !important;
+      color: #3b82f6 !important;
+    }
+  }
+  
+  .ant-pagination-total-text {
+    color: #64748b !important;
+    font-weight: 500 !important;
+  }
+}
+
+// 动画效果
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.floor-list-container {
+  animation: fadeIn 0.6s ease-out;
+  
+  .page-header {
+    animation: slideIn 0.7s ease-out;
+  }
+  
+  .search-bar {
+    animation: slideIn 0.8s ease-out;
+  }
+  
+  .table-section {
+    animation: slideIn 0.9s ease-out;
+  }
+  
+  .ant-table-tbody > tr {
+    animation: fadeIn 0.4s ease-out;
+    animation-delay: calc(var(--index, 0) * 0.05s);
+  }
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .floor-list-container {
+    padding: 16px;
+    
+    .page-header {
+      flex-direction: column;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    
+    .search-bar .search-form {
+      flex-direction: column;
+      gap: 12px;
+      
+      .search-input,
+      .filter-select {
+        width: 100%;
+      }
+    }
+  }
+} 

@@ -43,6 +43,8 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - CGO_ENABLED=0
+      - GOPROXY=https://goproxy.cn,direct
+      - GOSUMDB=sum.golang.google.cn
     volumes:
       - ./backend:/app
       - go-modules:/go/pkg/mod
@@ -51,7 +53,7 @@ services:
       - building-asset-net
 
   frontend:
-    image: node:16-alpine
+    image: node:22-alpine
     container_name: building-asset-frontend-dev
     working_dir: /app
     ports:
@@ -62,6 +64,9 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
       - HOST=0.0.0.0
+      - PORT=3000
+      - BROWSER=none
+      - CI=true
     volumes:
       - ./frontend:/app
       - /app/node_modules

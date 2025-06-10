@@ -13,18 +13,19 @@
 ## 技术栈
 
 ### 后端
-- **语言**: Go 1.18+
+- **语言**: Go 1.23+
 - **框架**: Gin
-- **数据库**: MySQL 5.7+ / SQLite（演示用）
+- **数据库**: MySQL 8.0+ / SQLite（演示用）
 - **缓存**: Redis
 - **ORM**: GORM
 
 ### 前端
-- **框架**: React 18 + TypeScript
+- **框架**: React 19 + TypeScript
 - **UI 库**: Ant Design 5
 - **状态管理**: Redux Toolkit
 - **图表**: Ant Design Charts
-- **构建工具**: Create React App
+- **构建工具**: Rspack（基于 Rust 的高性能打包工具）
+- **测试框架**: Playwright（端到端测试）
 
 ## 项目结构
 
@@ -50,10 +51,11 @@
 
 ### 前置条件
 
-- Go 1.18+
-- Node.js 14+
-- MySQL 5.7+（可选，默认使用 SQLite）
+- Go 1.23+
+- Node.js 16+
+- MySQL 8.0+（可选，默认使用 SQLite）
 - Redis（可选）
+- Docker & Docker Compose（推荐）
 
 ### 安装
 
@@ -74,8 +76,8 @@ make dev
 ```
 
 应用将在以下地址可用：
-- 前端：http://localhost:3000
-- 后端：http://localhost:8080
+- **前端**：http://localhost:3000 (Rspack 开发服务器)
+- **后端**：http://localhost:8080 (Go Gin 服务器)
 
 默认登录凭据：
 - 用户名：`admin`
@@ -112,14 +114,20 @@ cd backend && go fmt ./...
 ### 前端开发
 
 ```bash
-# 仅运行前端
+# 仅运行前端（Rspack 极速启动）
 make frontend-dev
 
-# 运行测试
+# 运行单元测试
 make test-frontend
 
-# 构建生产版本
+# 运行 Playwright 端到端测试
+cd frontend && npm run test:playwright
+
+# 构建生产版本（Rspack 极速构建）
 make build-frontend
+
+# 预览生产构建
+cd frontend && npm run preview
 ```
 
 ## API 文档

@@ -1,0 +1,679 @@
+.building-list {
+  .ant-table {
+    .ant-table-tbody {
+      > tr {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        
+        &:hover {
+          box-shadow: 0 4px 16px rgba(102, 126, 234, 0.08);
+          transform: translateY(-1px);
+          
+          .building-code {
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+            transform: scale(1.05);
+          }
+          
+          .building-name {
+            text-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+          }
+          
+          .area-badge {
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          }
+          
+          .tag-enhanced {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+          }
+        }
+      }
+    }
+  }
+  
+  .building-code {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-block;
+  }
+  
+  .building-name {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-block;
+  }
+  
+  .area-badge {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-block;
+  }
+  
+  .tag-enhanced {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
+    &:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+  }
+  
+  .floor-count {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-block;
+    
+    &:hover {
+      transform: scale(1.1);
+      filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.5));
+    }
+  }
+  
+  .action-button {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    &.edit-btn:hover {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    }
+    
+    &.delete-btn:hover {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.building-list {
+  animation: fadeIn 0.5s ease-out;
+  
+  .ant-card {
+    animation: slideIn 0.6s ease-out;
+  }
+  
+  .ant-table-tbody > tr {
+    animation: fadeIn 0.3s ease-out;
+    animation-delay: calc(var(--index) * 0.05s);
+  }
+}
+
+// 楼宇管理页面样式 - 现代化设计
+.building-list-page {
+  .ant-page-container {
+    background: #f8fafc;
+    min-height: 100vh;
+  }
+}
+
+// 楼宇管理容器样式
+.building-list-container {
+  padding: 24px;
+  background: #f8fafc;
+  min-height: 100vh;
+
+  // 面包屑导航样式
+  .page-breadcrumb {
+    margin-bottom: 24px;
+    
+    .ant-breadcrumb {
+      .ant-breadcrumb-link {
+        color: #64748b;
+        font-weight: 500;
+        transition: color 0.2s ease;
+        
+        &:hover {
+          color: #3b82f6;
+        }
+      }
+      
+      .ant-breadcrumb-separator {
+        color: #cbd5e1;
+      }
+    }
+  }
+
+  // 页面头部样式
+  .page-header {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    
+    .page-title {
+      color: #1e293b;
+      margin: 0;
+      font-size: 28px;
+      font-weight: 700;
+      text-shadow: none;
+    }
+    
+    .page-description {
+      color: #475569;
+      margin: 8px 0 0 0;
+      font-size: 16px;
+      font-weight: 400;
+    }
+    
+    .add-btn {
+      background: #3b82f6;
+      border: none;
+      border-radius: 8px;
+      color: #ffffff;
+      font-weight: 600;
+      height: 44px;
+      padding: 0 24px;
+      font-size: 14px;
+      box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: #2563eb;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+        color: #ffffff;
+      }
+      
+      &:focus {
+        background: #2563eb;
+        color: #ffffff;
+      }
+    }
+  }
+
+  // 搜索栏样式
+  .search-bar {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+    .search-form {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+
+      .search-input {
+        flex: 1;
+        min-width: 200px;
+        
+        input {
+          background: #f8fafc !important;
+          border: 1px solid #d1d5db !important;
+          color: #1f2937 !important;
+          border-radius: 8px !important;
+          padding: 10px 12px !important;
+          font-size: 14px !important;
+          font-weight: 400 !important;
+          
+          &::placeholder {
+            color: #6b7280 !important;
+            font-weight: 400 !important;
+          }
+          
+          &:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+            background: #ffffff !important;
+            outline: none !important;
+          }
+        }
+      }
+
+      .filter-select {
+        min-width: 150px;
+        
+        .ant-select-selector {
+          background: #f8fafc !important;
+          border: 1px solid #d1d5db !important;
+          color: #1f2937 !important;
+          border-radius: 8px !important;
+          padding: 2px 8px !important;
+          height: 38px !important;
+        }
+        
+        .ant-select-selection-placeholder {
+          color: #6b7280 !important;
+          font-weight: 400 !important;
+        }
+        
+        .ant-select-selection-item {
+          color: #1f2937 !important;
+          font-weight: 500 !important;
+        }
+        
+        &.ant-select-focused .ant-select-selector {
+          border-color: #3b82f6 !important;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+        }
+      }
+
+      .search-actions {
+        display: flex;
+        gap: 12px;
+        
+        .search-btn {
+          background: #3b82f6;
+          border: none;
+          border-radius: 8px;
+          color: #ffffff;
+          font-weight: 600;
+          height: 38px;
+          padding: 0 20px;
+          font-size: 14px;
+          transition: all 0.2s ease;
+          
+          &:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            color: #ffffff;
+          }
+        }
+        
+        .reset-btn {
+          background: #f8fafc;
+          border: 1px solid #d1d5db;
+          border-radius: 8px;
+          color: #475569;
+          font-weight: 500;
+          height: 38px;
+          padding: 0 20px;
+          font-size: 14px;
+          transition: all 0.2s ease;
+          
+          &:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+            border-color: #9ca3af;
+          }
+        }
+      }
+    }
+  }
+
+  // 表格区域样式
+  .table-section {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      
+      h4 {
+        color: #0f172a;
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+      }
+    }
+
+    .ant-table {
+      background: transparent !important;
+      
+      .ant-table-thead > tr > th {
+        background: #f8fafc !important;
+        border-bottom: 2px solid #e2e8f0 !important;
+        color: #0f172a !important;
+        font-weight: 700 !important;
+        font-size: 14px !important;
+        padding: 16px 12px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        
+        &:first-child {
+          border-top-left-radius: 8px;
+        }
+        
+        &:last-child {
+          border-top-right-radius: 8px;
+        }
+      }
+      
+      .ant-table-tbody > tr {
+        background: #ffffff !important;
+        transition: all 0.2s ease !important;
+        
+        &:hover {
+          background: #f1f5f9 !important;
+          transform: translateY(-1px) !important;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+        }
+        
+        > td {
+          border-bottom: 1px solid #e2e8f0 !important;
+          color: #1f2937 !important;
+          padding: 16px 12px !important;
+          font-size: 14px !important;
+        }
+      }
+    }
+  }
+}
+
+// 楼宇编码样式
+.building-code {
+  display: inline-block;
+  background: #1e293b;
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: #0f172a;
+    transform: scale(1.05);
+  }
+}
+
+// 楼宇名称样式
+.building-name {
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  color: #0f172a !important;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    color: #3b82f6 !important;
+  }
+}
+
+// 楼宇类型标签样式
+.building-type-tag {
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  border: none !important;
+  padding: 4px 12px !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  transition: all 0.2s ease !important;
+  
+  &:hover {
+    background: #dbeafe !important;
+    transform: scale(1.05) !important;
+  }
+}
+
+// 面积徽章样式
+.area-badge {
+  background: #10b981;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  display: inline-block;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: #059669;
+    transform: scale(1.05);
+  }
+}
+
+// 楼层数样式
+.floor-count {
+  background: #f3f4f6;
+  color: #374151;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  display: inline-block;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: #e5e7eb;
+    transform: scale(1.05);
+  }
+}
+
+// 结构类型样式
+.structure-type {
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+// 状态标签样式
+.status-tag {
+  border-radius: 6px !important;
+  padding: 4px 12px !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
+  
+  &.normal-status {
+    background: #dcfce7 !important;
+    color: #166534 !important;
+    
+    &:hover {
+      background: #bbf7d0 !important;
+      transform: scale(1.05) !important;
+    }
+  }
+  
+  &.maintenance-status {
+    background: #fef3c7 !important;
+    color: #92400e !important;
+    
+    &:hover {
+      background: #fde68a !important;
+      transform: scale(1.05) !important;
+    }
+  }
+  
+  &.inactive-status {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+    
+    &:hover {
+      background: #fecaca !important;
+      transform: scale(1.05) !important;
+    }
+  }
+}
+
+// 操作按钮样式
+.action-btn {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 6px !important;
+  border: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-right: 8px !important;
+  transition: all 0.2s ease !important;
+  
+  .anticon {
+    font-size: 14px !important;
+  }
+  
+  &.edit-btn {
+    background: #fef3c7 !important;
+    color: #d97706 !important;
+    
+    &:hover {
+      background: #fde68a !important;
+      color: #b45309 !important;
+      transform: translateY(-1px) !important;
+    }
+  }
+  
+  &.delete-btn {
+    background: #fef2f2 !important;
+    color: #dc2626 !important;
+    
+    &:hover {
+      background: #fee2e2 !important;
+      color: #b91c1c !important;
+      transform: translateY(-1px) !important;
+    }
+  }
+}
+
+// 分页器样式
+.ant-pagination {
+  margin-top: 24px !important;
+  
+  .ant-pagination-item {
+    background: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    color: #374151 !important;
+    font-weight: 500 !important;
+    
+    a {
+      color: #374151 !important;
+    }
+    
+    &.ant-pagination-item-active {
+      background: #3b82f6 !important;
+      border-color: #3b82f6 !important;
+      
+      a {
+        color: #ffffff !important;
+      }
+    }
+    
+    &:hover {
+      border-color: #3b82f6 !important;
+      
+      a {
+        color: #3b82f6 !important;
+      }
+    }
+    
+    &.ant-pagination-item-active:hover {
+      a {
+        color: #ffffff !important;
+      }
+    }
+  }
+  
+  .ant-pagination-prev,
+  .ant-pagination-next {
+    .ant-pagination-item-link {
+      background: #ffffff !important;
+      border: 1px solid #d1d5db !important;
+      color: #374151 !important;
+    }
+    
+    &:hover .ant-pagination-item-link {
+      border-color: #3b82f6 !important;
+      color: #3b82f6 !important;
+    }
+  }
+  
+  .ant-pagination-total-text {
+    color: #64748b !important;
+    font-weight: 500 !important;
+  }
+}
+
+// 动画效果
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.building-list-container {
+  animation: fadeIn 0.6s ease-out;
+  
+  .page-header {
+    animation: slideIn 0.7s ease-out;
+  }
+  
+  .search-bar {
+    animation: slideIn 0.8s ease-out;
+  }
+  
+  .table-section {
+    animation: slideIn 0.9s ease-out;
+  }
+  
+  .ant-table-tbody > tr {
+    animation: fadeIn 0.4s ease-out;
+    animation-delay: calc(var(--index, 0) * 0.05s);
+  }
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .building-list-container {
+    padding: 16px;
+    
+    .page-header {
+      flex-direction: column;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    
+    .search-bar .search-form {
+      flex-direction: column;
+      gap: 12px;
+      
+      .search-input,
+      .filter-select {
+        width: 100%;
+      }
+    }
+  }
+} 
