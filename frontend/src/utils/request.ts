@@ -2,9 +2,29 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } f
 import { message } from 'antd';
 import { ApiResponse } from '../types';
 
+// 动态获取API基础URL
+const getApiBaseUrl = (): string => {
+  // 如果有环境变量设置，优先使用环境变量
+  if (process.env.REACT_APP_API_BASE_URL) {
+    return process.env.REACT_APP_API_BASE_URL;
+  }
+  
+  // 获取当前页面的host
+  const currentHost = window.location.hostname;
+  const currentProtocol = window.location.protocol;
+  
+  // 如果是localhost，使用默认配置
+  if (currentHost === 'localhost' || currentHost === '127.0.0.1') {
+    return 'http://localhost:8080/api/v1';
+  }
+  
+  // 如果是其他IP或域名，使用相同的host但端口改为8080
+  return `${currentProtocol}//${currentHost}:8080/api/v1`;
+};
+
 // 创建axios实例
 const request: AxiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080/api/v1',
+  baseURL: getApiBaseUrl(),
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',

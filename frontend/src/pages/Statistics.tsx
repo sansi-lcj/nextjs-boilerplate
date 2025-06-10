@@ -81,25 +81,14 @@ const Statistics: React.FC = () => {
     return <div>暂无数据</div>;
   }
 
-  // 饼图配置
+  // 饼图配置 - 使用简化配置避免语法错误
   const pieConfig = {
-    appendPadding: 10,
     angleField: 'value',
     colorField: 'type',
     radius: 0.8,
-    label: {
-      type: 'outer',
-      content: '{name} {percentage}',
+    legend: {
+      position: 'bottom',
     },
-    interactions: [
-      {
-        type: 'pie-legend-active',
-      },
-      {
-        type: 'element-active',
-      },
-    ],
-    theme: 'dark', // 深色主题
   };
 
   // 模拟月度趋势数据
@@ -124,17 +113,9 @@ const Statistics: React.FC = () => {
     yField: 'value',
     seriesField: 'type',
     legend: {
-      position: 'top' as const,
+      position: 'top',
     },
     smooth: true,
-    theme: 'dark',
-    color: ['#00d9ff', '#0066ff'],
-    animation: {
-      appear: {
-        animation: 'path-in',
-        duration: 1000,
-      },
-    },
   };
 
   return (

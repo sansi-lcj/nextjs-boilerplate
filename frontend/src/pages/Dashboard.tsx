@@ -139,7 +139,6 @@ const Dashboard: React.FC = () => {
       fill: 'linear-gradient(270deg, #00d9ff 0%, transparent 100%)',
       fillOpacity: 0.3,
     },
-    theme: 'dark',
   };
 
   // 柱状图配置
@@ -151,7 +150,6 @@ const Dashboard: React.FC = () => {
     columnStyle: {
       radius: [4, 4, 0, 0],
     },
-    theme: 'dark',
   };
 
   // 饼图配置
@@ -162,48 +160,17 @@ const Dashboard: React.FC = () => {
     radius: 0.8,
     innerRadius: 0.5,
     color: data.assetDistribution.map(item => item.color),
-    label: {
-      type: 'outer',
-      content: '{name}: {percentage}',
-      style: {
-        fill: '#ffffff',
-        fontSize: 12,
-      },
-    },
     legend: {
       position: 'bottom',
-      itemName: {
-        style: {
-          fill: '#ffffff',
-        },
-      },
     },
-    theme: 'dark',
   };
 
   // 仪表盘配置
   const gaugeConfig = {
-    percent: data.overview.systemHealth / 100,
+    percent: (data.overview.systemHealth || 0) / 100,
     color: ['#ff4757', '#ffb800', '#00ff88'],
     innerRadius: 0.7,
     radius: 0.8,
-    statistic: {
-      title: {
-        style: {
-          color: '#ffffff',
-          fontSize: '14px',
-        },
-        content: '系统健康度',
-      },
-      content: {
-        style: {
-          color: '#00d9ff',
-          fontSize: '24px',
-          fontWeight: 'bold',
-        },
-        content: `${Math.round(data.overview.systemHealth)}%`,
-      },
-    },
   };
 
   const getEventIcon = (type: string) => {
@@ -377,9 +344,13 @@ const Dashboard: React.FC = () => {
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <Card>
-            <div className="chart-container" style={{ padding: '0', border: 'none', margin: 0 }}>
-              <Gauge {...gaugeConfig} height={120} />
-            </div>
+            <Statistic
+              title="系统健康度"
+              value={data.overview.systemHealth.toFixed(1)}
+              suffix="%"
+              prefix={<DollarOutlined style={{ color: '#00ff88' }} />}
+              valueStyle={{ color: '#00ff88' }}
+            />
           </Card>
         </Col>
       </Row>
