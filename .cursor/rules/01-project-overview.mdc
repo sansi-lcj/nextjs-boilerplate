@@ -9,8 +9,8 @@ alwaysApply: true
 这是一个全栈楼宇资产管理平台，采用 Go + React 技术栈，具有四级资产层次结构（资产 → 楼宇 → 楼层 → 房间）、地图可视化、数据分析和完整的系统管理功能。
 
 ## 核心架构
-- **后端**: Go 1.18+ + Gin + GORM + MySQL/Redis
-- **前端**: React 18 + TypeScript + Ant Design 5 + Redux Toolkit
+- **后端**: Go 1.23+ + Gin + GORM + MySQL/Redis
+- **前端**: React 19 + TypeScript + Rspack + Ant Design 5 + Redux Toolkit
 - **部署**: Docker + Docker Compose
 
 ## 项目结构

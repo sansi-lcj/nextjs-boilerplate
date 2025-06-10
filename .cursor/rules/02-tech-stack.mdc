@@ -29,9 +29,9 @@ alwaysApply: true
 ## 前端技术栈
 
 ### 核心框架
-- **React 18** - 主要框架，使用函数组件和 Hooks
+- **React 19** - 主要框架，使用函数组件和 Hooks
 - **TypeScript 4.9+** - 类型安全，类型定义在 [src/types/](mdc:frontend/src/types)
-- **Create React App** - 项目脚手架
+- **Rspack + Rsbuild** - 基于 Rust 的高性能打包工具，替代 Create React App
 
 ### UI 组件库
 - **Ant Design 5** - 企业级 UI 组件库
@@ -50,6 +50,8 @@ alwaysApply: true
 ### 开发工具
 - **ESLint + Prettier** - 代码质量保证
 - **TypeScript** - 编译时类型检查
+- **Playwright** - 端到端测试框架
+- **Rspack DevServer** - 极速热重载开发服务器
 
 ## 地图服务
 - **天地图 API** - 国产地图服务，免费配额充足
@@ -72,7 +74,7 @@ Frontend (React)  →  Backend (Go)  →  Database (MySQL)
 ## 开发环境特色功能
 
 ### 热重载开发
-- **前端**: Webpack Dev Server 自动刷新
+- **前端**: Rspack DevServer 极速热重载（毫秒级启动）
 - **后端**: Docker volume 挂载 + `go run` 自动重启
 - **数据库**: 持久化 volume 保证数据不丢失
 
@@ -91,7 +93,7 @@ Frontend (React)  →  Backend (Go)  →  Database (MySQL)
 ## 构建工具
 - **Make** - 任务自动化，参考 [Makefile](mdc:Makefile)
 - **Docker** - 容器化构建
-- **Webpack** - 前端构建 (CRA 内置)
+- **Rspack** - 前端构建（基于 Rust，性能极佳）
 - **Go Build** - 后端编译
 
 ## 包管理

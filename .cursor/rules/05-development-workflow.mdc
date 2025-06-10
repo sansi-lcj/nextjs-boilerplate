@@ -27,10 +27,16 @@ docker-compose -f docker-compose.dev.yml down
 参考 [docker-compose.dev.yml](mdc:docker-compose.dev.yml) 了解开发环境配置。
 
 ### 服务端口
-- **前端**: http://localhost:3000 (热重载)
-- **后端**: http://localhost:8080 (自动重启)
+- **前端**: http://localhost:3000 (Rspack 极速热重载)
+- **后端**: http://localhost:8080 (Go 自动重启)
 - **MySQL**: localhost:3306
 - **Redis**: localhost:6379
+
+### 端口说明
+- **3000**: 前端开发和生产预览端口，由 Rsbuild 管理
+- **8080**: 后端 API 服务端口，由 Go Gin 框架提供
+- **3306**: MySQL 数据库端口
+- **6379**: Redis 缓存端口
 
 ### 默认账户
 - 用户名: `admin`
@@ -49,7 +55,7 @@ go run main.go  # 单独运行后端
 ```bash
 cd frontend
 npm install
-npm start  # 单独运行前端
+npm start  # 使用 Rspack 启动开发服务器
 ```
 
 ## 开发规范
@@ -118,11 +124,17 @@ docker logs building-asset-frontend-dev -f
 # 进入前端容器
 docker exec -it building-asset-frontend-dev sh
 
-# 运行测试
+# 运行单元测试
 cd frontend && npm test
 
-# 构建检查
+# 运行 Playwright 端到端测试
+cd frontend && npm run test:playwright
+
+# Rspack 构建检查
 cd frontend && npm run build
+
+# 预览生产构建
+cd frontend && npm run preview
 ```
 
 ### 数据库调试
@@ -263,6 +275,8 @@ docker-compose -f docker-compose.dev.yml logs mysql
 - 使用 React.memo 避免不必要的重渲染
 - 实现虚拟滚动处理大量数据
 - 使用 Ant Design 的按需加载减少包大小
+- Rspack 提供极速构建和热重载性能
+- 使用 Playwright 进行端到端测试验证性能
 
 ## 文档维护
 
