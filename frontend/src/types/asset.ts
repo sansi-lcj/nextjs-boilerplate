@@ -1,476 +1,528 @@
-// 资产相关类型定义
+/**
+ * 资产相关类型定义 - 与后端模型严格对应
+ * 基于 backend/internal/model/asset.go
+ */
 
-import { Organization, User } from './user';
-import { Status, BaseQueryParams } from './common';
+import { AuditModel, BaseQuery, Coordinates } from './index';
+import { Organization } from './user';
 
-// 租户
-export interface Tenant {
-  id: number;
-  tenantCode: string;
-  tenantName: string;
-  tenantType: 'individual' | 'company' | 'government' | 'organization';
-  contactPerson: string;
-  contactPhone: string;
-  contactEmail?: string;
-  companyName?: string;
-  businessLicense?: string;
-  taxNumber?: string;
-  address?: string;
-  industry?: string;
-  businessScope?: string;
-  creditRating?: 'AAA' | 'AA' | 'A' | 'BBB' | 'BB' | 'B' | 'C';
-  status: 'active' | 'inactive' | 'blacklisted';
-  createdAt: string;
-  updatedAt: string;
-  leases?: Lease[];
-}
+// 字符串数组类型 - 对应后端 StringArray
+export type StringArray = string[];
 
-// 租赁合同
-export interface Lease {
-  id: number;
-  leaseCode: string;
-  roomId: number;
-  room?: Room;
-  tenantId: number;
-  tenant?: Tenant;
-  leaseType: 'rent' | 'sublease' | 'license';
-  startDate: string;
-  endDate: string;
-  monthlyRent: number;
-  deposit: number;
-  managementFee?: number;
-  utilities?: string[];
-  paymentCycle: 'monthly' | 'quarterly' | 'semi-annual' | 'annual';
-  paymentMethod: 'cash' | 'transfer' | 'check' | 'online';
-  autoRenewal: boolean;
-  renewalPeriod?: number;
-  status: 'draft' | 'active' | 'expired' | 'terminated' | 'suspended';
-  signedDate?: string;
-  contractFile?: string;
-  notes?: string;
-  createdAt: string;
-  updatedAt: string;
-  payments?: Payment[];
-}
-
-// 付款记录
-export interface Payment {
-  id: number;
-  leaseId: number;
-  lease?: Lease;
-  paymentType: 'rent' | 'deposit' | 'management' | 'utility' | 'penalty' | 'refund';
-  amount: number;
-  dueDate: string;
-  paidDate?: string;
-  paidAmount?: number;
-  paymentMethod?: 'cash' | 'transfer' | 'check' | 'online';
-  status: 'pending' | 'paid' | 'overdue' | 'partial' | 'cancelled';
-  receipt?: string;
-  notes?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// 资产信息
-export interface Asset {
-  id: number;
-  assetCode: string;
-  assetName: string;
-  streetId?: number;
-  streetName?: string;
+// 资产模型 - 对应后端 Asset
+export interface Asset extends AuditModel {
+  asset_code: string;
+  asset_name: string;
+  street_id: number;
   address?: string;
   longitude?: number;
   latitude?: number;
-  landNature?: string;
-  totalArea?: number;
-  rentableArea?: number;
-  assetTags?: string[];
-  assetImages?: string[];
+  land_nature?: string;
+  total_area?: number;
+  rentable_area?: number;
+  asset_tags?: StringArray;
   description?: string;
-  useDate?: string;
-  status: Status;
+  status: 'normal' | 'disabled';
+  street?: Organization;
   buildings?: Building[];
-  createdBy?: number;
-  createdAt: string;
-  updatedAt: string;
 }
 
-// 楼宇信息
-export interface Building {
-  id: number;
-  assetId: number;
-  assetName?: string;
-  buildingCode: string;
-  buildingName: string;
-  buildingShortName?: string;
-  buildingType: string;
-  investor?: string;
-  location?: string;
-  totalArea?: number;
-  rentableArea?: number;
-  buildingHeight?: number;
-  floorCount?: number;
-  undergroundFloors?: number;
-  constructionYear?: string;
-  elevatorCount?: number;
-  parkingSpaces?: number;
-  greenRate?: number;
-  propertyCompany?: string;
-  propertyPhone?: string;
-  buildingTags?: string[];
-  buildingImages?: string[];
-  features?: string[];
+// 楼宇模型 - 对应后端 Building
+export interface Building extends AuditModel {
+  building_code: string;
+  building_name: string;
+  asset_id: number;
+  building_type?: string;
+  total_floors?: number;
+  underground_floors?: number;
+  total_area?: number;
+  rentable_area?: number;
+  construction_year?: string;
+  elevator_count?: number;
+  parking_spaces?: number;
+  green_rate?: number;
+  property_company?: string;
+  property_phone?: string;
+  features?: StringArray;
   description?: string;
-  buildDate?: string;
-  status: Status;
+  status: 'normal' | 'disabled';
+  asset?: Asset;
   floors?: Floor[];
-  createdBy?: number;
-  createdAt: string;
-  updatedAt: string;
 }
 
-// 楼层信息
-export interface Floor {
-  id: number;
-  buildingId: number;
-  buildingName?: string;
-  floorCode: string;
-  floorName: string;
-  floorNumber: number;
-  totalArea?: number;
-  rentableArea?: number;
-  rentedArea?: number;
-  floorType?: string;
-  floorPlan?: string;
-  roomCount?: number;
-  rentedRoomCount?: number;
-  avgRentPrice?: number;
-  occupancyRate?: number;
-  remark?: string;
-  status: Status;
-  rooms?: Room[];
-  createdBy?: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// 房间信息
-export interface Room {
-  id: number;
-  floorId: number;
-  floorName?: string;
-  roomCode: string;
-  roomNumber: string;
-  area?: number;
-  roomType?: string;
-  roomStatus: 'available' | 'occupied' | 'maintenance' | 'reserved';
-  position?: string;
-  assetOwnership?: string;
-  decoration?: string;
-  orientation?: string;
-  hasWindow?: boolean;
-  hasAC?: boolean;
-  rentPrice?: number;
-  remark?: string;
-  assets?: AssetItem[];
-  createdBy?: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// 具体资产项目
-export interface AssetItem {
-  id: number;
-  assetCode: string;
-  assetName: string;
-  assetType: string;
-  purchaseDate?: string;
-  assetValue?: number;
-  depreciationRate?: number;
-  status: 'in_use' | 'idle' | 'maintenance' | 'scrapped';
-  roomId?: number;
-  roomName?: string;
-  userId?: number;
-  userName?: string;
-  department?: string;
+// 楼层模型 - 对应后端 Floor
+export interface Floor extends AuditModel {
+  building_id: number;
+  floor_number: number;
+  floor_name?: string;
+  floor_area?: number;
+  rentable_area?: number;
+  rented_area?: number;
+  avg_rent_price?: number;
+  occupancy_rate?: number;
   description?: string;
-  images?: string[];
-  createdBy?: number;
-  createdAt: string;
-  updatedAt: string;
+  status: 'normal' | 'disabled';
+  building?: Building;
+  rooms?: Room[];
 }
 
-// 街道信息
+// 房间模型 - 对应后端 Room
+export interface Room extends AuditModel {
+  floor_id: number;
+  room_number?: string;
+  room_type?: 'office' | 'meeting' | 'other';
+  room_area?: number;
+  rent_price?: number;
+  decoration?: 'blank' | 'simple' | 'luxury';
+  orientation?: 'east' | 'south' | 'west' | 'north';
+  has_window?: boolean;
+  has_ac?: boolean;
+  description?: string;
+  status: 'available' | 'rented' | 'maintenance';
+  floor?: Floor;
+}
+
+// 街道模型 - 对应后端 Street
 export interface Street {
   id: number;
   name: string;
-  code: string;
-  districtId: number;
-  districtName: string;
+  code?: string;
 }
 
-// 查询参数
-export interface AssetQueryParams {
-  page?: number;
-  pageSize?: number;
-  sort?: string;
-  order?: 'asc' | 'desc';
-  assetName?: string;
-  streetId?: number;
-  status?: Status;
-  assetTags?: string;
+// ===== API 请求响应类型 =====
+
+// 资产查询参数
+export interface AssetQuery extends BaseQuery {
+  asset_code?: string;
+  asset_name?: string;
+  street_id?: number;
+  address?: string;
+  land_nature?: string;
+  status?: 'normal' | 'disabled';
+  longitude?: number;
+  latitude?: number;
+  total_area_min?: number;
+  total_area_max?: number;
+  rentable_area_min?: number;
+  rentable_area_max?: number;
+  asset_tags?: string[];
 }
 
-export interface BuildingQueryParams {
-  page?: number;
-  pageSize?: number;
-  sort?: string;
-  order?: 'asc' | 'desc';
-  assetId?: number;
-  buildingName?: string;
-  buildingType?: string;
-  status?: Status;
-}
-
-export interface FloorQueryParams {
-  page?: number;
-  pageSize?: number;
-  sort?: string;
-  order?: 'asc' | 'desc';
-  buildingId: number;
-  floorName?: string;
-  status?: Status;
-}
-
-export interface RoomQueryParams {
-  page?: number;
-  pageSize?: number;
-  sort?: string;
-  order?: 'asc' | 'desc';
-  floorId?: number;
-  roomNumber?: string;
-  roomType?: string;
-  roomStatus?: string;
-}
-
-export interface AssetItemQueryParams {
-  page?: number;
-  pageSize?: number;
-  sort?: string;
-  order?: 'asc' | 'desc';
-  roomId?: number;
-  assetName?: string;
-  assetType?: string;
-  status?: string;
-  department?: string;
-}
-
-// 表单数据
-export interface AssetFormData {
-  assetName: string;
-  streetId?: number;
+// 创建资产请求
+export interface CreateAssetRequest {
+  asset_code: string;
+  asset_name: string;
+  street_id: number;
   address?: string;
   longitude?: number;
   latitude?: number;
-  landNature?: string;
-  totalArea?: number;
-  rentableArea?: number;
-  assetTags?: string[];
+  land_nature?: string;
+  total_area?: number;
+  rentable_area?: number;
+  asset_tags?: StringArray;
   description?: string;
-  useDate?: string;
-  status: Status;
+  status?: 'normal' | 'disabled';
 }
 
-export interface BuildingFormData {
-  assetId: number;
-  buildingName: string;
-  buildingShortName?: string;
-  buildingType: string;
-  investor?: string;
-  location?: string;
-  totalArea?: number;
-  rentableArea?: number;
-  buildingHeight?: number;
-  floorCount?: number;
-  undergroundFloors?: number;
-  constructionYear?: string;
-  elevatorCount?: number;
-  parkingSpaces?: number;
-  greenRate?: number;
-  propertyCompany?: string;
-  propertyPhone?: string;
+// 更新资产请求
+export interface UpdateAssetRequest {
+  asset_name?: string;
+  street_id?: number;
+  address?: string;
+  longitude?: number;
+  latitude?: number;
+  land_nature?: string;
+  total_area?: number;
+  rentable_area?: number;
+  asset_tags?: StringArray;
+  description?: string;
+  status?: 'normal' | 'disabled';
+}
+
+// 楼宇查询参数
+export interface BuildingQuery extends BaseQuery {
+  building_code?: string;
+  building_name?: string;
+  asset_id?: number;
+  building_type?: string;
+  status?: 'normal' | 'disabled';
+  total_floors_min?: number;
+  total_floors_max?: number;
+  total_area_min?: number;
+  total_area_max?: number;
+  rentable_area_min?: number;
+  rentable_area_max?: number;
+  construction_year?: string;
+  elevator_count_min?: number;
+  elevator_count_max?: number;
+  parking_spaces_min?: number;
+  parking_spaces_max?: number;
+  green_rate_min?: number;
+  green_rate_max?: number;
+  property_company?: string;
   features?: string[];
+}
+
+// 创建楼宇请求
+export interface CreateBuildingRequest {
+  building_code: string;
+  building_name: string;
+  asset_id: number;
+  building_type?: string;
+  total_floors?: number;
+  underground_floors?: number;
+  total_area?: number;
+  rentable_area?: number;
+  construction_year?: string;
+  elevator_count?: number;
+  parking_spaces?: number;
+  green_rate?: number;
+  property_company?: string;
+  property_phone?: string;
+  features?: StringArray;
   description?: string;
-  buildDate?: string;
-  status: Status;
+  status?: 'normal' | 'disabled';
 }
 
-export interface FloorFormData {
-  buildingId: number;
-  floorName: string;
-  floorNumber: number;
-  totalArea?: number;
-  rentableArea?: number;
-  floorType?: string;
-  avgRentPrice?: number;
+// 更新楼宇请求
+export interface UpdateBuildingRequest {
+  building_name?: string;
+  asset_id?: number;
+  building_type?: string;
+  total_floors?: number;
+  underground_floors?: number;
+  total_area?: number;
+  rentable_area?: number;
+  construction_year?: string;
+  elevator_count?: number;
+  parking_spaces?: number;
+  green_rate?: number;
+  property_company?: string;
+  property_phone?: string;
+  features?: StringArray;
   description?: string;
-  status: Status;
+  status?: 'normal' | 'disabled';
 }
 
-export interface RoomFormData {
-  floorId: number;
-  roomNumber: string;
-  area?: number;
-  roomType?: string;
-  roomStatus: 'available' | 'occupied' | 'maintenance' | 'reserved';
-  position?: string;
-  assetOwnership?: string;
-  decoration?: string;
-  orientation?: string;
-  hasWindow?: boolean;
-  hasAC?: boolean;
-  rentPrice?: number;
-  remark?: string;
+// 楼层查询参数
+export interface FloorQuery extends BaseQuery {
+  building_id?: number;
+  floor_number?: number;
+  floor_name?: string;
+  status?: 'normal' | 'disabled';
+  floor_area_min?: number;
+  floor_area_max?: number;
+  rentable_area_min?: number;
+  rentable_area_max?: number;
+  rented_area_min?: number;
+  rented_area_max?: number;
+  avg_rent_price_min?: number;
+  avg_rent_price_max?: number;
+  occupancy_rate_min?: number;
+  occupancy_rate_max?: number;
 }
 
-export interface AssetItemFormData {
-  assetName: string;
-  assetType: string;
-  purchaseDate?: string;
-  assetValue?: number;
-  depreciationRate?: number;
-  status: 'in_use' | 'idle' | 'maintenance' | 'scrapped';
-  roomId?: number;
-  userId?: number;
-  department?: string;
+// 创建楼层请求
+export interface CreateFloorRequest {
+  building_id: number;
+  floor_number: number;
+  floor_name?: string;
+  floor_area?: number;
+  rentable_area?: number;
+  rented_area?: number;
+  avg_rent_price?: number;
+  occupancy_rate?: number;
   description?: string;
+  status?: 'normal' | 'disabled';
 }
 
-// 资产转移记录
-export interface AssetTransferLog {
-  id: number;
-  assetId: number;
-  assetName: string;
-  fromRoomId?: number;
-  fromRoomName?: string;
-  toRoomId?: number;
-  toRoomName?: string;
-  fromUserId?: number;
-  fromUserName?: string;
-  toUserId?: number;
-  toUserName?: string;
-  transferReason: string;
-  transferDate: string;
-  operatorId: number;
-  operatorName: string;
-  remark?: string;
-  createdAt: string;
+// 更新楼层请求
+export interface UpdateFloorRequest {
+  building_id?: number;
+  floor_number?: number;
+  floor_name?: string;
+  floor_area?: number;
+  rentable_area?: number;
+  rented_area?: number;
+  avg_rent_price?: number;
+  occupancy_rate?: number;
+  description?: string;
+  status?: 'normal' | 'disabled';
 }
 
-// 资产盘点记录
-export interface AssetInventoryLog {
-  id: number;
-  inventoryCode: string;
-  inventoryName: string;
-  inventoryDate: string;
-  inventoryType: 'full' | 'partial' | 'spot';
-  scopeType: 'all' | 'building' | 'floor' | 'room' | 'department';
-  scopeId?: number;
-  scopeName?: string;
-  totalAssets: number;
-  foundAssets: number;
-  missingAssets: number;
-  excessAssets: number;
-  damagedAssets: number;
-  status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
-  operatorId: number;
-  operatorName: string;
-  remark?: string;
-  createdAt: string;
-  updatedAt: string;
+// 房间查询参数
+export interface RoomQuery extends BaseQuery {
+  floor_id?: number;
+  room_number?: string;
+  room_type?: 'office' | 'meeting' | 'other';
+  status?: 'available' | 'rented' | 'maintenance';
+  room_area_min?: number;
+  room_area_max?: number;
+  rent_price_min?: number;
+  rent_price_max?: number;
+  decoration?: 'blank' | 'simple' | 'luxury';
+  orientation?: 'east' | 'south' | 'west' | 'north';
+  has_window?: boolean;
+  has_ac?: boolean;
 }
 
-// 统计数据类型
+// 创建房间请求
+export interface CreateRoomRequest {
+  floor_id: number;
+  room_number?: string;
+  room_type?: 'office' | 'meeting' | 'other';
+  room_area?: number;
+  rent_price?: number;
+  decoration?: 'blank' | 'simple' | 'luxury';
+  orientation?: 'east' | 'south' | 'west' | 'north';
+  has_window?: boolean;
+  has_ac?: boolean;
+  description?: string;
+  status?: 'available' | 'rented' | 'maintenance';
+}
+
+// 更新房间请求
+export interface UpdateRoomRequest {
+  floor_id?: number;
+  room_number?: string;
+  room_type?: 'office' | 'meeting' | 'other';
+  room_area?: number;
+  rent_price?: number;
+  decoration?: 'blank' | 'simple' | 'luxury';
+  orientation?: 'east' | 'south' | 'west' | 'north';
+  has_window?: boolean;
+  has_ac?: boolean;
+  description?: string;
+  status?: 'available' | 'rented' | 'maintenance';
+}
+
+// ===== 选项和枚举类型 =====
+
+// 土地性质选项
+export const LAND_NATURE_OPTIONS = [
+  { label: '国有出让', value: 'state_granted' },
+  { label: '国有划拨', value: 'state_allocated' },
+  { label: '集体所有', value: 'collective' },
+  { label: '其他', value: 'other' },
+] as const;
+
+// 楼宇类型选项
+export const BUILDING_TYPE_OPTIONS = [
+  { label: '办公楼', value: 'office' },
+  { label: '商业综合体', value: 'commercial' },
+  { label: '工业厂房', value: 'industrial' },
+  { label: '住宅', value: 'residential' },
+  { label: '其他', value: 'other' },
+] as const;
+
+// 房间类型选项
+export const ROOM_TYPE_OPTIONS = [
+  { label: '办公室', value: 'office' },
+  { label: '会议室', value: 'meeting' },
+  { label: '其他', value: 'other' },
+] as const;
+
+// 装修情况选项
+export const DECORATION_OPTIONS = [
+  { label: '毛坯', value: 'blank' },
+  { label: '简装', value: 'simple' },
+  { label: '精装', value: 'luxury' },
+] as const;
+
+// 朝向选项
+export const ORIENTATION_OPTIONS = [
+  { label: '东', value: 'east' },
+  { label: '南', value: 'south' },
+  { label: '西', value: 'west' },
+  { label: '北', value: 'north' },
+] as const;
+
+// 状态选项
+export const ASSET_STATUS_OPTIONS = [
+  { label: '正常', value: 'normal' },
+  { label: '禁用', value: 'disabled' },
+] as const;
+
+export const ROOM_STATUS_OPTIONS = [
+  { label: '可租', value: 'available' },
+  { label: '已租', value: 'rented' },
+  { label: '维护中', value: 'maintenance' },
+] as const;
+
+// ===== 统计和分析类型 =====
+
+// 资产统计数据
 export interface AssetStatistics {
-  totalAssets: number;
-  totalArea: number;
-  totalValue: number;
-  averageArea: number;
-  averageValue: number;
-  assetsByType: Record<string, number>;
-  assetsByStatus: Record<string, number>;
-  assetsByProvince: Record<string, number>;
-  assetsByCity: Record<string, number>;
-  recentAssets: Asset[];
-  valueAppreciation: number;
-  occupancyRate: number;
-  monthlyIncome: number;
-  annualIncome: number;
+  total_assets: number;
+  total_buildings: number;
+  total_floors: number;
+  total_rooms: number;
+  total_area: number;
+  total_rentable_area: number;
+  total_rented_area: number;
+  overall_occupancy_rate: number;
+  available_rooms: number;
+  rented_rooms: number;
+  maintenance_rooms: number;
 }
 
-export interface BuildingStatistics {
-  totalBuildings: number;
-  totalArea: number;
-  averageArea: number;
-  buildingsByType: Record<string, number>;
-  buildingsByStatus: Record<string, number>;
-  buildingsByStructure: Record<string, number>;
-  buildingsByEnergyRating: Record<string, number>;
-  averageAge: number;
-  occupancyRate: number;
-  monthlyIncome: number;
+// 资产分布统计
+export interface AssetDistribution {
+  street_id: number;
+  street_name: string;
+  asset_count: number;
+  building_count: number;
+  total_area: number;
+  rentable_area: number;
+  occupancy_rate: number;
 }
 
+// 租金统计
+export interface RentStatistics {
+  avg_rent_price: number;
+  min_rent_price: number;
+  max_rent_price: number;
+  total_rent_income: number;
+  occupied_area: number;
+  available_area: number;
+}
+
+// 楼层统计
 export interface FloorStatistics {
-  totalFloors: number;
-  totalArea: number;
-  averageArea: number;
-  floorsByType: Record<string, number>;
-  floorsByStatus: Record<string, number>;
-  averageRoomCount: number;
-  occupancyRate: number;
-  monthlyIncome: number;
+  building_id: number;
+  building_name: string;
+  total_floors: number;
+  total_area: number;
+  rentable_area: number;
+  rented_area: number;
+  occupancy_rate: number;
+  avg_rent_price: number;
 }
 
-export interface RoomStatistics {
-  totalRooms: number;
-  totalArea: number;
-  averageArea: number;
-  roomsByType: Record<string, number>;
-  roomsByStatus: Record<string, number>;
-  roomsByOccupancy: Record<string, number>;
-  occupancyRate: number;
-  averageRent: number;
-  monthlyIncome: number;
-  vacancyRate: number;
-}
+// ===== 地图相关类型 =====
 
-// 地图相关类型
-export interface MapPoint {
+// 地图点位数据
+export interface MapPoint extends Coordinates {
   id: number;
-  name: string;
   type: 'asset' | 'building';
-  longitude: number;
-  latitude: number;
-  address: string;
-  status: string;
-  area?: number;
-  value?: number;
-  icon?: string;
-  color?: string;
-  data?: Asset | Building;
-}
-
-export interface MapRegion {
-  code: string;
   name: string;
-  level: 'province' | 'city' | 'district';
-  parent?: string;
-  center: [number, number];
-  bounds?: [[number, number], [number, number]];
-  assetCount: number;
-  totalArea: number;
-  totalValue: number;
+  address?: string;
+  status: string;
+  properties?: Record<string, any>;
 }
 
-// 这些类型已经在前面定义了，移除重复定义
+// 地图资产点位
+export interface AssetMapPoint extends MapPoint {
+  type: 'asset';
+  asset_code: string;
+  asset_name: string;
+  street_name?: string;
+  total_area?: number;
+  building_count?: number;
+}
+
+// 地图楼宇点位
+export interface BuildingMapPoint extends MapPoint {
+  type: 'building';
+  building_code: string;
+  building_name: string;
+  asset_name?: string;
+  total_floors?: number;
+  total_area?: number;
+}
+
+// 地图查询参数
+export interface MapQuery {
+  bounds?: {
+    northeast: Coordinates;
+    southwest: Coordinates;
+  };
+  zoom?: number;
+  center?: Coordinates;
+  type?: 'asset' | 'building' | 'all';
+  status?: string[];
+  street_ids?: number[];
+}
+
+// ===== 导入导出类型 =====
+
+// 资产导入数据
+export interface AssetImportData {
+  asset_code: string;
+  asset_name: string;
+  street_name: string;
+  address?: string;
+  longitude?: number;
+  latitude?: number;
+  land_nature?: string;
+  total_area?: number;
+  rentable_area?: number;
+  asset_tags?: string;
+  description?: string;
+  status?: string;
+}
+
+// 楼宇导入数据
+export interface BuildingImportData {
+  building_code: string;
+  building_name: string;
+  asset_code: string;
+  building_type?: string;
+  total_floors?: number;
+  underground_floors?: number;
+  total_area?: number;
+  rentable_area?: number;
+  construction_year?: string;
+  elevator_count?: number;
+  parking_spaces?: number;
+  green_rate?: number;
+  property_company?: string;
+  property_phone?: string;
+  features?: string;
+  description?: string;
+  status?: string;
+}
+
+// 导入结果
+export interface ImportResult {
+  total: number;
+  success: number;
+  failed: number;
+  errors?: Array<{
+    row: number;
+    error: string;
+  }>;
+}
+
+// ===== 表单和UI相关类型 =====
+
+// 资产表单数据
+export interface AssetFormData extends Omit<CreateAssetRequest, 'asset_tags'> {
+  asset_tags?: string;
+}
+
+// 楼宇表单数据
+export interface BuildingFormData extends Omit<CreateBuildingRequest, 'features'> {
+  features?: string;
+}
+
+// 资产树节点
+export interface AssetTreeNode {
+  key: string;
+  title: string;
+  value?: any;
+  type: 'asset' | 'building' | 'floor' | 'room';
+  children?: AssetTreeNode[];
+  disabled?: boolean;
+  icon?: string;
+  extra?: Record<string, any>;
+}
+
+// 资产级联选择器选项
+export interface AssetCascaderOption {
+  label: string;
+  value: number;
+  children?: AssetCascaderOption[];
+  disabled?: boolean;
+  type: 'asset' | 'building' | 'floor';
+}
