@@ -1,6 +1,7 @@
 // 资产相关类型定义
 
 import { Organization, User } from './user';
+import { Status, BaseQueryParams } from './common';
 
 // 租户
 export interface Tenant {
@@ -70,456 +71,323 @@ export interface Payment {
   updatedAt: string;
 }
 
-// 资产
+// 资产信息
 export interface Asset {
   id: number;
   assetCode: string;
   assetName: string;
-  assetType: 'office' | 'commercial' | 'residential' | 'industrial' | 'mixed';
-  totalArea: number;
-  buildArea: number;
-  landArea?: number;
-  province: string;
-  city: string;
-  district: string;
-  street?: string;
-  address: string;
-  longitude?: number;
-  latitude?: number;
-  buildYear?: number;
-  floorCount?: number;
-  undergroundFloors?: number;
-  parkingSpaces?: number;
-  totalValue?: number;
-  currentValue?: number;
-  purchaseDate?: string;
-  purchasePrice?: number;
-  status: 'normal' | 'maintenance' | 'renovation' | 'vacant' | 'disposed';
-  ownerId?: number;
-  owner?: Organization;
-  managerId?: number;
-  manager?: User;
-  description?: string;
-  images?: string[];
-  documents?: string[];
-  facilities?: string[];
-  features?: Record<string, any>;
-  createdAt: string;
-  updatedAt: string;
-  buildings?: Building[];
-  statistics?: {
-    buildingCount: number;
-    floorCount: number;
-    roomCount: number;
-    occupancyRate: number;
-    monthlyIncome: number;
-    annualIncome: number;
-  };
-}
-
-// 楼宇
-export interface Building {
-  id: number;
-  buildingCode: string;
-  buildingName: string;
-  buildingType: 'office' | 'commercial' | 'residential' | 'parking' | 'auxiliary';
-  assetId: number;
-  asset?: Asset;
-  totalArea: number;
-  buildArea: number;
-  floorCount: number;
-  undergroundFloors?: number;
-  elevatorCount?: number;
-  stairCount?: number;
-  buildYear?: number;
-  structure: 'steel' | 'concrete' | 'mixed' | 'wood' | 'other';
-  height?: number;
-  ceilingHeight?: number;
-  loadCapacity?: number;
-  fireRating?: string;
-  seismicLevel?: string;
-  energyRating?: 'A' | 'B' | 'C' | 'D' | 'E';
-  status: 'normal' | 'maintenance' | 'renovation' | 'vacant' | 'demolished';
-  longitude?: number;
-  latitude?: number;
-  managerId?: number;
-  manager?: User;
-  description?: string;
-  images?: string[];
-  documents?: string[];
-  facilities?: string[];
-  features?: Record<string, any>;
-  createdAt: string;
-  updatedAt: string;
-  floors?: Floor[];
-  statistics?: {
-    floorCount: number;
-    roomCount: number;
-    occupancyRate: number;
-    monthlyIncome: number;
-  };
-}
-
-// 楼层
-export interface Floor {
-  id: number;
-  floorCode: string;
-  floorName: string;
-  floorNumber: number;
-  buildingId: number;
-  building?: Building;
-  floorType: 'basement' | 'ground' | 'office' | 'commercial' | 'parking' | 'equipment' | 'roof';
-  totalArea: number;
-  usableArea: number;
-  publicArea?: number;
-  ceilingHeight?: number;
-  loadCapacity?: number;
-  roomCount: number;
-  status: 'normal' | 'maintenance' | 'renovation' | 'vacant';
-  managerId?: number;
-  manager?: User;
-  description?: string;
-  images?: string[];
-  floorPlan?: string;
-  facilities?: string[];
-  features?: Record<string, any>;
-  createdAt: string;
-  updatedAt: string;
-  rooms?: Room[];
-  statistics?: {
-    roomCount: number;
-    occupiedRooms: number;
-    occupancyRate: number;
-    monthlyIncome: number;
-  };
-}
-
-// 房间
-export interface Room {
-  id: number;
-  roomCode: string;
-  roomName: string;
-  roomNumber: string;
-  floorId: number;
-  floor?: Floor;
-  roomType: 'office' | 'meeting' | 'storage' | 'restroom' | 'elevator' | 'stair' | 'corridor' | 'utility' | 'retail' | 'restaurant';
-  area: number;
-  usableArea?: number;
-  ceilingHeight?: number;
-  windowCount?: number;
-  doorCount?: number;
-  capacity?: number;
-  status: 'available' | 'occupied' | 'maintenance' | 'renovation' | 'reserved';
-  occupancyStatus: 'vacant' | 'occupied' | 'reserved';
-  tenantId?: number;
-  tenant?: Tenant;
-  rent?: number;
-  rentUnit?: 'monthly' | 'daily' | 'hourly';
-  leaseStartDate?: string;
-  leaseEndDate?: string;
-  managerId?: number;
-  manager?: User;
-  description?: string;
-  images?: string[];
-  floorPlan?: string;
-  facilities?: string[];
-  features?: Record<string, any>;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// 资产查询参数
-export interface AssetQueryParams {
-  page?: number;
-  pageSize?: number;
-  assetCode?: string;
-  assetName?: string;
-  assetType?: string;
-  province?: string;
-  city?: string;
-  district?: string;
-  status?: string;
-  ownerId?: number;
-  managerId?: number;
-  minArea?: number;
-  maxArea?: number;
-  minValue?: number;
-  maxValue?: number;
-  buildYearStart?: number;
-  buildYearEnd?: number;
-  sort?: string;
-  order?: 'asc' | 'desc';
-}
-
-// 楼宇查询参数
-export interface BuildingQueryParams {
-  page?: number;
-  pageSize?: number;
-  buildingCode?: string;
-  buildingName?: string;
-  buildingType?: string;
-  assetId?: number;
-  status?: string;
-  managerId?: number;
-  structure?: string;
-  energyRating?: string;
-  minArea?: number;
-  maxArea?: number;
-  sort?: string;
-  order?: 'asc' | 'desc';
-}
-
-// 创建资产请求
-export interface CreateAssetRequest {
-  assetCode: string;
-  assetName: string;
-  assetType: string;
-  totalArea: number;
-  buildArea: number;
-  landArea?: number;
-  province: string;
-  city: string;
-  district: string;
-  street?: string;
-  address: string;
-  longitude?: number;
-  latitude?: number;
-  buildYear?: number;
-  floorCount?: number;
-  undergroundFloors?: number;
-  parkingSpaces?: number;
-  totalValue?: number;
-  currentValue?: number;
-  purchaseDate?: string;
-  purchasePrice?: number;
-  status?: string;
-  ownerId?: number;
-  managerId?: number;
-  description?: string;
-  images?: string[];
-  documents?: string[];
-  facilities?: string[];
-  features?: Record<string, any>;
-}
-
-// 更新资产请求
-export interface UpdateAssetRequest {
-  assetName?: string;
-  assetType?: string;
-  totalArea?: number;
-  buildArea?: number;
-  landArea?: number;
-  province?: string;
-  city?: string;
-  district?: string;
-  street?: string;
+  streetId?: number;
+  streetName?: string;
   address?: string;
   longitude?: number;
   latitude?: number;
-  buildYear?: number;
-  floorCount?: number;
-  undergroundFloors?: number;
-  parkingSpaces?: number;
-  totalValue?: number;
-  currentValue?: number;
-  purchaseDate?: string;
-  purchasePrice?: number;
-  status?: string;
-  ownerId?: number;
-  managerId?: number;
+  landNature?: string;
+  totalArea?: number;
+  rentableArea?: number;
+  assetTags?: string[];
+  assetImages?: string[];
   description?: string;
-  images?: string[];
-  documents?: string[];
-  facilities?: string[];
-  features?: Record<string, any>;
+  useDate?: string;
+  status: Status;
+  buildings?: Building[];
+  createdBy?: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
-// 创建楼宇请求
-export interface CreateBuildingRequest {
+// 楼宇信息
+export interface Building {
+  id: number;
+  assetId: number;
+  assetName?: string;
   buildingCode: string;
   buildingName: string;
+  buildingShortName?: string;
   buildingType: string;
-  assetId: number;
-  totalArea: number;
-  buildArea: number;
-  floorCount: number;
-  undergroundFloors?: number;
-  elevatorCount?: number;
-  stairCount?: number;
-  buildYear?: number;
-  structure: string;
-  height?: number;
-  ceilingHeight?: number;
-  loadCapacity?: number;
-  fireRating?: string;
-  seismicLevel?: string;
-  energyRating?: string;
-  status?: string;
-  longitude?: number;
-  latitude?: number;
-  managerId?: number;
-  description?: string;
-  images?: string[];
-  documents?: string[];
-  facilities?: string[];
-  features?: Record<string, any>;
-}
-
-// 更新楼宇请求
-export interface UpdateBuildingRequest {
-  buildingName?: string;
-  buildingType?: string;
+  investor?: string;
+  location?: string;
   totalArea?: number;
-  buildArea?: number;
+  rentableArea?: number;
+  buildingHeight?: number;
   floorCount?: number;
   undergroundFloors?: number;
+  constructionYear?: string;
   elevatorCount?: number;
-  stairCount?: number;
-  buildYear?: number;
-  structure?: string;
-  height?: number;
-  ceilingHeight?: number;
-  loadCapacity?: number;
-  fireRating?: string;
-  seismicLevel?: string;
-  energyRating?: string;
-  status?: string;
-  longitude?: number;
-  latitude?: number;
-  managerId?: number;
+  parkingSpaces?: number;
+  greenRate?: number;
+  propertyCompany?: string;
+  propertyPhone?: string;
+  buildingTags?: string[];
+  buildingImages?: string[];
+  features?: string[];
   description?: string;
-  images?: string[];
-  documents?: string[];
-  facilities?: string[];
-  features?: Record<string, any>;
+  buildDate?: string;
+  status: Status;
+  floors?: Floor[];
+  createdBy?: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
-// 创建楼层请求
-export interface CreateFloorRequest {
+// 楼层信息
+export interface Floor {
+  id: number;
+  buildingId: number;
+  buildingName?: string;
   floorCode: string;
   floorName: string;
   floorNumber: number;
-  buildingId: number;
-  floorType: string;
-  totalArea: number;
-  usableArea: number;
-  publicArea?: number;
-  ceilingHeight?: number;
-  loadCapacity?: number;
-  roomCount: number;
-  status?: string;
-  managerId?: number;
-  description?: string;
-  images?: string[];
-  floorPlan?: string;
-  facilities?: string[];
-  features?: Record<string, any>;
-}
-
-// 更新楼层请求
-export interface UpdateFloorRequest {
-  floorName?: string;
-  floorNumber?: number;
-  floorType?: string;
   totalArea?: number;
-  usableArea?: number;
-  publicArea?: number;
-  ceilingHeight?: number;
-  loadCapacity?: number;
+  rentableArea?: number;
+  rentedArea?: number;
+  floorType?: string;
+  floorPlan?: string;
   roomCount?: number;
-  status?: string;
-  managerId?: number;
-  description?: string;
-  images?: string[];
-  floorPlan?: string;
-  facilities?: string[];
-  features?: Record<string, any>;
+  rentedRoomCount?: number;
+  avgRentPrice?: number;
+  occupancyRate?: number;
+  remark?: string;
+  status: Status;
+  rooms?: Room[];
+  createdBy?: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
-// 创建房间请求
-export interface CreateRoomRequest {
-  roomCode: string;
-  roomName: string;
-  roomNumber: string;
+// 房间信息
+export interface Room {
+  id: number;
   floorId: number;
-  roomType: string;
-  area: number;
-  usableArea?: number;
-  ceilingHeight?: number;
-  windowCount?: number;
-  doorCount?: number;
-  capacity?: number;
-  status?: string;
-  occupancyStatus?: string;
-  rent?: number;
-  rentUnit?: string;
-  managerId?: number;
-  description?: string;
-  images?: string[];
-  floorPlan?: string;
-  facilities?: string[];
-  features?: Record<string, any>;
-}
-
-// 更新房间请求
-export interface UpdateRoomRequest {
-  roomName?: string;
-  roomNumber?: string;
-  roomType?: string;
+  floorName?: string;
+  roomCode: string;
+  roomNumber: string;
   area?: number;
-  usableArea?: number;
-  ceilingHeight?: number;
-  windowCount?: number;
-  doorCount?: number;
-  capacity?: number;
-  status?: string;
-  occupancyStatus?: string;
-  rent?: number;
-  rentUnit?: string;
-  managerId?: number;
-  description?: string;
-  images?: string[];
-  floorPlan?: string;
-  facilities?: string[];
-  features?: Record<string, any>;
+  roomType?: string;
+  roomStatus: 'available' | 'occupied' | 'maintenance' | 'reserved';
+  position?: string;
+  assetOwnership?: string;
+  decoration?: string;
+  orientation?: string;
+  hasWindow?: boolean;
+  hasAC?: boolean;
+  rentPrice?: number;
+  remark?: string;
+  assets?: AssetItem[];
+  createdBy?: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
-// 查询参数类型
+// 具体资产项目
+export interface AssetItem {
+  id: number;
+  assetCode: string;
+  assetName: string;
+  assetType: string;
+  purchaseDate?: string;
+  assetValue?: number;
+  depreciationRate?: number;
+  status: 'in_use' | 'idle' | 'maintenance' | 'scrapped';
+  roomId?: number;
+  roomName?: string;
+  userId?: number;
+  userName?: string;
+  department?: string;
+  description?: string;
+  images?: string[];
+  createdBy?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// 街道信息
+export interface Street {
+  id: number;
+  name: string;
+  code: string;
+  districtId: number;
+  districtName: string;
+}
+
+// 查询参数
+export interface AssetQueryParams {
+  page?: number;
+  pageSize?: number;
+  sort?: string;
+  order?: 'asc' | 'desc';
+  assetName?: string;
+  streetId?: number;
+  status?: Status;
+  assetTags?: string;
+}
+
+export interface BuildingQueryParams {
+  page?: number;
+  pageSize?: number;
+  sort?: string;
+  order?: 'asc' | 'desc';
+  assetId?: number;
+  buildingName?: string;
+  buildingType?: string;
+  status?: Status;
+}
+
 export interface FloorQueryParams {
   page?: number;
   pageSize?: number;
-  floorCode?: string;
-  floorName?: string;
-  floorType?: string;
-  buildingId?: number;
-  status?: string;
-  managerId?: number;
-  floorNumber?: number;
-  minArea?: number;
-  maxArea?: number;
   sort?: string;
   order?: 'asc' | 'desc';
+  buildingId: number;
+  floorName?: string;
+  status?: Status;
 }
 
 export interface RoomQueryParams {
   page?: number;
   pageSize?: number;
-  roomCode?: string;
-  roomName?: string;
-  roomType?: string;
-  floorId?: number;
-  buildingId?: number;
-  assetId?: number;
-  status?: string;
-  occupancyStatus?: string;
-  tenantId?: number;
-  managerId?: number;
-  minArea?: number;
-  maxArea?: number;
-  minRent?: number;
-  maxRent?: number;
   sort?: string;
   order?: 'asc' | 'desc';
+  floorId?: number;
+  roomNumber?: string;
+  roomType?: string;
+  roomStatus?: string;
+}
+
+export interface AssetItemQueryParams {
+  page?: number;
+  pageSize?: number;
+  sort?: string;
+  order?: 'asc' | 'desc';
+  roomId?: number;
+  assetName?: string;
+  assetType?: string;
+  status?: string;
+  department?: string;
+}
+
+// 表单数据
+export interface AssetFormData {
+  assetName: string;
+  streetId?: number;
+  address?: string;
+  longitude?: number;
+  latitude?: number;
+  landNature?: string;
+  totalArea?: number;
+  rentableArea?: number;
+  assetTags?: string[];
+  description?: string;
+  useDate?: string;
+  status: Status;
+}
+
+export interface BuildingFormData {
+  assetId: number;
+  buildingName: string;
+  buildingShortName?: string;
+  buildingType: string;
+  investor?: string;
+  location?: string;
+  totalArea?: number;
+  rentableArea?: number;
+  buildingHeight?: number;
+  floorCount?: number;
+  undergroundFloors?: number;
+  constructionYear?: string;
+  elevatorCount?: number;
+  parkingSpaces?: number;
+  greenRate?: number;
+  propertyCompany?: string;
+  propertyPhone?: string;
+  features?: string[];
+  description?: string;
+  buildDate?: string;
+  status: Status;
+}
+
+export interface FloorFormData {
+  buildingId: number;
+  floorName: string;
+  floorNumber: number;
+  totalArea?: number;
+  rentableArea?: number;
+  floorType?: string;
+  avgRentPrice?: number;
+  description?: string;
+  status: Status;
+}
+
+export interface RoomFormData {
+  floorId: number;
+  roomNumber: string;
+  area?: number;
+  roomType?: string;
+  roomStatus: 'available' | 'occupied' | 'maintenance' | 'reserved';
+  position?: string;
+  assetOwnership?: string;
+  decoration?: string;
+  orientation?: string;
+  hasWindow?: boolean;
+  hasAC?: boolean;
+  rentPrice?: number;
+  remark?: string;
+}
+
+export interface AssetItemFormData {
+  assetName: string;
+  assetType: string;
+  purchaseDate?: string;
+  assetValue?: number;
+  depreciationRate?: number;
+  status: 'in_use' | 'idle' | 'maintenance' | 'scrapped';
+  roomId?: number;
+  userId?: number;
+  department?: string;
+  description?: string;
+}
+
+// 资产转移记录
+export interface AssetTransferLog {
+  id: number;
+  assetId: number;
+  assetName: string;
+  fromRoomId?: number;
+  fromRoomName?: string;
+  toRoomId?: number;
+  toRoomName?: string;
+  fromUserId?: number;
+  fromUserName?: string;
+  toUserId?: number;
+  toUserName?: string;
+  transferReason: string;
+  transferDate: string;
+  operatorId: number;
+  operatorName: string;
+  remark?: string;
+  createdAt: string;
+}
+
+// 资产盘点记录
+export interface AssetInventoryLog {
+  id: number;
+  inventoryCode: string;
+  inventoryName: string;
+  inventoryDate: string;
+  inventoryType: 'full' | 'partial' | 'spot';
+  scopeType: 'all' | 'building' | 'floor' | 'room' | 'department';
+  scopeId?: number;
+  scopeName?: string;
+  totalAssets: number;
+  foundAssets: number;
+  missingAssets: number;
+  excessAssets: number;
+  damagedAssets: number;
+  status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
+  operatorId: number;
+  operatorName: string;
+  remark?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // 统计数据类型
@@ -605,21 +473,4 @@ export interface MapRegion {
   totalValue: number;
 }
 
-// 表单数据类型
-export interface AssetFormData extends Omit<CreateAssetRequest, 'features'> {
-  features?: Record<string, any>;
-  locationCoords?: [number, number];
-}
-
-export interface BuildingFormData extends Omit<CreateBuildingRequest, 'features'> {
-  features?: Record<string, any>;
-  locationCoords?: [number, number];
-}
-
-export interface FloorFormData extends Omit<CreateFloorRequest, 'features'> {
-  features?: Record<string, any>;
-}
-
-export interface RoomFormData extends Omit<CreateRoomRequest, 'features'> {
-  features?: Record<string, any>;
-}
+// 这些类型已经在前面定义了，移除重复定义

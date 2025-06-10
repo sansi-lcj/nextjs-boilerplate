@@ -1,46 +1,126 @@
-import { LoginRequest, LoginResponse, User } from '../types/user';
-import { post, get, put } from '../utils/request';
+import { http } from '../utils/request';
+import type { 
+  LoginRequest, 
+  LoginResponse, 
+  RefreshTokenRequest,
+  RegisterRequest,
+  User,
+  UpdatePasswordRequest,
+  ResetPasswordRequest
+} from '../types/auth';
+import type { ApiResponse } from '../types/common';
 
-// 存储键名
-const TOKEN_KEY = 'token';
-const REFRESH_TOKEN_KEY = 'refreshToken';
-const USER_KEY = 'user';
-
-// 登录
-export const login = async (credentials: LoginRequest): Promise<LoginResponse> => {
-  const response = await post<LoginResponse>('/auth/login', credentials);
-  return response.data;
-};
-
-// 登出
-export const logout = async (): Promise<void> => {
-  try {
-    await post('/auth/logout');
-  } catch (error) {
-    console.warn('Logout request failed:', error);
+/**
+ * 认证服务类
+ */
+export class AuthService {
+  /**
+   * 用户登录
+   */
+  async login(data: LoginRequest): Promise<LoginResponse> {
+    const response = await http.post<ApiResponse<LoginResponse>>('/auth/login', data);
+    return response.data;
   }
-};
 
-// 刷新Token
-export const refreshToken = async (token: string): Promise<LoginResponse> => {
-  const response = await post<LoginResponse>('/auth/refresh', {
-    refreshToken: token,
-  });
-  return response.data;
-};
+  /**
+   * 用户登出
+   */
+  async logout(): Promise<void> {
+    await http.post('/auth/logout');
+  }
 
-// 获取当前用户信息
-export const getCurrentUser = async (): Promise<User> => {
-  const response = await get<User>('/auth/me');
-  return response.data;
-};
+  /**
+   * 刷新Token
+   */
+  async refreshToken(data: RefreshTokenRequest): Promise<LoginResponse> {
+    const response = await http.post<ApiResponse<LoginResponse>>('/auth/refresh', data);
+    return response.data;
+  }
+
+  /**
+   * 获取当前用户信息
+   */
+  async getCurrentUser(): Promise<User> {
+    const response = await http.get<ApiResponse<User>>('/auth/me');
+    return response.data;
+  }
+
+  /**
+   * 用户注册
+   */
+  async register(data: RegisterRequest): Promise<User> {
+    const response = await http.post<ApiResponse<User>>('/auth/register', data);
+    return response.data;
+  }
+
+  /**
+   * 修改密码
+   */
+  async updatePassword(data: UpdatePasswordRequest): Promise<void> {
+    await http.post('/auth/password/update', data);
+  }
+
+  /**
+   * 重置密码
+   */
+  async resetPassword(data: ResetPasswordRequest): Promise<void> {
+    await http.post('/auth/password/reset', data);
+  }
+
+  /**
+   * 验证Token有效性
+   */
+  async validateToken(): Promise<boolean> {
+    try {
+      await this.getCurrentUser();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * 获取用户权限列表
+   */
+  async getUserPermissions(): Promise<string[]> {
+    const response = await http.get<ApiResponse<string[]>>('/auth/permissions');
+    return response.data;
+  }
+
+  /**
+   * 获取用户菜单
+   */
+  async getUserMenus(): Promise<any[]> {
+    const response = await http.get<ApiResponse<any[]>>('/auth/menus');
+    return response.data;
+  }
+
+  /**
+   * 检查用户是否有指定权限
+   */
+  async hasPermission(permission: string): Promise<boolean> {
+    const permissions = await this.getUserPermissions();
+    return permissions.includes(permission) || permissions.includes('*');
+  }
+
+  /**
+   * 检查用户是否有指定角色
+   */
+  async hasRole(role: string): Promise<boolean> {
+    const user = await this.getCurrentUser();
+    return user.roles.some(r => r.roleCode === role);
+  }
+}
+
+// 导出服务实例
+export const authService = new AuthService();
 
 // 修改密码
 export const changePassword = async (data: {
   oldPassword: string;
   newPassword: string;
 }): Promise<void> => {
-  await put('/auth/password', data);
+  await http.post('/auth/password', data);
 };
 
 // 存储认证信息
@@ -126,7 +206,9 @@ export const autoRefreshToken = async (): Promise<LoginResponse | null> => {
   }
 
   try {
-    const response = await refreshToken(refreshTokenValue);
+    const response = await authService.refreshToken({
+      refreshToken: refreshTokenValue,
+    });
     saveAuthInfo(response);
     return response;
   } catch (error) {
@@ -136,23 +218,8 @@ export const autoRefreshToken = async (): Promise<LoginResponse | null> => {
   }
 };
 
-// 权限检查
-export const hasPermission = (permission: string): boolean => {
-  const user = getStoredUser();
-  if (!user || !user.permissions) return false;
-  
-  return user.permissions.includes(permission);
-};
-
-// 角色检查
-export const hasRole = (roleCode: string): boolean => {
-  const user = getStoredUser();
-  if (!user || !user.roles) return false;
-  
-  return user.roles.some(role => role.code === roleCode);
-};
-
 // 检查是否为管理员
 export const isAdmin = (): boolean => {
-  return hasRole('admin') || hasRole('super_admin');
+  const user = getStoredUser();
+  return user && (user.roles.some(r => r.roleCode === 'admin') || user.roles.some(r => r.roleCode === 'super_admin'));
 };

@@ -1,4 +1,4 @@
-import { Asset, Building, Floor, Room, AssetQueryParams, BuildingQueryParams, FloorQueryParams, RoomQueryParams, CreateAssetRequest, UpdateAssetRequest, CreateBuildingRequest, UpdateBuildingRequest, CreateFloorRequest, UpdateFloorRequest, CreateRoomRequest, UpdateRoomRequest, AssetStatistics, BuildingStatistics, FloorStatistics, RoomStatistics } from '../types/asset';
+import { Asset, Building, Floor, Room, AssetQueryParams, BuildingQueryParams, FloorQueryParams, RoomQueryParams, AssetFormData, BuildingFormData, FloorFormData, RoomFormData, AssetStatistics, BuildingStatistics, FloorStatistics, RoomStatistics } from '../types/asset';
 import { get, post, put, del } from '../utils/request';
 import { ApiResponse, PageData } from '../types';
 
@@ -15,12 +15,12 @@ export const assetService = {
   },
 
   // 创建资产
-  async createAsset(data: CreateAssetRequest): Promise<ApiResponse<Asset>> {
+  async createAsset(data: AssetFormData): Promise<ApiResponse<Asset>> {
     return await post('/assets', data);
   },
 
   // 更新资产
-  async updateAsset(id: number, data: UpdateAssetRequest): Promise<ApiResponse<Asset>> {
+  async updateAsset(id: number, data: AssetFormData): Promise<ApiResponse<Asset>> {
     return await put(`/assets/${id}`, data);
   },
 
@@ -60,12 +60,12 @@ export const buildingService = {
   },
 
   // 创建楼宇
-  async createBuilding(data: CreateBuildingRequest): Promise<ApiResponse<Building>> {
+  async createBuilding(data: BuildingFormData): Promise<ApiResponse<Building>> {
     return await post('/buildings', data);
   },
 
   // 更新楼宇
-  async updateBuilding(id: number, data: UpdateBuildingRequest): Promise<ApiResponse<Building>> {
+  async updateBuilding(id: number, data: BuildingFormData): Promise<ApiResponse<Building>> {
     return await put(`/buildings/${id}`, data);
   },
 
@@ -98,12 +98,12 @@ export const floorService = {
   },
 
   // 创建楼层
-  async createFloor(data: CreateFloorRequest): Promise<ApiResponse<Floor>> {
+  async createFloor(data: FloorFormData): Promise<ApiResponse<Floor>> {
     return await post('/floors', data);
   },
 
   // 更新楼层
-  async updateFloor(id: number, data: UpdateFloorRequest): Promise<ApiResponse<Floor>> {
+  async updateFloor(id: number, data: FloorFormData): Promise<ApiResponse<Floor>> {
     return await put(`/floors/${id}`, data);
   },
 
@@ -143,12 +143,12 @@ export const roomService = {
   },
 
   // 创建房间
-  async createRoom(data: CreateRoomRequest): Promise<ApiResponse<Room>> {
+  async createRoom(data: RoomFormData): Promise<ApiResponse<Room>> {
     return await post('/rooms', data);
   },
 
   // 更新房间
-  async updateRoom(id: number, data: UpdateRoomRequest): Promise<ApiResponse<Room>> {
+  async updateRoom(id: number, data: RoomFormData): Promise<ApiResponse<Room>> {
     return await put(`/rooms/${id}`, data);
   },
 
