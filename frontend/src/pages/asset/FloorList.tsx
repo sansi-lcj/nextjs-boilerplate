@@ -6,7 +6,6 @@ import {
   Card, 
   Input, 
   Select, 
-  message, 
   Modal, 
   Form, 
   InputNumber, 
@@ -18,12 +17,15 @@ import {
   PlusOutlined, 
   EditOutlined, 
   DeleteOutlined, 
-  HomeOutlined,
   ReloadOutlined
 } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { Floor, FloorQueryParams } from '../../types/asset';
 import { floorService } from '../../services/asset';
+import BatchActions from '../../components/common/BatchActions';
+import { ConfirmUtils, CommonMessages } from '../../utils/message';
+import { EnhancedNotifications } from '../../utils/notification';
+import './FloorList.less';
 
 const { Search } = Input;
 const { Title } = Typography;
@@ -38,6 +40,10 @@ const FloorList: React.FC = () => {
   const [editingFloor, setEditingFloor] = useState<Floor | null>(null);
   const [searchParams, setSearchParams] = useState<FloorQueryParams>({});
   const [form] = Form.useForm();
+  
+  // 批量操作相关状态
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [selectedRows, setSelectedRows] = useState<Floor[]>([]);
 
   useEffect(() => {
     fetchFloors();
@@ -101,10 +107,48 @@ const FloorList: React.FC = () => {
       }
     } catch (error) {
       console.error('Failed to fetch floors:', error);
-      message.error('获取楼层列表失败');
+      // 使用增强的错误通知
+      EnhancedNotifications.CREATE_ERROR('楼层列表', '数据加载失败，请检查网络连接');
     } finally {
       setLoading(false);
     }
+  };
+
+  // 批量操作相关方法
+  const handleBatchDelete = async (keys: React.Key[]) => {
+    try {
+      // 在实际项目中，这里应该调用批量删除 API
+      // await floorService.batchDeleteFloors(keys);
+      console.log('批量删除楼层:', keys);
+      
+      // 模拟删除成功
+      setTimeout(() => {
+        // 使用增强的批量操作成功通知
+        EnhancedNotifications.BATCH_DELETE_SUCCESS(keys.length, '楼层');
+        
+        // 清空选择
+        setSelectedRowKeys([]);
+        setSelectedRows([]);
+        // 重新加载数据
+        fetchFloors();
+      }, 1000);
+    } catch (error) {
+      console.error('批量删除失败:', error);
+      // 使用增强的批量操作失败通知
+      EnhancedNotifications.DELETE_ERROR('楼层', '批量删除失败，请重试');
+    }
+  };
+
+  // 处理表格选择变化
+  const handleSelectionChange = (newSelectedRowKeys: React.Key[], newSelectedRows: Floor[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+    setSelectedRows(newSelectedRows);
+  };
+
+  // 清空选择
+  const handleClearSelection = () => {
+    setSelectedRowKeys([]);
+    setSelectedRows([]);
   };
 
   const columns: ColumnsType<Floor> = [
@@ -113,24 +157,31 @@ const FloorList: React.FC = () => {
       dataIndex: 'floorCode',
       key: 'floorCode',
       width: 120,
+      sorter: true,
     },
     {
       title: '楼层名称',
       dataIndex: 'floorName',
       key: 'floorName',
       width: 150,
+      sorter: true,
     },
     {
       title: '所属建筑',
       dataIndex: ['building', 'buildingName'],
       key: 'buildingName',
       width: 200,
+      filters: [
+        { text: '创新大厦', value: '创新大厦' },
+        { text: '科技园区A座', value: '科技园区A座' },
+      ],
     },
     {
       title: '楼层编号',
       dataIndex: 'floorNumber',
       key: 'floorNumber',
       width: 100,
+      sorter: true,
     },
     {
       title: '楼层高度',
@@ -138,6 +189,7 @@ const FloorList: React.FC = () => {
       key: 'ceilingHeight',
       width: 100,
       render: (height: number) => height ? `${height}m` : '-',
+      sorter: true,
     },
     {
       title: '总面积',
@@ -145,6 +197,7 @@ const FloorList: React.FC = () => {
       key: 'totalArea',
       width: 100,
       render: (area: number) => `${area}m²`,
+      sorter: true,
     },
     {
       title: '可用面积',
@@ -152,6 +205,7 @@ const FloorList: React.FC = () => {
       key: 'usableArea',
       width: 100,
       render: (area: number) => `${area}m²`,
+      sorter: true,
     },
     {
       title: '状态',
@@ -167,6 +221,11 @@ const FloorList: React.FC = () => {
         const config = statusMap[status as keyof typeof statusMap] || statusMap.normal;
         return <Tag color={config.color}>{config.text}</Tag>;
       },
+      filters: [
+        { text: '正常', value: 'normal' },
+        { text: '维护', value: 'maintenance' },
+        { text: '关闭', value: 'closed' },
+      ],
     },
     {
       title: '操作',
@@ -218,10 +277,18 @@ const FloorList: React.FC = () => {
   async function handleDelete(id: number) {
     try {
       await floorService.deleteFloor(id);
-      message.success('删除成功');
+      // 使用增强的成功通知
+      EnhancedNotifications.DELETE_SUCCESS('楼层', {
+        title: '删除成功',
+        content: '楼层数据已成功删除'
+      });
       fetchFloors();
     } catch (error: any) {
-      message.error(error.message || '删除失败');
+      // 使用增强的错误通知
+      EnhancedNotifications.DELETE_ERROR('楼层', error.message, {
+        title: '删除失败',
+        content: '无法删除楼层，请稍后重试'
+      });
     }
   }
 
@@ -230,15 +297,28 @@ const FloorList: React.FC = () => {
       const values = await form.validateFields();
       if (editingFloor) {
         await floorService.updateFloor(editingFloor.id, values);
-        message.success('更新成功');
+        // 使用增强的成功通知
+        EnhancedNotifications.UPDATE_SUCCESS('楼层', {
+          title: '更新成功',
+          content: `楼层"${values.floorName}"已成功更新`
+        });
       } else {
         await floorService.createFloor(values);
-        message.success('创建成功');
+        // 使用增强的成功通知
+        EnhancedNotifications.CREATE_SUCCESS('楼层', {
+          title: '创建成功',
+          content: `楼层"${values.floorName}"已成功创建`
+        });
       }
       setModalVisible(false);
       fetchFloors();
     } catch (error: any) {
-      message.error(error.message || '操作失败');
+      // 使用增强的错误通知
+      if (editingFloor) {
+        EnhancedNotifications.UPDATE_ERROR('楼层', error.message);
+      } else {
+        EnhancedNotifications.CREATE_ERROR('楼层', error.message);
+      }
     }
   }
 
@@ -247,13 +327,53 @@ const FloorList: React.FC = () => {
     setPage(1);
   }
 
-  function handleTableChange(pagination: any) {
+  function handleTableChange(pagination: any, filters: any, sorter: any) {
     setPage(pagination.current);
     setPageSize(pagination.pageSize);
+    
+    // 处理排序
+    if (sorter.field && sorter.order) {
+      setSearchParams({
+        ...searchParams,
+        sort: sorter.field,
+        order: sorter.order === 'ascend' ? 'asc' : 'desc',
+      });
+    } else {
+      // 如果取消排序，移除排序参数
+      const { sort, order, ...rest } = searchParams;
+      setSearchParams(rest);
+    }
+    
+    // 处理筛选
+    const newFilters: any = {};
+    Object.keys(filters).forEach(key => {
+      if (filters[key] && filters[key].length > 0) {
+        newFilters[key] = filters[key];
+      }
+    });
+    
+    if (Object.keys(newFilters).length > 0) {
+      setSearchParams({
+        ...searchParams,
+        ...newFilters,
+      });
+    }
   }
 
+  // 自定义批量操作
+  const batchActions = [
+    {
+      key: 'export',
+      label: '导出选中',
+      onClick: (keys: React.Key[]) => {
+        console.log('导出选中楼层:', keys);
+        EnhancedNotifications.BATCH_EXPORT_SUCCESS(keys.length, '楼层');
+      },
+    },
+  ];
+
   return (
-    <Space direction="vertical" size="large">
+    <Space direction="vertical" size="large" style={{ width: '100%' }} className="floor-list-container">
       {/* 页面标题 */}
       <Card>
         <Title level={2}>🏢 楼层管理</Title>
@@ -261,7 +381,7 @@ const FloorList: React.FC = () => {
 
       {/* 搜索和操作 */}
       <Card>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <div className="search-action-container">
           <Search
             placeholder="搜索楼层名称"
             allowClear
@@ -286,6 +406,18 @@ const FloorList: React.FC = () => {
           </Space>
         </div>
 
+        {/* 批量操作栏 */}
+        {selectedRowKeys.length > 0 && (
+          <div className="batch-actions-bar">
+            <BatchActions
+              selectedRowKeys={selectedRowKeys}
+              selectedRows={selectedRows}
+              actions={batchActions}
+              onClearSelection={handleClearSelection}
+            />
+          </div>
+        )}
+
         <Table
           columns={columns}
           dataSource={floors}
@@ -303,6 +435,10 @@ const FloorList: React.FC = () => {
           onChange={handleTableChange}
           scroll={{ x: 800 }}
           size="middle"
+          rowSelection={{
+            selectedRowKeys,
+            onChange: handleSelectionChange,
+          }}
         />
       </Card>
 

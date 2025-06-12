@@ -183,7 +183,7 @@ const BuildingList: React.FC = () => {
     setSearchParams(prev => ({ ...prev, building_type: value }));
     setPage(1);
   };
-  
+
   const handleStatusChange = (value: string) => {
     setSearchParams(prev => ({ ...prev, status: value as any }));
     setPage(1);
@@ -325,9 +325,9 @@ const BuildingList: React.FC = () => {
       width: 120,
       render: (_, record) => (
         <Space size="small">
-          <Button 
+          <Button
             size="small" 
-            icon={<EditOutlined />} 
+            icon={<EditOutlined />}
             onClick={() => handleEdit(record)}
           />
           <Popconfirm
@@ -336,9 +336,9 @@ const BuildingList: React.FC = () => {
             okText="确定"
             cancelText="取消"
           >
-            <Button 
+            <Button
               size="small" 
-              danger 
+              danger
               icon={<DeleteOutlined />}
             />
           </Popconfirm>
@@ -400,7 +400,7 @@ const BuildingList: React.FC = () => {
               <Search
                 placeholder="搜索楼宇名称"
                 allowClear
-                onSearch={handleSearch}
+            onSearch={handleSearch}
                 style={{ width: 250 }}
               />
               <Select
@@ -447,30 +447,30 @@ const BuildingList: React.FC = () => {
         </Row>
       </Card>
 
-      {/* 数据表格 */}
+          {/* 数据表格 */}
       <Card>
-        <Table
-          columns={columns}
-          dataSource={buildings}
-          rowKey="id"
-          loading={loading}
-          pagination={{
-            current: page,
-            pageSize: pageSize,
-            total: total,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (total, range) => 
+            <Table
+              columns={columns}
+              dataSource={buildings}
+              rowKey="id"
+              loading={loading}
+              pagination={{
+                current: page,
+                pageSize: pageSize,
+                total: total,
+                showSizeChanger: true,
+                showQuickJumper: true,
+                showTotal: (total, range) =>
               `第 ${range[0]}-${range[1]} 条，共 ${total} 条`,
             onChange: (newPage, newPageSize) => {
               setPage(newPage);
               if (newPageSize !== pageSize) {
                 setPageSize(newPageSize);
-              }
-            },
-          }}
-        />
-      </Card>
+                  }
+                },
+              }}
+            />
+          </Card>
 
       {/* 创建/编辑弹窗 */}
       <Modal

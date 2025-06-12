@@ -11,6 +11,7 @@
   padding: 24px;
   background: #f8fafc;
   min-height: 100vh;
+  width: 100%;
 
   // 面包屑导航样式
   .page-breadcrumb {
@@ -608,4 +609,144 @@
       }
     }
   }
+}
+
+/* 批量操作栏样式 */
+.batch-actions-bar {
+  background-color: #f8f9fa;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* 搜索和操作按钮区域样式 */
+.search-action-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* 移动端适配 - 屏幕宽度小于 576px */
+@media screen and (max-width: 576px) {
+  .search-action-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .search-action-container .ant-input-search {
+    width: 100% !important;
+    margin-bottom: 12px;
+  }
+  
+  .search-action-container .ant-space {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .batch-actions-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .batch-actions-bar .ant-space {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  /* 表格内的操作按钮响应式处理 */
+  .ant-table-cell .ant-space {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  /* 模态框宽度自适应 */
+  .ant-modal {
+    width: 95% !important;
+    max-width: 95% !important;
+    margin: 0 auto;
+  }
+  
+  .ant-modal-content {
+    padding: 16px !important;
+  }
+}
+
+/* 平板适配 - 屏幕宽度在 576px ~ 768px 之间 */
+@media screen and (min-width: 577px) and (max-width: 768px) {
+  .search-action-container .ant-input-search {
+    width: 200px !important;
+  }
+  
+  /* 模态框宽度自适应 */
+  .ant-modal {
+    width: 90% !important;
+    max-width: 600px !important;
+    margin: 0 auto;
+  }
+}
+
+/* 表格内容可水平滚动 */
+.ant-table-wrapper {
+  overflow-x: auto;
+}
+
+/* 优化表格在移动端的显示 */
+.ant-table-cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 优化表单在移动端的显示 */
+@media screen and (max-width: 576px) {
+  .ant-form-item-label {
+    padding: 0 0 4px;
+  }
+  
+  .ant-form-item {
+    margin-bottom: 16px;
+  }
+  
+  .ant-input-number {
+    width: 100% !important;
+  }
+}
+
+/* 加载状态样式 */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+
+/* 错误提示样式 */
+.error-message {
+  background-color: #fff2f0;
+  border: 1px solid #ffccc7;
+  border-radius: 4px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  color: #ff4d4f;
+}
+
+/* 成功提示样式 */
+.success-message {
+  background-color: #f6ffed;
+  border: 1px solid #b7eb8f;
+  border-radius: 4px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  color: #52c41a;
 } 
